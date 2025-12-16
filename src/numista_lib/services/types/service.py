@@ -1,0 +1,312 @@
+"""Type service implementation."""
+
+from collections.abc import AsyncGenerator, Mapping
+from dataclasses import dataclass
+from typing import Any, cast
+
+from pydantic import BaseModel
+
+from numista_lib import logger
+from numista_lib.client import AsyncClientProtocol, NumistaResponse, SyncClientProtocol
+from numista_lib.models.types import TypeBasic, TypeFull
+from numista_lib.services.types.base import (
+    TypeBasicServiceBase,
+    TypeFullServiceBase,
+    TypeServiceBase,
+)
+
+
+@dataclass
+class SearchParams:
+    """Search parameters for type catalogue queries."""
+
+    query: str | None = None
+    issuer: str | None = None
+    year: int | None = None
+    category: str | None = None
+    lang: str = "en"
+    page: int = 1
+    count: int = 100
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to API parameter dictionary.
+
+        Returns
+        -------
+        dict[str, Any]
+            Parameters dictionary for HTTP request
+        """
+        params: dict[str, Any] = {
+            "lang": self.lang,
+            "count": min(self.count, 100),
+        }
+        if self.page > 1:
+            params["page"] = self.page
+        if self.query:
+            params["q"] = self.query
+        if self.issuer:
+            params["issuer"] = self.issuer
+        if self.year:
+            params["year"] = self.year
+        if self.category:
+            params["category"] = self.category
+        return params
+
+    def has_search_criteria(self) -> bool:
+        """Check if at least one search criterion is provided.
+
+        Returns
+        -------
+        bool
+            True if any search criteria specified
+        """
+        return any([self.query, self.issuer, self.year, self.category])
+
+
+class TypePagedResponse(BaseModel):
+    """Pagination response wrapper for types search."""
+
+    types: list[dict[str, Any]]
+    next_url: str | None = None
+
+
+class TypeModelMixin:
+    """Shared conversion helpers for type services."""
+
+    @staticmethod
+    def _type_basic_to_model(item: Mapping[str, Any]) -> TypeBasic:
+        return TypeBasic(
+            numista_id=cast(int, item["id"]),
+            title=cast(str, item["title"]),
+            category=cast(str, item["category"]),
+            issuer_code=cast(str, item["issuer"]["code"]),
+            issuer_name=cast(str, item["issuer"]["name"]),
+            min_year=cast(int | None, item.get("min_year")),
+            max_year=cast(int | None, item.get("max_year")),
+            obverse_thumbnail=cast(str | None, item.get("obverse_thumbnail")),
+            reverse_thumbnail=cast(str | None, item.get("reverse_thumbnail")),
+        )
+
+    @staticmethod
+    def _type_full_to_model(item: Mapping[str, Any]) -> TypeFull:
+        return TypeFull(
+            numista_id=cast(int, item["id"]),
+            title=cast(str, item["title"]),
+            category=cast(str, item["category"]),
+            issuer_code=cast(str, item["issuer"]["code"]),
+            issuer_name=cast(str, item["issuer"]["name"]),
+            min_year=cast(int | None, item.get("min_year")),
+            max_year=cast(int | None, item.get("max_year")),
+            obverse_thumbnail=cast(str | None, item.get("obverse_thumbnail")),
+            reverse_thumbnail=cast(str | None, item.get("reverse_thumbnail")),
+            value_text=cast(str | None, item.get("value")),
+            value_numeric=cast(float | None, item.get("value_numeric")),
+            currency_name=cast(str | None, item.get("currency")),
+            composition=cast(str | None, item.get("composition")),
+            weight=cast(float | None, item.get("weight")),
+            diameter=cast(float | None, item.get("diameter")),
+            thickness=cast(float | None, item.get("thickness")),
+            obverse_description=cast(str | None, item.get("obverse", {}).get("description")),
+            obverse_lettering=cast(str | None, item.get("obverse", {}).get("lettering")),
+            reverse_description=cast(str | None, item.get("reverse", {}).get("description")),
+            reverse_lettering=cast(str | None, item.get("reverse", {}).get("lettering")),
+        )
+
+
+class TypeBasicService(TypeModelMixin, TypeBasicServiceBase):
+    """Type search service returning TypeBasic models."""
+
+    def __init__(self, client: SyncClientProtocol | AsyncClientProtocol) -> None:
+        super().__init__(client)
+
+    def _to_models(self, items: list[Mapping[str, Any]], **kwargs: Any) -> list[TypeBasic]:
+        return [self._type_basic_to_model(item) for item in items]
+
+    def search_types(self, params: SearchParams) -> list[TypeBasic]:
+        logger.debug(
+            "→ search_types(query=%s, issuer=%s, year=%s, category=%s, page=%s)",
+            params.query,
+            params.issuer,
+            params.year,
+            params.category,
+            params.page,
+        )
+
+        if not params.has_search_criteria():
+            raise ValueError(
+                "At least one search parameter (q, issuer, year, category) required"
+            ) from None
+
+        response = cast(
+            NumistaResponse, self._client.get("/types", params=params.to_dict())
+        )
+        response.raise_for_status()
+        self._track_response(response)
+        data = cast(Mapping[str, Any], response.json())
+
+        types_list = [self._type_basic_to_model(item) for item in data.get("types", [])]
+
+        logger.info(
+            f"Retrieved {len(types_list)} types page {params.page} {response.cached_indicator}"
+        )
+        return types_list
+
+    async def search_types_async(self, params: SearchParams) -> list[TypeBasic]:
+        logger.debug(
+            "→ search_types_async(query=%s, issuer=%s, year=%s, category=%s, page=%s)",
+            params.query,
+            params.issuer,
+            params.year,
+            params.category,
+            params.page,
+        )
+
+        if not params.has_search_criteria():
+            raise ValueError(
+                "At least one search parameter (q, issuer, year, category) required"
+            ) from None
+
+        response = await self._aget("/types", params=params.to_dict())
+        response.raise_for_status()
+        self._track_response(response)
+        data = cast(Mapping[str, Any], response.json())
+
+        types_list = [self._type_basic_to_model(item) for item in data.get("types", [])]
+
+        logger.info(
+            f"Retrieved {len(types_list)} types page {params.page} {response.cached_indicator}"
+        )
+        return types_list
+
+    async def paginated_search(self, params: SearchParams) -> AsyncGenerator[TypeBasic]:
+        logger.debug(
+            "→ paginated_search(query=%s, issuer=%s, year=%s, category=%s)",
+            params.query,
+            params.issuer,
+            params.year,
+            params.category,
+        )
+
+        if not params.has_search_criteria():
+            raise ValueError(
+                "At least one search parameter (q, issuer, year, category) required"
+            ) from None
+
+        page_num = 1
+        while True:
+            params.page = page_num
+            logger.debug(f"Fetching types page {page_num}")
+
+            response = await self._aget("/types", params=params.to_dict())
+            response.raise_for_status()
+            self._track_response(response)
+            data = cast(Mapping[str, Any], response.json())
+
+            types_list = [self._type_basic_to_model(item) for item in data.get("types", [])]
+
+            if not types_list:
+                break
+
+            for type_item in types_list:
+                yield type_item
+
+            if not data.get("next_url"):
+                break
+
+            page_num += 1
+
+        logger.info(f"Finished paginating {page_num} pages of type results")
+
+    async def search_types_paginated(
+        self,
+        query: str | None = None,
+        issuer: str | None = None,
+        year: int | None = None,
+        category: str | None = None,
+        limit: int = 50,
+    ) -> AsyncGenerator[TypeBasic]:
+        params = SearchParams(
+            query=query,
+            issuer=issuer,
+            year=year,
+            category=category,
+            count=min(limit, 100),
+        )
+        async for type_item in self.paginated_search(params=params):
+            yield type_item
+
+
+class TypeFullService(TypeModelMixin, TypeFullServiceBase):
+    """Type detail service returning TypeFull models."""
+
+    def __init__(self, client: SyncClientProtocol | AsyncClientProtocol) -> None:
+        super().__init__(client)
+
+    def _to_models(self, items: list[Mapping[str, Any]], **kwargs: Any) -> list[TypeFull]:
+        return [self._type_full_to_model(item) for item in items]
+
+    def get_type(self, type_id: int) -> TypeFull:
+        logger.debug("→ get_type(type_id=%s)", type_id)
+
+        response = cast(NumistaResponse, self._client.get(f"/types/{type_id}"))
+        response.raise_for_status()
+        self._track_response(response)
+        data = cast(Mapping[str, Any], response.json())
+
+        type_full = self._type_full_to_model(data)
+
+        logger.info(f"Retrieved type {type_id}: {type_full.title} {response.cached_indicator}")
+        return type_full
+
+    async def get_type_async(self, type_id: int) -> TypeFull:
+        logger.debug("→ get_type_async(type_id=%s)", type_id)
+
+        response = await self._aget(f"/types/{type_id}")
+        response.raise_for_status()
+        self._track_response(response)
+        data = cast(Mapping[str, Any], response.json())
+
+        type_full = self._type_full_to_model(data)
+
+        logger.info(f"Retrieved type {type_id}: {type_full.title} {response.cached_indicator}")
+        return type_full
+
+    def add_type(self, type_data: dict[str, object], lang: str | None = None) -> TypeFull:
+        logger.debug("→ add_type(lang=%s)", lang)
+
+        params = self._build_params(lang=lang) if lang else None
+        response = cast(NumistaResponse, self._client.post("/types", params=params, json=type_data))
+        response.raise_for_status()
+        self._track_response(response)
+        data = cast(Mapping[str, Any], response.json())
+
+        type_obj = self._type_full_to_model(data)
+
+        logger.info(f"Added type {type_obj.numista_id} {response.cached_indicator}")
+        return type_obj
+
+    async def add_type_async(self, type_data: dict[str, object], lang: str | None = None) -> TypeFull:
+        logger.debug("→ add_type_async(lang=%s)", lang)
+
+        params = self._build_params(lang=lang) if lang else None
+        response = await self._apost("/types", params=params, json=type_data)
+        response.raise_for_status()
+        self._track_response(response)
+        data = cast(Mapping[str, Any], response.json())
+
+        type_obj = self._type_full_to_model(data)
+
+        logger.info(f"Added type {type_obj.numista_id} {response.cached_indicator}")
+        return type_obj
+
+
+class TypeService(TypeFullService, TypeBasicService, TypeServiceBase):  # type: ignore[misc]
+    """Composite type service combining search (basic) and detail (full).
+
+    Note: mypy reports _to_models conflict between TypeBasicService (returns list[TypeBasic])
+    and TypeFullService (returns list[TypeFull]). This is inherent to composite service design;
+    each parent class uses its own _to_models internally. Python MRO resolves correctly at runtime.
+    """
+
+    def __init__(self, client: SyncClientProtocol | AsyncClientProtocol) -> None:
+        super().__init__(client)
