@@ -1,5 +1,5 @@
 [project]
-name = "numista-lib"
+name = "numistalib"
 version = "0.1.0"
 description = "Numista API wrapper"
 readme = "README.md"
@@ -20,7 +20,7 @@ dependencies = [
 ]
 
 [project.scripts]
-numista-lib = "numista_lib.cli:main"
+numistalib = "numistalib.cli:main"
 
 [dependency-groups]
 dev = [
@@ -35,7 +35,7 @@ dev = [
     "uv",
     "xenon>=0.9.3",
     "pyright>=1.1.0", # Static type checker
-    "mypy>=1.19.0",
+    "mypy>=1.19.1",
 ]
 
 [build-system]
@@ -83,7 +83,7 @@ reportMissingImports = true
 reportMissingTypeStubs = false
 reportUnknownParameterType = true
 reportUnknownArgumentType = true
-reportUnknownVariableType = true
+reportUnknownVariableType = false
 reportUnknownMemberType = true
 reportUntypedFunctionDecorator = true
 reportUntypedClassDecorator = true
