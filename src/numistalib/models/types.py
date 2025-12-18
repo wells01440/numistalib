@@ -109,7 +109,6 @@ class Reverse(NumistaBaseModel):
 
 class TypeBase(NumistaBaseModel, ABC):
     """Common fields shared between basic and full type representations."""
-    
     numista_id: int = Field(alias="id", gt=0, description="Numista type ID")
     title: Annotated[str, StringConstraints(strip_whitespace=True, max_length=500)] = Field(
         ..., description="Type title"
