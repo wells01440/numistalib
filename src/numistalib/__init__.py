@@ -6,7 +6,6 @@ A Python wrapper for the Numista API with caching, rate limiting, and retry logi
 __version__ = "0.1.0"
 
 import logging
-import numistalib
 from pathlib import Path
 
 from rich import logging as rich_logging
