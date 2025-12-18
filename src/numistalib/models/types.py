@@ -116,7 +116,7 @@ class TypeBase(NumistaBaseModel, ABC):
     )
     
     category: Literal["coin", "banknote", "exonumia"] = Field(
-        ..., max_length=50, description="Category: coin, banknote, exonumia"
+        ..., description="Category: coin, banknote, exonumia"
     )
     min_year: int | None = Field(None, ge=-9999, le=9999, description="First year of production")  # Allow BC dates
     max_year: int | None = Field(None, ge=-9999, le=9999, description="Last year of production")
