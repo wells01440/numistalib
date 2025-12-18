@@ -6,6 +6,7 @@ A Python wrapper for the Numista API with caching, rate limiting, and retry logi
 __version__ = "0.1.0"
 
 import logging
+import numistalib
 from pathlib import Path
 
 from rich import logging as rich_logging
@@ -64,27 +65,6 @@ logger.addHandler(handler)
 # Get environment file and initialize settings
 environment_file = get_environment_file()
 default_settings = Settings()
-
-CLI_THEME: dict[str, str] = ({
-        "info": "cyan",
-        "warning": "yellow",
-        "danger": "bold red",
-        "success": "bold green",
-        # Table data presentation
-        "row_data": "white",
-        "row_data_emphasized": "bold cyan",
-        "row_metadata": "dim white",
-        "header": "bold blue",
-        "footer": "dim white",
-        "debug": "dim magenta",
-        "error": "dim red",
-    }
-)
-
-CLI_PANEL_WIDTH = 100
-
-# Version and license info
-CLI_LICENSE_TEXT = "MIT License - See LICENSE file for details"
 
 __all__ = [
     "CACHE_HIT_ICON",

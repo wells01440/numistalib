@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 from collections.abc import Coroutine, Mapping
 from typing import Any, cast
 
-from numistalib import logger
+from numistalib import logger, __version__
 from numistalib.client import (
     CACHE_MISS_ICON,
     AsyncClientProtocol,
@@ -85,6 +85,28 @@ class BaseService(ABC):
         resp = await result
         self._last_response = resp
         return resp
+
+    @property
+    def title_text(self) -> str:
+        """Get the title text for logging and display.
+
+        Returns
+        -------
+        str
+            Service title text
+        """
+        return self.__class__.__name__.replace("Service", "")
+
+    @property
+    def copyright_text(self) -> str:
+        """Get the copyright text for logging and display.
+
+        Returns
+        -------
+        str
+            Service copyright text
+        """
+        return f"Numistalib {__version__} | Data provided by Numista.com"
 
     @property
     def last_cache_indicator(self) -> str:
