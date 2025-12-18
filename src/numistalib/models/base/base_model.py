@@ -14,7 +14,7 @@ from pydantic.alias_generators import to_camel
 class NumistaBaseModel(ABC, BaseModel):
     """Base model for all Numista entities.
 
-    Common configuration, behavior, and abstract base classes for Pydantic models.
+    Provides a shared Pydantic base configuration with:
     - Strict validation
     - Immutability control
     - Extra field prohibition
