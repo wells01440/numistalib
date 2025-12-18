@@ -160,7 +160,6 @@ class TypeFull(TypeBase):
     # Required fields that only exist in full version
     url: HttpUrl = Field(..., description="Numista type URL")
     issuer: Issuer = Field(..., description="Issuer information")
-    
     # Optional full-only fields
     type: str | None = Field(None, max_length=100, description="Type classification")
     rulers: list[Ruler] | None = Field(None, alias="ruler")
