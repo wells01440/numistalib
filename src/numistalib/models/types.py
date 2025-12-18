@@ -133,7 +133,6 @@ class TypeBase(NumistaBaseModel, ABC):
         elif self.max_year:
             return f"–{self.max_year}"
         return "Undated"
-    
     @computed_field(description="Canonical Numista page URL")
     @property
     def numista_url(self) -> HttpUrl:
