@@ -22,11 +22,10 @@ def _make_table(items: list[Any] | None, title: str | None = None) -> Table | No
         return None
     table = CLISettings.create_table(title=title)
     # Infer columns from first item
-    if items:
-        columns = CLISettings.infer_columns_from_model(items[0].__class__)
-        CLISettings.add_columns_to_table(table, columns)
-        for item in items:
-            CLISettings.add_model_row(table, item)
+    columns = CLISettings.infer_columns_from_model(items[0].__class__)
+    CLISettings.add_columns_to_table(table, columns)
+    for item in items:
+        CLISettings.add_model_row(table, item)
     return table
 
 async def _consume_type_search_results(
