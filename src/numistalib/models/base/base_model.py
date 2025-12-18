@@ -35,12 +35,13 @@ class NumistaBaseModel(ABC, BaseModel):
     def __rich_repr__(self) -> rich.repr.Result:
         """Make models look good when printed with rich.print()."""
         for name, field in self.__class__.model_fields.items():
+            value = getattr(self, name)
+            if value is None:  # Skip None fields for cleaner output
+                continue
             if field.alias:
-                value = getattr(self, name)
-                if value is not None:  # Skip None fields for cleaner output
-                    yield field.alias or name, value
+                yield field.alias, value
             else:
-                yield name, getattr(self, name)
+                yield name, value
 
     def to_api_dict(self, **kwargs: Any) -> dict[Any, Any ]:
         """Return dict suitable for sending back to API or clean export.
