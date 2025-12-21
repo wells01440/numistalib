@@ -75,40 +75,6 @@ jobs:
             --strictness=short \
             src/ > darglint-report.txt 2>&1 || true
           cat darglint-report.txt
-          
-      - name: Generate Copilot Agent task
-        if: steps.pydocstyle.outcome == 'failure' || steps.interrogate.outcome == 'failure' || steps.darglint.outcome == 'failure'
-        uses: github/github-copilot-cli-action@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          mode: 'suggest'
-          prompt: |
-            Review the following docstring validation reports and create fixes following AGENTS.md §4.1 rules:
-            
-            CONTEXT:
-            - Project: numista-lib Python API wrapper
-            - Standard: NumPy docstring style for all public APIs
-            - Reference: AGENTS.md §4.1.1 - Public APIs use NumPy style, private methods use one-line
-            - Files affected: src/**/*.py
-            
-            PYDOCSTYLE REPORT:
-            $(cat pydocstyle-report.txt)
-            
-            INTERROGATE REPORT (Coverage):
-            $(cat interrogate-report.txt)
-            
-            DARGLINT REPORT (Arg Validation):
-            $(cat darglint-report.txt)
-            
-            TASK:
-            1. Identify public methods/classes missing NumPy docstrings
-            2. Ensure Parameters, Returns, Raises sections follow NumPy format
-            3. Validate type hints match docstring types
-            4. Keep cognitive complexity ≤10 per AGENTS.md §2.1.1
-            5. Follow examples from src/numistalib/services/catalogues/service.py
-            
-            Generate a PR with fastidious NumPy-style docstrings.
             
       - name: Create issue for docstring improvements
         if: steps.pydocstyle.outcome == 'failure' || steps.interrogate.outcome == 'failure' || steps.darglint.outcome == 'failure'
