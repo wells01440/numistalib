@@ -3,50 +3,22 @@
 Pydantic models for reference catalogues and multilingual labels.
 """
 
-from pydantic import Field
+
+from pydantic import Field, HttpUrl, computed_field
 
 from numistalib.models.base import NumistaBaseModel
 
 
 class Reference(NumistaBaseModel):
-    """Reference catalogue cross-reference.
-
-    Maps to Numista reference schema for catalogue numbers
-    (e.g., KM#123, Sp#456).
-
-    Parameters
-    ----------
-    catalogue : str
-        Catalogue code (max 50 chars)
-    number : str
-        Catalogue number (max 100 chars)
-    url : str | None
-        External URL to reference (optional)
-
-    Examples
-    --------
-    >>> ref = Reference(
-    ...     catalogue="KM",
-    ...     number="123.1",
-    ...     url="https://example.com/km-123-1"
-    ... )
-    >>> print(f"{ref.catalogue}#{ref.number}")
-    KM#123.1
-    """
-
+    """Reference catalogue information."""
     catalogue: str = Field(max_length=50, description="Catalogue code")
-    number: str = Field(max_length=100, description="Catalogue number")
-    url: str | None = Field(None, description="External URL to reference")
+    number: str = Field(max_length=100, description="Catalogue reference number")
+    url: HttpUrl | None = Field(None, description="External URL to reference")
 
-    def to_dict(self) -> dict[str, object]:
-        """Convert reference to dictionary representation.
-
-        Returns
-        -------
-        dict[str, object]
-            Dictionary representation of the reference
-        """
-        return self.model_dump(exclude_none=True)
+    @computed_field(description="Formatted reference display")
+    def display_reference(self) -> str:
+        """Formatted catalogue reference."""
+        return f"{self.catalogue} {self.number}"
 
 
 class LocalizedLabel(NumistaBaseModel):
@@ -71,9 +43,3 @@ class LocalizedLabel(NumistaBaseModel):
 
     language: str = Field(max_length=2, description="ISO 639-1 language code")
     label: str = Field(max_length=500, description="Localized text content")
-
-
-__all__ = [
-    "LocalizedLabel",
-    "Reference",
-]

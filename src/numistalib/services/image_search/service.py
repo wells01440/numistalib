@@ -27,8 +27,8 @@ class ImageSearchService(ImageSearchServiceBase):
         """
         super().__init__(client)
 
-    def _to_models(
-        self, items: list[Mapping[str, Any]], **kwargs: Any
+    def _to_models(  # noqa: PLR6301
+        self, items: list[Mapping[str, Any]], **kwargs: Any  # noqa: ARG002
     ) -> list[TypeBasic]:
         """Convert API response items to TypeBasic models.
 

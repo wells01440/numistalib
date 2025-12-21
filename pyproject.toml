@@ -16,7 +16,9 @@ dependencies = [
     "pycountry>=24.6.1",
     "hishel[httpx]>=1.1.6", # RFC 9111-compliant HTTP caching (AGENTS.MD Section 14)
     "pyrate-limiter>=3.9.0", # Rate limiting (transport-level)
-    "tenacity>=9.0.0", # Retry logic with exponential backoff (AGENTS.MD Section 14)
+    "tenacity>=9.0.0",
+    "textual-image>=0.8.4",
+    "beautifulsoup4>=4.14.3",
 ]
 
 [project.scripts]
@@ -36,6 +38,9 @@ dev = [
     "xenon>=0.9.3",
     "pyright>=1.1.0", # Static type checker
     "mypy>=1.19.1",
+    "pydocstyle>=6.3.0", # NumPy docstring validation (AGENTS.md §4.1)
+    "interrogate>=1.7.0", # Docstring coverage enforcement
+    "darglint>=1.8.1", # Docstring argument validation
 ]
 
 [build-system]

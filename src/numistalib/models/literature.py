@@ -3,6 +3,7 @@
 Pydantic models for Numista numismatic literature catalogue.
 """
 
+
 from pydantic import Field
 
 from numistalib.models.base import NumistaBaseModel

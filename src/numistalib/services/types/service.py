@@ -76,7 +76,7 @@ class TypeBasicService(TypeBasicServiceBase):
     def __init__(self, client: SyncClientProtocol | AsyncClientProtocol) -> None:
         super().__init__(client)
 
-    def _to_models(self, items: list[Mapping[str, Any]], **kwargs: Any) -> list[TypeBasic]:  # noqa: ARG002
+    def _to_models(self, items: list[Mapping[str, Any]], **kwargs: Any) -> list[TypeBasic]:  # noqa: PLR6301, ARG002
         return [TypeBasic.model_validate(item) for item in items]
 
     def search_types(self, params: SearchParams) -> list[TypeBasic]:
@@ -181,6 +181,7 @@ class TypeBasicService(TypeBasicServiceBase):
         year: int | None = None,
         category: str | None = None,
         limit: int = 50,
+        lang: str = "en",
     ) -> AsyncGenerator[TypeBasic]:
         params = SearchParams(
             query=query,
@@ -188,6 +189,7 @@ class TypeBasicService(TypeBasicServiceBase):
             year=year,
             category=category,
             count=min(limit, 100),
+            lang=lang,
         )
         async for type_item in self.paginated_search(params=params):
             yield type_item
@@ -199,13 +201,14 @@ class TypeFullService(TypeFullServiceBase):
     def __init__(self, client: SyncClientProtocol | AsyncClientProtocol) -> None:
         super().__init__(client)
 
-    def _to_models(self, items: list[Mapping[str, Any]], **kwargs: Any) -> list[TypeFull]:  # noqa: ARG002
+    def _to_models(self, items: list[Mapping[str, Any]], **kwargs: Any) -> list[TypeFull]:  # noqa: PLR6301, ARG002
         return [TypeFull.model_validate(item) for item in items]
 
-    def get_type(self, type_id: int) -> TypeFull:
-        logger.debug("→ get_type(type_id=%s)", type_id)
+    def get_type(self, type_id: int, *, lang: str | None = None) -> TypeFull:
+        logger.debug("→ get_type(type_id=%s, lang=%s)", type_id, lang)
 
-        response = cast(NumistaResponse, self._client.get(f"/types/{type_id}"))
+        params = self._build_params(lang=lang) if lang else None
+        response = cast(NumistaResponse, self._client.get(f"/types/{type_id}", params=params))
         response.raise_for_status()
         self._track_response(response)
         data = cast(Mapping[str, Any], response.json())
@@ -215,10 +218,11 @@ class TypeFullService(TypeFullServiceBase):
         logger.info(f"Retrieved type {type_id}: {type_full.title} {response.cached_indicator}")
         return type_full
 
-    async def get_type_async(self, type_id: int) -> TypeFull:
-        logger.debug("→ get_type_async(type_id=%s)", type_id)
+    async def get_type_async(self, type_id: int, *, lang: str | None = None) -> TypeFull:
+        logger.debug("→ get_type_async(type_id=%s, lang=%s)", type_id, lang)
 
-        response = await self._aget(f"/types/{type_id}")
+        params = self._build_params(lang=lang) if lang else None
+        response = await self._aget(f"/types/{type_id}", params=params)
         response.raise_for_status()
         self._track_response(response)
         data = cast(Mapping[str, Any], response.json())

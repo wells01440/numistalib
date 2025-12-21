@@ -4,8 +4,8 @@ from unittest.mock import Mock
 
 import pytest
 
-from numista_lib.client import NumistaApiClient
-from numista_lib.config import Settings
+from numistalib.client import NumistaApiClient
+from numistalib.config import Settings
 
 
 @pytest.fixture

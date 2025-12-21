@@ -1,12 +1,10 @@
 """Mints CLI commands."""
 
-import sys
 
 import click
 
-from numistalib import logger
 from numistalib.cli.theme import CLISettings
-from numistalib.config import create_client_from_settings, get_settings
+from numistalib.config import Settings
 from numistalib.services import MintService
 
 
@@ -29,52 +27,43 @@ def register_mints_commands(parent: click.Group) -> None:
             numistalib mints --lang es
         """
         try:
-            settings = get_settings()
-            client = create_client_from_settings(settings)
+            settings = Settings()
+            client = Settings.to_client(settings)
             service = MintService(client)
             model_cls = getattr(service, "MODEL", None)
-            model_label = model_cls.__name__ if model_cls else "Mint"
 
-            CLISettings.console().print(
-                CLISettings.header_panel(f"Mints [{model_label}]")
-            )
             results = service.get_mints(lang=lang)
 
             if not results:
                 CLISettings.console().print("[warning]No mints found[/warning]")
-                CLISettings.console().print(CLISettings.footer_panel())
                 return
 
-            table = CLISettings.create_table("Mints")
-            CLISettings.table_add_columns(
-                table,
-                [
-                    "Cache",
-                    "ID",
-                    "Name",
-                    "Code",
-                    "Country Code",
-                ],
-            )
-
-            cache_icon = service.last_cache_indicator
-            for mint in results:
-                CLISettings.table_add_row(
-                    table,
-                    [
-                        cache_icon,
-                        mint.numista_id,
-                        mint.name,
-                        mint.code or "",
-                        mint.country_code or "",
-                    ],
-                )
-
-            CLISettings.console().print(table)
+            output = model_cls.as_table(results, "Mints")
+            CLISettings.console().print(output)
             CLISettings.console().print(f"\n[success]Found {len(results)} mints[/success]")
-            CLISettings.console().print(CLISettings.footer_panel())
 
         except (RuntimeError, OSError, ValueError) as err:
-            CLISettings.console().print(f"[danger]Error: {err}[/danger]")
-            logger.exception("Error listing mints")
-            sys.exit(1)
+            service.handle_cli_error(err, "listing mints", "mints-list")
+
+    @parent.command(name="mint")
+    @click.argument("mint_id", type=int)
+    @click.option("--lang", default="en", type=click.Choice(["en", "es", "fr"]), help="Language")
+    def mint(mint_id: int, lang: str) -> None:
+        """Show details for a specific mint."""
+        console = CLISettings.console()
+        try:
+            settings = Settings()
+            client = Settings.to_client(settings)
+            service = MintService(client)
+
+            result = service.get_mint(mint_id, lang=lang)
+
+            panel = service._format_panel(result)
+            console.print(panel)
+            console.print("\n[success]Displayed mint details[/success]")
+
+        except (RuntimeError, OSError, ValueError) as err:
+            service.handle_cli_error(err, f"retrieving mint {mint_id}", "mint-get")
+
+    # Alias for convenience
+    parent.add_command(mint, name="mnt")

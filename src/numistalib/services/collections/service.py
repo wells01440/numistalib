@@ -26,8 +26,8 @@ class CollectionService(CollectionServiceBase):
         """
         super().__init__(client)
 
-    def _to_models(
-        self, items: list[Mapping[str, Any]], user_id: int | None = None, **kwargs: Any
+    def _to_models(  # noqa: PLR6301
+        self, items: list[Mapping[str, Any]], user_id: int | None = None, **kwargs: Any  # noqa: ARG002
     ) -> list[CollectedItem]:
         """Convert API response items to CollectedItem models.
 

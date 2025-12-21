@@ -1,12 +1,10 @@
 """Catalogues CLI commands."""
 
-import sys
 
 import click
 
-from numistalib import logger
 from numistalib.cli.theme import CLISettings
-from numistalib.config import create_client_from_settings, get_settings
+from numistalib.config import Settings
 from numistalib.services import CatalogueService
 
 
@@ -19,51 +17,42 @@ def register_catalogues_commands(parent: click.Group) -> None:
         Parent click group to attach commands to
     """
 
-    @parent.command()
-    def catalogues() -> None:
-        """List all reference catalogues.
+    @click.command(name="catalogues")
+    @click.option("-t", "--table", is_flag=True, help="Render results as a table")
+    def catalogues_cmd(table: bool) -> None:
+        """List all reference catalogues (panel default, table with -t/--table)."""
+        console = CLISettings.console()
 
-        Examples:
-            numistalib catalogues
-        """
         try:
-            settings = get_settings()
-            client = create_client_from_settings(settings)
+            settings = Settings()
+            client = Settings.to_client(settings)
             service = CatalogueService(client)
             model_cls = service.MODEL
-            model_label = model_cls.__name__ if model_cls else "Catalogue"
 
-            CLISettings.console().print(
-                CLISettings.header_panel(f"Catalogues [{model_label}]")
-            )
             results = service.get_catalogues()
-            table = CLISettings.table_from_model_class(
-                model_cls,
-                include_cache=True,
-                title="Reference Catalogues",
-            )
 
             if not results:
-                CLISettings.console().print("[warning]No catalogues found[/warning]")
-                CLISettings.console().print(CLISettings.footer_panel())
+                console.print("[warning]No catalogues found[/warning]")
                 return
 
-            cache_icon = service.last_cache_indicator
-            for catalogue in results:
-                CLISettings.table_add_model_row(
-                    table,
-                    catalogue,
-                    include_cache=True,
-                    cache_icon=cache_icon,
-                )
+            if table:
+                output = model_cls.as_table(results, "Reference Catalogues")
+                console.print(output)
+                console.print(f"\n[success]Found {len(results)} catalogues[/success]")
+                return
 
-            CLISettings.console().print(table)
-            CLISettings.console().print(
-                f"\n[success]Found {len(results)} catalogues[/success]"
+            # Panel-style rendering using model's as_panel() method
+            for catalogue in results:
+                panel = service._format_panel(catalogue)
+                console.print(panel)
+
+            console.print(
+                f"\n[success]Displayed {len(results)} catalogue{'s' if len(results) != 1 else ''}[/success]"
             )
-            CLISettings.console().print(CLISettings.footer_panel())
 
         except (RuntimeError, OSError, ValueError) as err:
-            CLISettings.console().print(f"[danger]Error: {err}[/danger]")
-            logger.exception("Error listing catalogues")
-            sys.exit(1)
+            service.handle_cli_error(err, "listing catalogues", "cat-list")
+
+    # Register both names
+    parent.add_command(catalogues_cmd, name="catalogues")
+    parent.add_command(catalogues_cmd, name="cat")

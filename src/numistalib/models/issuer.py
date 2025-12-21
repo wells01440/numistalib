@@ -5,6 +5,7 @@ Aligns with the subset of fields required for the coinlib issuer table
 (country_code, name_en, code, numista_id).
 """
 
+
 from pydantic import Field
 
 from numistalib.models.base import NumistaBaseModel
@@ -59,7 +60,7 @@ class Issuer(NumistaBaseModel):
     code: str = Field(max_length=100, description="Slug/short code (primary key)")
     name: str = Field(max_length=255, description="Display name")
     flag: str | None = Field(None, description="URL to flag image")
-    wikidata_id: str | None = Field(default=None, description="Optional Wikidata id")
-    level: int | None = Field(None, description="Hierarchy level")
-    parent_code: str | None = Field(default=None, description="Parent issuer code if nested")
-    parent_name: str | None = Field(default=None, description="Parent issuer name if nested")
+    wikidata_id: str | None = Field(None, description="Wikidata identifier for cross-reference")
+    level: int | None = Field(None, ge=1, description="Hierarchy level (1=country, 2+=subdivision)")
+    parent_code: str | None = Field(None, max_length=100, description="Parent issuer code if nested")
+    parent_name: str | None = Field(None, max_length=255, description="Parent issuer name if nested")

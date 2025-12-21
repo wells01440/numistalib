@@ -24,8 +24,8 @@ class PriceService(PriceServiceBase):
         """
         super().__init__(client)
 
-    def _to_models(
-        self, items: list[Mapping[str, Any]], issue_id: int | None = None, **kwargs: Any
+    def _to_models(  # noqa: PLR6301
+        self, items: list[Mapping[str, Any]], issue_id: int | None = None, **kwargs: Any  # noqa: ARG002
     ) -> list[Price]:
         """Convert API response items to Price models.
 

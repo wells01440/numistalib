@@ -1,35 +1,12 @@
 """Issue service implementation."""
 
 from collections.abc import AsyncGenerator, Mapping
-from typing import Any, NotRequired, TypedDict, cast
-
-import httpx
-from pydantic import BaseModel
-from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_exponential
+from typing import Any, cast
 
 from numistalib import logger
 from numistalib.client import AsyncClientProtocol, NumistaResponse, SyncClientProtocol
 from numistalib.models.issues import Issue
 from numistalib.services.issues.base import IssueServiceBase
-
-
-class IssuePagedResponse(BaseModel):
-    """Pagination response wrapper for issues."""
-
-    issues: list["IssueItem"]
-    next_url: str | None = None
-
-
-class IssueItem(TypedDict):
-    """Typed dict representing a single issue item from API."""
-
-    id: int
-    is_dated: NotRequired[bool]
-    year: NotRequired[int | None]
-    gregorian_year: NotRequired[int | None]
-    mint_letter: NotRequired[str | None]
-    mintage: NotRequired[int | None]
-    comment: NotRequired[str | None]
 
 
 class IssueService(IssueServiceBase):
@@ -47,8 +24,8 @@ class IssueService(IssueServiceBase):
         """
         super().__init__(client)
 
-    def _to_models(
-        self, items: list[Mapping[str, Any]], type_id: int | None = None, **kwargs: Any
+    def _to_models(  # noqa: PLR6301
+        self, items: list[Mapping[str, Any]], type_id: int | None = None, **kwargs: Any  # noqa: ARG002
     ) -> list[Issue]:
         """Convert API response items to Issue models.
 
@@ -257,46 +234,6 @@ class IssueService(IssueServiceBase):
         )
         return issue
 
-    @staticmethod
-    @retry(
-        retry=retry_if_exception_type((httpx.TimeoutException, httpx.NetworkError)),
-        stop=stop_after_attempt(5),
-        wait=wait_exponential(multiplier=1, min=4, max=10),
-        reraise=True,
-    )
-    async def _fetch_page(client: httpx.AsyncClient, url: str) -> IssuePagedResponse:
-        """Fetch a single page of issues with retry logic.
-
-        Parameters
-        ----------
-        client : httpx.AsyncClient
-            Async HTTP client
-        url : str
-            Endpoint URL
-
-        Returns
-        -------
-        IssuePagedResponse
-            Parsed response with issues and next_url
-
-        Raises
-        ------
-        httpx.HTTPStatusError
-            If API returns error
-        """
-        response = await client.get(url)
-        response.raise_for_status()
-        data = response.json()
-        if isinstance(data, list):
-            return IssuePagedResponse(
-                issues=cast(list[IssueItem], data),
-                next_url=None,
-            )
-        return IssuePagedResponse(
-            issues=cast(list[IssueItem], data.get("issues", [])),
-            next_url=data.get("next_url"),
-        )
-
     async def paginated_issues(
         self,
         type_id: int,
@@ -323,41 +260,33 @@ class IssueService(IssueServiceBase):
             "→ paginated_issues(type_id=%s, lang=%s, limit=%s)", type_id, lang, limit
         )
 
-        start_url = f"/types/{type_id}/issues?lang={lang}&count={limit}"
+        url: str | None = f"/types/{type_id}/issues?lang={lang}&count={limit}"
+        page_count = 0
 
-        api_key = getattr(self._client, "api_key", None)
-        if not api_key:
-            raise ValueError("API key is required for pagination")
+        while url:
+            page_count += 1
+            logger.debug("Fetching issues page %s: %s", page_count, url)
 
-        async with httpx.AsyncClient(
-            headers={"Numista-API-Key": api_key},
-            timeout=30.0,
-        ) as client:
-            url: str | None = start_url
-            page_count = 0
+            response = await self._aget(url)
+            response.raise_for_status()
+            self._track_response(response)
 
-            while url:
-                page_count += 1
-                logger.debug(f"Fetching issues page {page_count}: {url}")
+            data = response.json()
+            if isinstance(data, list):
+                items = cast(list[Mapping[str, Any]], data)
+                next_url = None
+            else:
+                mapping = cast(Mapping[str, Any], data)
+                items = cast(list[Mapping[str, Any]], mapping.get(self.CLASS_ITEMS_KEY, []))
+                next_url = cast(str | None, mapping.get("next_url"))
 
-                page = await self._fetch_page(client, url)
+            issues = self._to_models(items, type_id=type_id)
+            for issue in issues:
+                yield issue
 
-                for item in page.issues:
-                    issue = Issue(
-                        numista_id=item["id"],
-                        type_id=type_id,
-                        is_dated=item.get("is_dated", False),
-                        year=item.get("year"),
-                        gregorian_year=item.get("gregorian_year"),
-                        mint_letter=item.get("mint_letter"),
-                        mintage=item.get("mintage"),
-                        comment=item.get("comment"),
-                    )
-                    yield issue
+            url = next_url
 
-                url = page.next_url
-
-            logger.info(f"Finished paginating through {page_count} pages of issues")
+        logger.info("Finished paginating through %s pages of issues", page_count)
 
     async def get_issues_paginated(
         self,

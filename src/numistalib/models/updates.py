@@ -3,7 +3,8 @@
 Pydantic models for Numista API write operations (POST/PATCH).
 """
 
-from pydantic import Field
+
+from pydantic import Field, computed_field
 
 from numistalib.models.base import NumistaBaseModel
 
@@ -172,6 +173,14 @@ class TypeSideUpdate(NumistaBaseModel):
             Dictionary representation excluding None values
         """
         return {k: v for k, v in self.model_dump().items() if v is not None}
+
+    @property
+    def panel_template(self) -> str:
+        """Return formatted panel content for type side update display."""
+        engravers_str = ", ".join(self.engravers) if self.engravers else ""
+        return f"""Engravers: {engravers_str}
+Description: {self.description or ""}
+Lettering: {self.lettering or ""}"""
 
 
 __all__ = [

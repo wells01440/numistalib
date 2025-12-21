@@ -62,11 +62,11 @@ class CacheAllGETRequests(BaseFilter[Request]):
     HTTP caching headers correctly.
     """
 
-    def needs_body(self) -> bool:
+    def needs_body(self) -> bool:  # noqa: PLR6301
         """Indicate that we don't need to inspect the request body."""
         return False
 
-    def apply(self, item: Request, body: bytes | None) -> bool:
+    def apply(self, item: Request, body: bytes | None) -> bool:  # noqa: ARG002, PLR6301
         """Apply filter: cache all GET requests.
 
         Parameters
@@ -164,7 +164,7 @@ class NumistaClient(ABC):
             return path
         return f"{self.api_base_url.rstrip('/')}/{path.lstrip('/')}"
 
-    def _wrap_response(self, response: httpx.Response) -> NumistaResponse:
+    def _wrap_response(self, response: httpx.Response) -> NumistaResponse:  # noqa: PLR6301
         """Wrap httpx.Response as NumistaResponse to expose cache indicators.
 
         Parameters

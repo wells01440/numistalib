@@ -6,45 +6,11 @@ Manages API keys, cache settings, rate limits via Pydantic BaseSettings.
 from __future__ import annotations
 
 from pathlib import Path
-from typing import TYPE_CHECKING
 
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-if TYPE_CHECKING:
-    from numistalib.client import NumistaClientAsync, NumistaClientSync
-
-
-def get_environment_file() -> Path | None:
-    """Find and return the path to the environment file.
-
-    Looks in the following locations in order:
-    1. .env in current working directory
-    2. .env in project root
-    3. .numistalib.env in home directory
-    4. /etc/numistalib.env
-
-    Returns None if no file is found.
-    """
-    project_root = Path(__file__).resolve().parents[2]
-
-    cwd_env = Path.cwd() / ".env"
-    if cwd_env.is_file():
-        return cwd_env
-
-    project_env = project_root / ".env"
-    if project_env.is_file():
-        return project_env
-
-    home_env = Path.home() / ".numistalib.env"
-    if home_env.is_file():
-        return home_env
-
-    etc_env = Path("/etc/numistalib.env")
-    if etc_env.is_file():
-        return etc_env
-
-    return None
+from numistalib.client import NumistaClientAsync, NumistaClientSync
 
 
 class Settings(BaseSettings):
@@ -81,6 +47,36 @@ class Settings(BaseSettings):
     >>> print(settings.api_base_url)
     https://api.numista.com/v3
     """
+
+    @staticmethod
+    def get_environment_file() -> Path | None:
+        """Find and return the path to the environment file.
+
+        Looks in the following locations in order:
+        1. .env in current working directory
+        2. .env in project root
+        3. .numistalib.env in home directory
+        4. /etc/numistalib.env
+
+        Returns
+        -------
+        Path | None
+            Path to environment file if found, else None
+        """
+        project_root = Path(__file__).resolve().parents[2]
+        cwd_env = Path.cwd() / ".env"
+        if cwd_env.is_file():
+            return cwd_env
+        project_env = project_root / ".env"
+        if project_env.is_file():
+            return project_env
+        home_env = Path.home() / ".numistalib.env"
+        if home_env.is_file():
+            return home_env
+        etc_env = Path("/etc/numistalib.env")
+        if etc_env.is_file():
+            return etc_env
+        return None
 
     model_config = SettingsConfigDict(
         env_file=get_environment_file(),
@@ -162,75 +158,68 @@ class Settings(BaseSettings):
         description="Logging level",
     )
 
+    @classmethod
+    def to_client(cls, settings: Settings) -> NumistaClientSync:
+        """Create a synchronous Numista client from a `Settings` instance.
 
-def get_settings() -> Settings:
-    """Get the default settings instance.
+        Parameters
+        ----------
+        settings : Settings
+            Configuration settings to build the client.
 
-    Returns
-    -------
-    Settings
-        Default settings instance with values from environment
-    """
-    return Settings()
+        Returns
+        -------
+        NumistaClientSync
+            Configured synchronous HTTP client.
+
+        Examples
+        --------
+        >>> s = Settings()
+        >>> client = Settings.to_client(s)
+        """
+        return NumistaClientSync(
+            api_key=settings.api_key,
+            api_base_url=settings.api_base_url,
+            timeout=settings.timeout,
+            database_cache_dir=str(settings.cache_dir),
+            database_cache_db=settings.cache_db_name,
+            rate_limit_requests=settings.rate_limit_requests,
+            rate_limit_period=settings.rate_limit_period,
+        )
+
+    @classmethod
+    def to_async_client(cls, settings: Settings) -> NumistaClientAsync:
+        """Create an asynchronous Numista client from a `Settings` instance.
+
+        Parameters
+        ----------
+        settings : Settings
+            Configuration settings to build the client.
+
+        Returns
+        -------
+        NumistaClientAsync
+            Configured asynchronous HTTP client.
+
+        Examples
+        --------
+        >>> s = Settings()
+        >>> client = Settings.to_async_client(s)
+        """
+        return NumistaClientAsync(
+            api_key=settings.api_key,
+            api_base_url=settings.api_base_url,
+            timeout=settings.timeout,
+            database_cache_dir=str(settings.cache_dir),
+            database_cache_db=settings.cache_db_name,
+            rate_limit_requests=settings.rate_limit_requests,
+            rate_limit_period=settings.rate_limit_period,
+        )
 
 
-def create_client_from_settings(settings: Settings) -> NumistaClientSync:
-    """Create a NumistaClientSync from settings.
-
-    Parameters
-    ----------
-    settings : Settings
-        Configuration settings
-
-    Returns
-    -------
-    NumistaClientSync
-        Configured synchronous HTTP client
-
-    Examples
-    --------
-    >>> settings = get_settings()
-    >>> client = create_client_from_settings(settings)
-    """
-    from numistalib.client import NumistaClientSync
-
-    return NumistaClientSync(
-        api_key=settings.api_key,
-        api_base_url=settings.api_base_url,
-        timeout=settings.timeout,
-        database_cache_dir=str(settings.cache_dir),
-        database_cache_db=settings.cache_db_name,
-        rate_limit_requests=settings.rate_limit_requests,
-        rate_limit_period=settings.rate_limit_period,
-    )
+# get_settings() has been removed in favor of directly instantiating `Settings()`.
 
 
-def create_async_client_from_settings(settings: Settings) -> NumistaClientAsync:
-    """Create a NumistaClientAsync from settings.
-
-    Parameters
-    ----------
-    settings : Settings
-        Configuration settings
-
-    Returns
-    -------
-    NumistaClientAsync
-        Configured asynchronous HTTP client
-
-    Examples
-    --------
-    >>> settings = get_settings()
-    >>> client = create_async_client_from_settings(settings)
-    """
-    from numistalib.client import NumistaClientAsync
-
-    return NumistaClientAsync(
-        api_key=settings.api_key,
-        api_base_url=settings.api_base_url,
-        timeout=settings.timeout,
-        database_cache_dir=str(settings.cache_dir),
-        database_cache_db=settings.cache_db_name,
-        rate_limit_requests=settings.rate_limit_requests,
-        rate_limit_period=settings.rate_limit_period,
-    )
+# The helper functions `create_client_from_settings()` and
+# `create_async_client_from_settings()` were removed. Use
+# `Settings.to_client(Settings())` or `Settings.to_async_client(Settings())`.

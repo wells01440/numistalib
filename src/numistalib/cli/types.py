@@ -1,32 +1,22 @@
 """Types CLI commands."""
 
 import asyncio
-import sys
 from typing import Any
 
 import click
-
+from bs4 import BeautifulSoup
+from rich.console import Group
 from rich.table import Table
+from rich.text import Text
 
-from numistalib import logger
 from numistalib.cli.theme import CLISettings
-from numistalib.config import create_async_client_from_settings, create_client_from_settings, get_settings
+from numistalib.config import Settings
 from numistalib.models.types import TypeBasic, TypeFull
 from numistalib.services import TypeBasicService, TypeFullService
 
-
 # pyright: reportOptionalMemberAccess = false
 
-def _make_table(items: list[Any] | None, title: str | None = None) -> Table | None:
-    if not items:
-        return None
-    table = CLISettings.create_table(title=title)
-    # Infer columns from first item
-    columns = CLISettings.infer_columns_from_model(items[0].__class__)
-    CLISettings.add_columns_to_table(table, columns)
-    for item in items:
-        CLISettings.add_model_row(table, item)
-    return table
+
 
 async def _consume_type_search_results(
     service: TypeBasicService,
@@ -59,127 +49,78 @@ async def _consume_type_search_results(
         )
     return count
 
-def _print_type_details(service: TypeFullService, result: TypeFull) -> None:
+
+def print_type_details(service: TypeFullService, type_full: TypeFull) -> None:
     """Print detailed type information using theme-aware, vertical scrolling layout."""
     console = CLISettings.console()
+    formatted_fields: dict[str, str] = type_full.formatted_fields_dict
+    summary_fields = ["numista_id", "title", "year_range", "category", "numista_url"]
+    value_fields = ["currency", "value", "unit"]
+    specs_fields = ["size", "thickness", "weight", "shape", "composition", "technique"] 
 
-    def safe(val: Any, default: str = "") -> str:
-        return val if val is not None and str(val).strip() != "" else default
 
-    # === Main Summary Panel ===
-    status = "[danger]Demonetized[/danger]" if result.demonetization.is_demonetized else "[success]Current[/success]"
+    console.print(CLISettings.panel(
+            "\n".join(formatted_fields[field] for field in summary_fields),
+            title=f"{service.last_cache_indicator} Type Details",
+            border_style="panel_info",
+        ))
 
     console.print(
         CLISettings.panel(
-            f"""
-[header]Type ID:[/header]       [value_highlight]{result.numista_id}[/value_highlight]
-[header]Title:[/header]         [value_highlight]{result.title}[/value_highlight]
-[header]Years:[/header]         {result.year_range}
-[header]Category:[/header]      {result.category.upper()}
-[header]Status:[/header]        {status}
-[header]Numista URL:[/header]   [link={result.numista_url}]{result.numista_url}[/link]
-            """.strip(),
-            title=f"{service.last_cache_indicator} Type Details",
-            border_style="panel_info",
+            "\n".join(formatted_fields[field] for field in value_fields),
+            title="Face Value"
         )
     )
-    
 
-    issuer_panel = CLISettings.panel(
-        f"""
-[header]Code:[/header]          {result.issuer.code}
-[header]Name:[/header]          {result.issuer.name}
-[header]Level:[/header]         {result.issuer.level}
-[header]Parent:[/header]        {safe(result.issuer.parent_name)}
-[header]Wikidata:[/header]      {safe(result.issuer.wikidata_id)}
-[header]Flag:[/header]          {safe(result.issuer.flag)}
-        """.strip(),
-        title="Issuer",
+    console.print(
+        CLISettings.panel(
+            "\n".join(formatted_fields[field] for field in specs_fields),
+            title="Physical Specifications"
+        )
     )
 
-    value_panel = CLISettings.panel(
-        f"""
-[header]Face Value:[/header]    {safe(result.value.text, "No face value")}
-[header]Currency:[/header]      {safe(result.value.currency.full_name)}
-[header]Code:[/header]          {safe(result.value.currency.code)}
-[header]Symbol:[/header]        {safe(result.value.currency.symbol)}
-        """.strip(),
-        title="Face Value",
-    )
 
-    specs_panel = CLISettings.panel(
-        f"""
-[header]Diameter:[/header]      {safe(result.size)} mm
-[header]Thickness:[/header]     {safe(result.thickness)} mm
-[header]Weight:[/header]        {safe(result.weight)} g
-[header]Shape:[/header]         {safe(result.shape)}
-[header]Composition:[/header]   {safe(result.composition.text)}
-[header]Technique:[/header]     {safe(result.technique.text)}
-        """.strip(),
-        title="Physical Specifications",
-    )
+    # console.print(
+    #     CLISettings.panel(
+    #         type_full.obverse.panel_template,
+    #         title="Obverse Specifications",
+    #     )
+    # )
 
-    console.print(issuer_panel)
-    console.print(value_panel)
-    console.print(specs_panel)
+    # console.print(
+    #     CLISettings.panel(
+    #         type_full.reverse.panel_template,
+    #         title="Reverse Specifications",
+    #     )
+    # )
 
-    # === Obverse & Reverse ===
-    for side, data in [("Obverse", result.obverse), ("Reverse", result.reverse)]:
-        if not data:
-            continue
+    # console.print(
+    #     CLISettings.panel(
+    #         formatted_fields["issuers"],
+    #         title="Issuing Entities",
+    #     )
+    # )
 
-        lettering = (
-            "\n     ".join([f"{l}" for l in data.lettering.split("\n")])
-            if data.lettering
-            else ""
-        )
 
-        scripts = (
-            "\n   ".join([f"• {s.name}" for s in data.lettering_scripts])
-            if data.lettering_scripts
-            else ""
-        )
+    # # === Optional Panels ===
+    # if type_full.rulers:
+    #     rulers_table = type_full.rulers[0].__class__.as_table(type_full.rulers, title="Rulers")
+    #     console.print(CLISettings.panel(rulers_table, title="Rulers"))
 
-        console.print(
-            CLISettings.panel(
-                f"""
-[header]Description:[/header]
-     {data.description or ''}
-
-[header]Lettering:[/header]
-     {lettering}
-
-[header]Scripts:[/header]
-   {scripts}
-
-[header]Images:[/header]
-   • [link={data.picture}]Full Picture[/link]
-   • [link={data.thumbnail}]Thumbnail[/link]
-   • [link={data.picture_copyright_url}]{data.picture_copyright or 'Copyright'}[/link]
-                """.strip(),
-                title=side,
-                border_style="panel_info",
-            )
-        )
-        
-    if result.rulers:
-        rulers_table = _make_table(result.rulers)
-        console.print(CLISettings.panel(rulers_table, title="Rulers"))
-
-    if result.mints:
-        mints_table = _make_table(result.mints)
-        console.print(CLISettings.panel(mints_table, title="Mints"))
-    if result.references:
-        references_table = _make_table(result.references)
-        console.print(CLISettings.panel(references_table, title="Catalogue References" ))
-            
-    # === Tags & Comments ===
-    if result.tags:
-        tags_text = "  ".join([f"[tag] {t} [/tag]" for t in result.tags])
-        console.print(CLISettings.panel(tags_text, title="Tags"))
-
-    if result.comments:
-        console.print(CLISettings.panel(f"[value_dim]{result.comments}[/value_dim]", title="Comments"))
+    # if type_full.comments:
+    #     converted = _html_to_rich_markup(type_full.comments)
+    #     comments_text = Text.from_markup(
+    #         f"[value_dim]{converted}[/value_dim]",
+    #         overflow="fold",
+    #     )
+    #     comments_text.no_wrap = False
+    #     console.print(
+    #         CLISettings.panel(
+    #             comments_text,
+    #             title="Comments",
+    #             expand=True,
+    #         )
+    #     )
 
     console.print(CLISettings.panel(CLISettings.LICENSE_TEXT, border_style="footer"))
 
@@ -197,20 +138,23 @@ def register_types_commands(parent: click.Group) -> None:
     @click.option("-y", "--year", type=int, help="Filter by year")
     @click.option("-c", "--category", type=click.Choice(["coin", "banknote", "exonumia"]), help="Category")
     @click.option("--limit", type=int, default=50, help="Maximum results to return")
+    @click.option("--lang", default="en", type=click.Choice(["en", "es", "fr"]), help="Language")
     def types_search(
         query: str | None,
         issuer: str | None,
         year: int | None,
         category: str | None,
         limit: int,
+        lang: str,
     ) -> None:
         """Search the catalogue for types."""
         console = CLISettings.console()
+        settings = Settings()
+        client = Settings.to_async_client(settings)
+        service = TypeBasicService(client)
 
         try:
-            settings = get_settings()
-            client = create_async_client_from_settings(settings)
-            service = TypeBasicService(client)
+            # settings already created above
 
             table = CLISettings.create_table("Search Results", include_cache_column=True)
             columns = CLISettings.infer_columns_from_model(TypeBasic, include_cache=True)
@@ -222,6 +166,7 @@ def register_types_commands(parent: click.Group) -> None:
                 "year": year,
                 "category": category,
                 "limit": limit,
+                "lang": lang,
             }
 
             count = asyncio.run(_consume_type_search_results(service, table, search_params))
@@ -233,22 +178,20 @@ def register_types_commands(parent: click.Group) -> None:
                 console.print(f"\n[success]Displayed {count} result{'s' if count != 1 else ''}[/success]")
 
         except Exception as err:
-            console.print(f"[danger]Error:[/danger] {err}")
-            logger.exception("Search failed")
-            sys.exit(1)
+            service.handle_cli_error(err, "searching types", "types-search")
+
     @types.command(name="get")
     @click.argument("type_id", type=int)
-    def types_get(type_id: int) -> None:
+    @click.option("--lang", default="en", type=click.Choice(["en", "es", "fr"]), help="Language")
+    def types_get(type_id: int, lang: str) -> None:
         """Retrieve full details for a specific type by ID."""
-        console = CLISettings.console()
+        CLISettings.console()
 
         try:
-            settings = get_settings()
-            client = create_client_from_settings(settings)
+            settings = Settings()
+            client = Settings.to_client(settings)
             service = TypeFullService(client)
-            result = service.get_type(type_id)
-            _print_type_details(service, result)
+            result = service.get_type(type_id, lang=lang)
+            print_type_details(service, result)
         except Exception as err:
-            console.print(f"[danger]Error retrieving type {type_id}:[/danger] {err}")
-            logger.exception("Get type failed")
-            sys.exit(1)
+            service.handle_cli_error(err, f"retrieving type {type_id}", "types-get")
