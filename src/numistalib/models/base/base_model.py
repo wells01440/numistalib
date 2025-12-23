@@ -246,25 +246,6 @@ class NumistaBaseModel(ABC, BaseModel):
     #         if value is None:
     #             return
 
-    #         label = field_name.replace("_", " ").title()
-
-    #         if isinstance(value, list) and value and all(isinstance(item, NumistaBaseModel) for item in value):
-    #             item_blocks = ["\n".join(item.formatted_fields) for item in value]
-    #             formatted[field_name] = format_field(label, "\n\n".join(item_blocks))
-    #             return
-
-    #         formatted[field_name] = format_field(label, value)
-
-    #     for field_name in self.__class__.model_fields.keys():
-    #         process_field(field_name, getattr(self, field_name, None))
-
-    #     for field_name in self.__class__.model_computed_fields.keys():
-    #         if field_name in ("panel_template", "formatted_fields_dict", "formatted_fields_deep"):
-    #             continue
-    #         process_field(field_name, getattr(self, field_name, None))
-
-    #     return formatted
-
     def render_compact(self) -> RenderableType:
         """Render compact representation for grid display.
 
