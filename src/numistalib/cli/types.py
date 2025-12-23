@@ -4,10 +4,8 @@ import asyncio
 from typing import Any
 
 import click
-from bs4 import BeautifulSoup
-from rich.console import Group
 from rich.table import Table
-from rich.text import Text
+from rich.console import Group
 
 from numistalib.cli.theme import CLISettings
 from numistalib.config import Settings
@@ -15,8 +13,8 @@ from numistalib.models.types import TypeBasic, TypeFull
 from numistalib.services import TypeBasicService, TypeFullService
 
 # pyright: reportOptionalMemberAccess = false
-
-
+# pyright: reportUnknownArgumentType = false
+# pyright: reportUnknownMemberType = false
 
 async def _consume_type_search_results(
     service: TypeBasicService,
@@ -50,79 +48,114 @@ async def _consume_type_search_results(
     return count
 
 
-def print_type_details(service: TypeFullService, type_full: TypeFull) -> None:
+def print_type_details(service: TypeFullService, t: TypeFull) -> None:
     """Print detailed type information using theme-aware, vertical scrolling layout."""
     console = CLISettings.console()
-    formatted_fields: dict[str, str] = type_full.formatted_fields_dict
-    summary_fields = ["numista_id", "title", "year_range", "category", "numista_url"]
-    value_fields = ["currency", "value", "unit"]
-    specs_fields = ["size", "thickness", "weight", "shape", "composition", "technique"] 
+
+    general_panel = CLISettings.panel(
+        title=f"{service.last_cache_indicator} Type Details",
+        content=f"""
+{t.formatted_fields_dict.get("numista_Id")}
+{t.formatted_fields_dict.get("numista_url")}
+{t.formatted_fields_dict.get("title")}
+{t.formatted_fields_dict.get("series")}
+{t.formatted_fields_dict.get("category")}
+{t.formatted_fields_dict.get("year_range")}
+{t.demonetization.formatted_fields_dict.get("is_demonetized",  "")}
+{t.formatted_fields_dict.get("commemorated_topic")}
+
+[header]Tags:[/header]
+{" ".join([f"[inverse]{g}[/inverse]" for g in t.tags]) if t.tags else ""}
+        """)
 
 
-    console.print(CLISettings.panel(
-            "\n".join(formatted_fields[field] for field in summary_fields),
-            title=f"{service.last_cache_indicator} Type Details",
-            border_style="panel_info",
+    value_panel = CLISettings.panel(
+        title="Value",
+        content=f"""
+{t.value.formatted_fields_dict.get("text", "")}
+{t.value.formatted_fields_dict.get("numeric_value", "")}
+{t.value.formatted_fields_dict.get("numerator", "")}
+{t.value.formatted_fields_dict.get("denominator", "")}
+[header]Currency:[/header]
+{t.value.currency.formatted_fields_dict.get("name", "")}
+{t.value.currency.formatted_fields_dict.get("full_name", "")}
+{t.value.currency.formatted_fields_dict.get("symbol", "")}
+{t.value.currency.formatted_fields_dict.get("numista_id", "")}
+""")
+
+    issuer_panel = CLISettings.panel(
+        title="Issuer",
+        content=f"""
+{t.formatted_fields_dict.get("issuing_entity")}
+{t.formatted_fields_dict.get("issue_terms")}
+{t.issuer.formatted_fields_dict.get("code", "")}
+{t.issuer.formatted_fields_dict.get("name", "")}""")
+    mints_panel = CLISettings.panel(
+        title="Mints",
+        content=t.as_table(t.mints, title="Mints") if t.mints else "No mints available")
+
+
+    specs_panel = CLISettings.panel(
+        title="Physical Specifications",
+        content= f"""
+{t.formatted_fields_dict.get("orientation", "")}
+{t.formatted_fields_dict.get("shape", "")}
+{t.formatted_fields_dict.get("size", "")}
+{t.formatted_fields_dict.get("thickness", "")}
+[header]Composition:[/header]
+{t.composition.formatted_fields_dict.get("text", "")}
+""")
+
+    edge_panel = CLISettings.panel(
+        title="Edge Specifications",
+        content=Group(
+            "\n".join([f for f in t.edge.formatted_fields]) if t.edge else "No edge specifications",
+            t.edge.renderable_thumbnail if t.edge and t.edge.renderable_thumbnail else ""
+        ) if t.edge else "No edge specifications")
+    obverse_panel = CLISettings.panel(
+        title="Obverse Specifications",
+        content=Group(
+            "\n".join([f for f in t.obverse.formatted_fields]),
+            t.obverse.renderable_thumbnail if t.obverse.renderable_thumbnail else ""
         ))
 
-    console.print(
-        CLISettings.panel(
-            "\n".join(formatted_fields[field] for field in value_fields),
-            title="Face Value"
-        )
+    reverse_panel = CLISettings.panel(
+        title="Reverse Specifications",
+        content=Group(
+            "\n".join([f for f in t.reverse.formatted_fields]),
+            t.reverse.renderable_thumbnail if t.reverse.renderable_thumbnail else ""
+        ))
+
+    rulers_panel = CLISettings.panel(
+        title="Rulers",
+        content=t.as_table(t.rulers, title="") if t.rulers else "No rulers available")
+
+    references_panel = CLISettings.panel(
+        title="References",
+        content=t.as_table(t.references, title="") if t.references else "No references available")
+
+    related_types_panel = CLISettings.panel(
+        title="Related Types",
+        content=t.as_table(t.related_types, title="") if t.related_types else "No related types available")
+
+    comments_panel = CLISettings.panel(
+        title="Comments",
+        content=t.formatted_fields_dict.get("comments", "")
     )
 
-    console.print(
-        CLISettings.panel(
-            "\n".join(formatted_fields[field] for field in specs_fields),
-            title="Physical Specifications"
-        )
-    )
-
-
-    # console.print(
-    #     CLISettings.panel(
-    #         type_full.obverse.panel_template,
-    #         title="Obverse Specifications",
-    #     )
-    # )
-
-    # console.print(
-    #     CLISettings.panel(
-    #         type_full.reverse.panel_template,
-    #         title="Reverse Specifications",
-    #     )
-    # )
-
-    # console.print(
-    #     CLISettings.panel(
-    #         formatted_fields["issuers"],
-    #         title="Issuing Entities",
-    #     )
-    # )
-
-
-    # # === Optional Panels ===
-    # if type_full.rulers:
-    #     rulers_table = type_full.rulers[0].__class__.as_table(type_full.rulers, title="Rulers")
-    #     console.print(CLISettings.panel(rulers_table, title="Rulers"))
-
-    # if type_full.comments:
-    #     converted = _html_to_rich_markup(type_full.comments)
-    #     comments_text = Text.from_markup(
-    #         f"[value_dim]{converted}[/value_dim]",
-    #         overflow="fold",
-    #     )
-    #     comments_text.no_wrap = False
-    #     console.print(
-    #         CLISettings.panel(
-    #             comments_text,
-    #             title="Comments",
-    #             expand=True,
-    #         )
-    #     )
-
-    console.print(CLISettings.panel(CLISettings.LICENSE_TEXT, border_style="footer"))
+    console.print(general_panel)
+    console.print(value_panel)
+    console.print(issuer_panel)
+    console.print(mints_panel)
+    console.print(specs_panel)
+    console.print(edge_panel)
+    console.print(obverse_panel)
+    console.print(reverse_panel)
+    console.print(rulers_panel)
+    console.print(references_panel)
+    console.print(related_types_panel)
+    console.print(comments_panel)
+    console.print(CLISettings.LICENSE_TEXT, style="footer")
 
 
 def register_types_commands(parent: click.Group) -> None:
@@ -186,11 +219,11 @@ def register_types_commands(parent: click.Group) -> None:
     def types_get(type_id: int, lang: str) -> None:
         """Retrieve full details for a specific type by ID."""
         CLISettings.console()
-
+        settings = Settings()
+        client = Settings.to_client(settings)
+        service = TypeFullService(client)
         try:
-            settings = Settings()
-            client = Settings.to_client(settings)
-            service = TypeFullService(client)
+
             result = service.get_type(type_id, lang=lang)
             print_type_details(service, result)
         except Exception as err:

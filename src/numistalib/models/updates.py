@@ -4,7 +4,7 @@ Pydantic models for Numista API write operations (POST/PATCH).
 """
 
 
-from pydantic import Field, computed_field
+from pydantic import Field
 
 from numistalib.models.base import NumistaBaseModel
 

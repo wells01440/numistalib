@@ -203,7 +203,7 @@ class BaseService(ABC):
             **(style_overrides or {}),
         )
 
-    def handle_cli_error(  
+    def handle_cli_error(
         self,
         err: Exception,
         context: str,

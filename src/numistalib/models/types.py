@@ -26,9 +26,9 @@ from pydantic import (
 from pydantic_core import Url
 from textual_image.renderable import Image as TImage
 
-
 from numistalib.models import Currency, Issuer, Mint, NumistaBaseModel, Reference
 from numistalib.models.issues import IssueTerms
+
 
 class Country(NumistaBaseModel):
     code: str = Field(max_length=50)
@@ -48,7 +48,6 @@ class CurrencyValue(NumistaBaseModel):
 class Demonetization(NumistaBaseModel):
     is_demonetized: bool = Field(description="Indicates if the type is demonetized")
     demonetization_date: date | None = Field(None, description="Date of demonetization")
-
 
     @field_validator("demonetization_date", mode="before")
     @classmethod
@@ -97,12 +96,11 @@ class LetteringScript(NumistaBaseModel):
 class References(NumistaBaseModel):
     references: list[Reference] = Field(description="List of references")
 
-   
+
 class RulerGroup(NumistaBaseModel):
 
     id: int = Field(..., description="Numista ID", alias="numista_id")
     name: str = Field(..., description="Group Name")
-
 
 
 class Ruler(NumistaBaseModel):
@@ -127,7 +125,7 @@ class Ruler(NumistaBaseModel):
         if self.wikidata_id:
             return Url(f"https://www.wikidata.org/wiki/{self.wikidata_id}")
         return None
-    
+
 
 class SideBase(NumistaBaseModel, ABC):
     """Base class for obverse and reverse sides of a type."""
@@ -199,6 +197,62 @@ class SideBase(NumistaBaseModel, ABC):
         """Formatted picture link for textual display."""
         return f"[link={self.picture}]{self.picture}[/link]"
 
+    @property
+    def formatted_fields(self) -> list[str]:
+        """Return formatted fields excluding redundant computed fields and formatting lists properly."""
+        from numistalib.models.base.base_model import format_field
+        
+        formatted = []
+        
+        # Define fields to exclude (redundant computed fields)
+        exclude_fields = {
+            'lettering_lines',  # Redundant with lettering
+            'copyright_link',   # Redundant with picture_copyright
+            'thumbnail_link',   # Redundant with thumbnail
+            'picture_link',     # Redundant with picture
+        }
+        
+        # Process regular fields
+        for field_name in self.__class__.model_fields.keys():
+            if field_name in exclude_fields:
+                continue
+                
+            value = getattr(self, field_name, None)
+            if value is None:
+                continue
+            
+            label = field_name.replace("_", " ").title()
+            
+            # Format lists specially
+            if isinstance(value, list):
+                if not value:
+                    continue
+                # Check if it's a list of models
+                if all(hasattr(item, '__class__') and hasattr(item.__class__, '__name__') for item in value):
+                    # List of objects - extract names
+                    if hasattr(value[0], 'name'):
+                        formatted_value = ", ".join(str(item.name) for item in value)
+                    else:
+                        formatted_value = ", ".join(str(item) for item in value)
+                else:
+                    # Simple list
+                    formatted_value = ", ".join(str(item) for item in value)
+                formatted.append(format_field(label, formatted_value))
+            else:
+                formatted.append(format_field(label, value))
+        
+        # Process computed fields (excluding those in exclude set)
+        for field_name in self.__class__.model_computed_fields.keys():
+            if field_name in exclude_fields or field_name == 'formatted_fields':
+                continue
+                
+            value = getattr(self, field_name, None)
+            if value is not None:
+                label = field_name.replace("_", " ").title()
+                formatted.append(format_field(label, value))
+        
+        return formatted
+
 
 class Obverse(SideBase):
     pass
@@ -206,6 +260,68 @@ class Obverse(SideBase):
 
 class Reverse(SideBase):
     pass
+
+
+class Edge(NumistaBaseModel):
+    """Edge specifications for a coin type.
+    
+    Parameters
+    ----------
+    description : str | None
+        Description of the edge (e.g., 'Reeded', 'Plain')
+    picture : str | None
+        Picture URL of the edge
+    thumbnail : str | None
+        Thumbnail URL of the edge
+    picture_copyright : str | None
+        Copyright information for the picture
+    """
+    
+    description: str | None = Field(None, description="Edge description (e.g., 'Reeded')")
+    picture: str | None = Field(None, description="Edge picture URL")
+    thumbnail: str | None = Field(None, description="Edge thumbnail URL")
+    picture_copyright: str | None = Field(None, description="Edge picture copyright")
+    picture_copyright_url: str | None = Field(None, description="Edge picture copyright URL")
+
+    @cached_property
+    def pillow_image(self) -> PILImage.Image:
+        """Download and cache the full picture as a Pillow Image."""
+        if not self.picture:
+            return None
+        response = httpx.get(self.picture, follow_redirects=True, timeout=30.0)
+        response.raise_for_status()
+        return PILImage.open(BytesIO(response.content))
+
+    @cached_property
+    def pillow_thumbnail(self) -> PILImage.Image:
+        """Download and cache the thumbnail as a Pillow Image."""
+        if not self.thumbnail:
+            return None
+        response = httpx.get(self.thumbnail, follow_redirects=True, timeout=30.0)
+        response.raise_for_status()
+        return PILImage.open(BytesIO(response.content))
+
+    @cached_property
+    def renderable_image(self) -> Any | None:
+        """Ready-to-print textual_image renderable (full picture)."""
+        try:
+            if self.pillow_image:
+                img = TImage(self.pillow_image)
+                return img
+        except (ImportError, TypeError):
+            return None
+        return None
+
+    @cached_property
+    def renderable_thumbnail(self) -> Any | None:
+        """Ready-to-print thumbnail."""
+        try:
+            if self.pillow_thumbnail:
+                img = TImage(self.pillow_thumbnail)
+                return img
+        except (ImportError, TypeError):
+            return None
+        return None
 
 
 class TypeBase(NumistaBaseModel, ABC):
@@ -238,7 +354,7 @@ class TypeBase(NumistaBaseModel, ABC):
         return HttpUrl(f"https://en.numista.com/{self.numista_id}")
 
     @model_validator(mode="after")
-    def validate_years(self) -> "TypeBase":
+    def validate_years(self) -> TypeBase:
         if self.min_year is not None and self.max_year is not None:
             if self.min_year > self.max_year:
                 raise ValueError("min_year cannot be greater than max_year")
@@ -298,7 +414,7 @@ class TypeFull(TypeBase):
     mints: list[Mint] | None = Field(None)
     comments: str | None = Field(None)
     tags: list[str] | None = Field(None)
-    edge: dict[str, Any] | None = Field(None)
+    edge: Edge | None = Field(None)
     related_types: list[TypeBasic] | None = Field(None)  # Note: recursive, but TypeBasic is defined
     orientation: str | None = Field(None)
     series: str | None = Field(None, description="Series or set designation")
