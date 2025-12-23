@@ -4,7 +4,6 @@ Tests:
 - catalogues (list all catalogues)
 """
 
-import pytest
 from click.testing import CliRunner
 
 
