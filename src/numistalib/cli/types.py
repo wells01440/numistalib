@@ -8,7 +8,6 @@ from rich.table import Table
 
 from numistalib.cli.theme import CLISettings
 from numistalib.config import Settings
-from numistalib.models.types import Ruler, TypeBasic, TypeFull
 from numistalib.services import TypeBasicService, TypeFullService
 
 # pyright: reportOptionalMemberAccess = false
