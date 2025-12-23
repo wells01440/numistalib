@@ -11,7 +11,6 @@ from bs4 import BeautifulSoup
 from pydantic import BaseModel, ConfigDict
 from pydantic.alias_generators import to_camel
 from rich.console import Group, RenderableType
-from rich.table import Table
 from rich.console import Console, ConsoleOptions
 from rich.text import Text
 from pydantic_core import core_schema
