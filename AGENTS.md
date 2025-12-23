@@ -70,7 +70,7 @@ that assume and cause hallucinations.
 
 ### § 1.0 Purpose
 
-0. Establish absolute constraints overriding all other sections.
+1. Establish absolute constraints overriding all other sections.
 
 ### § 1.1 Rules
 
@@ -89,7 +89,7 @@ that assume and cause hallucinations.
 
 #### § 2.1.0 Purpose
 
-0. Keep code understandable by humans and agents.
+1. Keep code understandable by humans and agents.
 
 #### § 2.1.1 Rules
 
@@ -107,7 +107,7 @@ that assume and cause hallucinations.
 
 #### § 2.2.0 Purpose
 
-0. Ensure semantic clarity and searchability.
+1. Ensure semantic clarity and searchability.
 
 #### § 2.2.1 Rules
 
@@ -123,7 +123,7 @@ that assume and cause hallucinations.
 
 #### § 2.2.3 Enforcement
 
-0. `uv run ruff check --select N`
+1. `uv run ruff check --select N`
 
 #### § 2.2.3 Exceptions
 
@@ -135,7 +135,7 @@ that assume and cause hallucinations.
 
 #### § 2.3.0 Purpose
 
-0. Eliminate ambiguity and runtime surprises.
+1. Eliminate ambiguity and runtime surprises.
 
 #### § 2.3.1 Rules
 
@@ -151,8 +151,8 @@ that assume and cause hallucinations.
 
 #### § 2.3.3 Enforcement
 
-0. `uv run mypy --strict .`
-1. `uv run pyright .`
+1. `uv run mypy .`
+2. `uv run pyright .`
 
 ## § 3 PYTHON STANDARDS
 
@@ -160,7 +160,7 @@ that assume and cause hallucinations.
 
 #### § 3.1.0 Purpose
 
-0. Maintain deterministic module loading.
+1. Maintain deterministic module loading.
 
 #### § 3.1.1 Rules
 
@@ -175,7 +175,7 @@ that assume and cause hallucinations.
 
 #### § 3.1.3 Enforcement
 
-0. `uv run ruff check --select I`
+1. `uv run ruff check --select I`
 
 #### § 3.1.4 Examples
 
@@ -196,7 +196,7 @@ from foo_lib.config import bar_settings
 
 #### § 3.2.0 Purpose
 
-0. Preserve causality and debugging signal.
+1. Preserve causality and debugging signal.
 
 #### § 3.2.1 Rules
 
@@ -210,13 +210,13 @@ from foo_lib.config import bar_settings
 
 #### § 3.2.3 Enforcement
 
-0. Code review rejection.
+1. Code review rejection.
 
 ### § 3.3 Resource Management
 
 #### § 3.3.0 Purpose
 
-0. Prevent leaks and undefined lifetimes.
+1. Prevent leaks and undefined lifetimes.
 
 #### § 3.3.1 Rules
 
@@ -225,17 +225,17 @@ from foo_lib.config import bar_settings
 
 #### § 3.3.2 Exceptions
 
-0. Third-party objects without context support.
+1. Third-party objects without context support.
 
 #### § 3.3.3 Enforcement
 
-0. Code review rejection.
+1. Code review rejection.
 
 ### § 3.4 Logging
 
 #### § 3.4.0 Purpose
 
-0. Provide structured, non-interactive observability.
+1. Provide structured, non-interactive observability.
 
 #### § 3.4.1 Rules
 
@@ -247,13 +247,13 @@ from foo_lib.config import bar_settings
 
 #### § 3.4.3 Enforcement
 
-0. CI failure on `print()` detection.
+1. CI failure on `print()` detection.
 
 ### § 3.5 HTTP
 
 #### § 3.5.0 Purpose
 
-0. Ensure consistent sync and async behavior.
+1. Ensure consistent sync and async behavior.
 
 #### § 3.5.1 Rules
 
@@ -263,7 +263,7 @@ from foo_lib.config import bar_settings
 
 #### § 3.5.3 Enforcement
 
-0. Code review rejection.
+1. Code review rejection.
 
 ## § 4 DOCUMENTATION
 
@@ -271,7 +271,7 @@ from foo_lib.config import bar_settings
 
 #### § 4.1.0 Purpose
 
-0. Enable static and agent understanding.
+1. Enable static and agent understanding.
 
 #### § 4.1.1 Rules
 
@@ -284,7 +284,7 @@ from foo_lib.config import bar_settings
 
 #### § 4.1.3 Enforcement
 
-0. Code review rejection.
+1. Code review rejection.
 
 ### § 4.2 User Documentation
 
@@ -337,7 +337,7 @@ from foo_lib.config import bar_settings
 
 #### § 5.1.0 Purpose
 
-0. Isolate business logic per API tag.
+1. Isolate business logic per API tag.
 
 #### § 5.1.1 Rules
 
@@ -348,13 +348,13 @@ from foo_lib.config import bar_settings
 
 #### § 5.1.3 Enforcement
 
-0. CI architectural review.
+1. CI architectural review.
 
 ### § 5.2 Clients
 
 #### § 5.2.0 Purpose
 
-0. Centralize HTTP, caching, throttling, retry.
+1. Centralize HTTP, caching, throttling, retry.
 
 #### § 5.2.1 Rules
 
@@ -370,13 +370,13 @@ from foo_lib.config import bar_settings
 
 #### § 5.2.3 Enforcement
 
-0. Code review rejection.
+1. Code review rejection.
 
 ### § 5.3 Pagination
 
 #### § 5.3.0 Purpose
 
-0. Enable memory-safe traversal of large datasets.
+1. Enable memory-safe traversal of large datasets.
 
 #### § 5.3.1 Rules
 
@@ -435,7 +435,7 @@ async for item in service.search_things_paginated(query="flerp"):
 
 #### § 6.1.0 Purpose
 
-0. Ensure deterministic builds.
+1. Ensure deterministic builds.
 
 #### § 6.1.1 Rules
 
@@ -445,13 +445,13 @@ async for item in service.search_things_paginated(query="flerp"):
 
 #### § 6.1.3 Enforcement
 
-0. CI failure.
+1. CI failure.
 
 ### § 6.2 Caching
 
 #### § 6.2.0 Purpose
 
-0. Minimize redundant network calls.
+1. Minimize redundant network calls.
 
 #### § 6.2.1 Rules
 
@@ -462,17 +462,17 @@ async for item in service.search_things_paginated(query="flerp"):
 
 #### § 6.2.2 Exceptions
 
-0. Explicit cache-bypass flags.
+1. Explicit cache-bypass flags.
 
 #### § 6.2.3 Enforcement
 
-0. Code review rejection.
+1. Code review rejection.
 
 ### § 6.3 Rate Limiting & Retry
 
 #### § 6.3.0 Purpose
 
-0. Protect upstream and callers.
+1. Protect upstream and callers.
 
 #### § 6.3.1 Rules
 
@@ -484,7 +484,7 @@ async for item in service.search_things_paginated(query="flerp"):
 
 #### § 6.3.3 Enforcement
 
-0. CI review.
+1. CI review.
 
 ## § 7 CLI
 
@@ -506,18 +506,24 @@ async for item in service.search_things_paginated(query="flerp"):
    2. Rich v14 Theming.
    3. Consistent predictable formatting
    4. Error console is also using Rich 14 and should follow same themes
+6. Provide user-centric CLI aliases (shortcuts) alongside canonical names (e.g., catalogues→cat, issuers→isr, issues→isu with -t/--table flag for table mode)
+7. Model-driven rendering:
+   0. All table generation: use `Model.as_table(items, title)` only.
+   1. All field rendering: use `Model.format_fields(fields)` only.
+   2. Panel construction: triple-quoted f-string template calling model methods; no `add_columns_to_table()`, `infer_columns_from_model()`, or `add_model_row()` in CLI layer.
+   3. Rationale: Models own presentation logic; CLI owns orchestration.
 
 ### § 7.2 Exceptions
 
 ### § 7.3 Enforcement
 
-0. Code review rejection.
+1. Code review rejection.
 
 ## § 8 TESTING
 
 ### § 8.0 Purpose
 
-0. Prove correctness, not vanity metrics.
+1. Prove correctness, not vanity metrics.
 
 ### § 8.1 Rules
 
@@ -527,17 +533,17 @@ async for item in service.search_things_paginated(query="flerp"):
 
 ### § 8.2 Exceptions
 
-0. Cache invalidation tests.
+1. Cache invalidation tests.
 
 ### § 8.3 Enforcement
 
-0. CI failure.
+1. CI failure.
 
 ## § 9 CI
 
 ### § 9.0 Purpose
 
-0. Enforce invariants automatically.
+1. Enforce invariants automatically.
 
 ### § 9.1 Rules
 
@@ -549,7 +555,7 @@ async for item in service.search_things_paginated(query="flerp"):
 
 ### § 9.3 Enforcement
 
-0. Merge blocked.
+1. Merge blocked.
 
 ## § 10 FINAL
 

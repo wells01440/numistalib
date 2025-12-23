@@ -22,8 +22,8 @@ class LiteratureService(LiteratureServiceBase):
         """
         super().__init__(client)
 
-    def _to_models(
-        self, items: list[Mapping[str, Any]], **kwargs: Any
+    def to_models(  # noqa: PLR6301
+        self, items: list[Mapping[str, Any]], **kwargs: Any  # noqa: ARG002
     ) -> list[Publication]:
         """Convert API response items to Publication models.
 
@@ -82,7 +82,7 @@ class LiteratureService(LiteratureServiceBase):
 
         # Single publication, not wrapped in array
         data = cast(Mapping[str, Any], response.json())
-        return self._to_models([data])[0]
+        return self.to_models([data])[0]
 
     async def get_publication_async(self, publication_id: int) -> Publication:
         """Get publication details by ID (async).
@@ -110,7 +110,7 @@ class LiteratureService(LiteratureServiceBase):
 
         # Single publication, not wrapped in array
         data = cast(Mapping[str, Any], response.json())
-        return self._to_models([data])[0]
+        return self.to_models([data])[0]
 
 
 __all__ = ["LiteratureService"]

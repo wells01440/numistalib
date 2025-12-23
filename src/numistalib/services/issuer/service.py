@@ -3,21 +3,10 @@
 from collections.abc import AsyncGenerator, Mapping
 from typing import Any, cast
 
-import httpx
-from pydantic import BaseModel
-from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_exponential
-
 from numistalib import logger
 from numistalib.client import AsyncClientProtocol, NumistaResponse, SyncClientProtocol
 from numistalib.models.issuer import Issuer
 from numistalib.services.issuer.base import IssuerServiceBase
-
-
-class PagedResponse(BaseModel):
-    """Pagination response wrapper for issuers."""
-
-    issuers: list[dict[str, Any]]
-    next_url: str | None = None
 
 
 class IssuerService(IssuerServiceBase):
@@ -35,8 +24,8 @@ class IssuerService(IssuerServiceBase):
         """
         super().__init__(client)
 
-    def _to_models(
-        self, items: list[Mapping[str, Any]], **kwargs: Any
+    def to_models(  # noqa: PLR6301
+        self, items: list[Mapping[str, Any]], **kwargs: Any  # noqa: ARG002
     ) -> list[Issuer]:
         """Convert API response items to Issuer models.
 
@@ -99,7 +88,7 @@ class IssuerService(IssuerServiceBase):
         self._track_response(response)
 
         items = self._extract_items_from_response(response)
-        issuers = self._to_models(items)
+        issuers = self.to_models(items)
 
         logger.info(f"Retrieved {len(issuers)} issuers {response.cached_indicator}")
         return issuers
@@ -135,45 +124,10 @@ class IssuerService(IssuerServiceBase):
         self._track_response(response)
 
         items = self._extract_items_from_response(response)
-        issuers = self._to_models(items)
+        issuers = self.to_models(items)
 
         logger.info(f"Retrieved {len(issuers)} issuers {response.cached_indicator}")
         return issuers
-
-    @staticmethod
-    @retry(
-        retry=retry_if_exception_type((httpx.TimeoutException, httpx.NetworkError)),
-        stop=stop_after_attempt(5),
-        wait=wait_exponential(multiplier=1, min=4, max=10),
-        reraise=True,
-    )
-    async def _fetch_page(client: httpx.AsyncClient, url: str) -> PagedResponse:
-        """Fetch a single page of issuers with retry logic.
-
-        Parameters
-        ----------
-        client : httpx.AsyncClient
-            Async HTTP client
-        url : str
-            Endpoint URL (full URL)
-
-        Returns
-        -------
-        PagedResponse
-            Parsed response with issuers and next_url
-
-        Raises
-        ------
-        httpx.HTTPStatusError
-            If API returns error
-        """
-        response = await client.get(url)
-        response.raise_for_status()
-        data = response.json()
-        return PagedResponse(
-            issuers=data.get("issuers", []),
-            next_url=data.get("next_url"),
-        )
 
     async def paginated_issuers(
         self,
@@ -196,46 +150,27 @@ class IssuerService(IssuerServiceBase):
         """
         logger.debug("→ paginated_issuers(lang=%s, limit=%s)", lang, limit)
 
-        start_url = f"/issuers?lang={lang}&count={limit}"
+        url: str | None = f"/issuers?lang={lang}&count={limit}"
+        page_count = 0
 
-        api_key = getattr(self._client, "api_key", None)
-        base_url = getattr(self._client, "api_base_url", "https://api.numista.com/v3")
-        if not api_key:
-            raise ValueError("API key is required for pagination")
+        while url:
+            page_count += 1
+            logger.debug("Fetching issuers page %s: %s", page_count, url)
 
-        async with httpx.AsyncClient(
-            headers={"Numista-API-Key": api_key},
-            timeout=30.0,
-        ) as client:
-            url: str | None = start_url
-            page_count = 0
+            response = await self._aget(url)
+            response.raise_for_status()
+            self._track_response(response)
 
-            while url:
-                page_count += 1
-                # Build full URL if it's a relative path
-                full_url = url if url.startswith(("http://", "https://")) else f"{base_url.rstrip('/')}/{url.lstrip('/')}"
-                logger.debug(f"Fetching issuers page {page_count}: {full_url}")
+            data = cast(Mapping[str, Any], response.json())
+            items = cast(list[Mapping[str, Any]], data.get(self.CLASS_ITEMS_KEY, []))
+            issuers = self.to_models(items)
 
-                page = await self._fetch_page(client, full_url)
+            for issuer in issuers:
+                yield issuer
 
-                for item in page.issuers:
-                    parent = item.get("parent", {})
-                    issuer = Issuer(
-                        code=item["code"],
-                        name=item["name"],
-                        flag=item.get("flag") or "",
-                        wikidata_id=item.get("wikidata_id"),
-                        level=item.get("level", 1),
-                        parent_code=parent.get("code") if parent else None,
-                        parent_name=parent.get("name") if parent else None,
-                    )
-                    yield issuer
+            url = cast(str | None, data.get("next_url"))
 
-                url = page.next_url
-
-            logger.info(
-                f"Finished paginating through {page_count} pages of issuers"
-            )
+        logger.info("Finished paginating through %s pages of issuers", page_count)
 
     async def get_issuers_paginated(
         self,

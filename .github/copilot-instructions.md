@@ -7,7 +7,7 @@ Numista API (Swagger v3 [docs/numista-swagger.yml](docs/numista-swagger.yml)) Py
 ## Core Architecture
 
 - **[client.py](src/numista_lib/client.py)**: Central HTTP (httpx+hishel/pyrate-limiter). Inject to services. NumistaResponse exposes `cached` bool, `cached_indicator` 💾/🌐.
-- **services/<tag>/**: One per API tag. [`services/<tag>/base.py`](src/numista_lib/services/catalogues/base.py) ABC → `service.py` impl. Inherit [`services/base/service.py`](src/numista_lib/services/base/service.py) BaseService(client). Impl abstract `_to_models(raw_list → [Pydantic])`.
+- **services/<tag>/**: One per API tag. [`services/<tag>/base.py`](src/numista_lib/services/catalogues/base.py) ABC → `service.py` impl. Inherit [`services/base/service.py`](src/numista_lib/services/base/service.py) BaseService(client). Impl abstract `to_models(raw_list → [Pydantic])`.
   - Subclasses: SimpleListService (e.g. /catalogues → {"catalogues": [...]}) extracts via CLASS_ITEMS_KEY.
   - NestedResourceService/EntityService for paths like /types/{id}/issues.
 - **models/<entity>.py**: Pydantic from [`models/base/base_model.py`](src/numista_lib/models/base/base_model.py). Validate API payloads immediately.

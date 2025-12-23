@@ -3,9 +3,9 @@
 import pytest
 from pydantic import ValidationError
 
-from numista_lib.models.catalogues import Catalogue
-from numista_lib.models.issuer import Issuer
-from numista_lib.models.types import TypeBasic, TypeFull
+from numistalib.models.catalogues import Catalogue
+from numistalib.models.issuer import Issuer
+from numistalib.models.types import TypeBasic, TypeFull
 
 TEST_NUMISTA_ID: int = 95420
 TEST_WEIGHT: float = 28.8

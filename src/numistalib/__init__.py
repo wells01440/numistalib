@@ -16,7 +16,7 @@ from numistalib.client import (
     NumistaClientAsync,
     NumistaClientSync,
 )
-from numistalib.config import Settings, get_environment_file
+from numistalib.config import Settings
 
 # Constants
 CACHE_HIT_ICON = "💾"
@@ -62,15 +62,11 @@ logger = logging.getLogger(LOGGER_NAME)
 logger.addHandler(handler)
 
 # Get environment file and initialize settings
-environment_file = get_environment_file()
 default_settings = Settings()
 
 __all__ = [
     "CACHE_HIT_ICON",
     "CACHE_MISS_ICON",
-    "CLI_LICENSE_TEXT",
-    "CLI_PANEL_WIDTH",
-    "CLI_THEME",
     "DEFAULT_API_BASE_URL",
     "DEFAULT_API_VERSION",
     "DEFAULT_CACHE_ALLOW_STALE",
@@ -101,6 +97,5 @@ __all__ = [
     "Settings",
     "__version__",
     "default_settings",
-    "environment_file",
     "logger",
 ]

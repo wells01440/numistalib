@@ -24,8 +24,8 @@ class MintService(MintServiceBase):
         """
         super().__init__(client)
 
-    def _to_models(
-        self, items: list[Mapping[str, Any]], **kwargs: Any
+    def to_models(  # noqa: PLR6301
+        self, items: list[Mapping[str, Any]], **kwargs: Any  # noqa: ARG002
     ) -> list[Mint]:
         """Convert API response items to Mint models.
 
@@ -96,12 +96,12 @@ class MintService(MintServiceBase):
         self._track_response(response)
 
         items = self._extract_items_from_response(response)
-        mints = self._to_models(items)
+        mints = self.to_models(items)
 
         logger.info(f"Retrieved {len(mints)} mints {response.cached_indicator}")
         return mints
 
-    def get_mint(self, mint_id: int) -> Mint:
+    def get_mint(self, mint_id: int, *, lang: str | None = None) -> Mint:
         """Get details about a specific mint.
 
         Parameters
@@ -119,14 +119,15 @@ class MintService(MintServiceBase):
         httpx.HTTPStatusError
             If mint not found or API error
         """
-        logger.debug("→ get_mint(mint_id=%s)", mint_id)
+        logger.debug("→ get_mint(mint_id=%s, lang=%s)", mint_id, lang)
 
-        response = cast(NumistaResponse, self._client.get(f"/mints/{mint_id}"))
+        params = {"lang": lang} if lang else None
+        response = cast(NumistaResponse, self._client.get(f"/mints/{mint_id}", params=params))
         response.raise_for_status()
         self._track_response(response)
 
         data = cast(Mapping[str, Any], response.json())
-        mint = self._to_models([data])[0]
+        mint = self.to_models([data])[0]
 
         logger.info(f"Retrieved mint {mint_id}: {mint.name} {response.cached_indicator}")
         return mint
@@ -156,12 +157,12 @@ class MintService(MintServiceBase):
         self._track_response(response)
 
         items = self._extract_items_from_response(response)
-        mints = self._to_models(items)
+        mints = self.to_models(items)
 
         logger.info(f"Retrieved {len(mints)} mints {response.cached_indicator}")
         return mints
 
-    async def get_mint_async(self, mint_id: int) -> Mint:
+    async def get_mint_async(self, mint_id: int, *, lang: str | None = None) -> Mint:
         """Get details about a specific mint (async).
 
         Parameters
@@ -179,14 +180,15 @@ class MintService(MintServiceBase):
         httpx.HTTPStatusError
             If mint not found or API error
         """
-        logger.debug("→ get_mint_async(mint_id=%s)", mint_id)
+        logger.debug("→ get_mint_async(mint_id=%s, lang=%s)", mint_id, lang)
 
-        response = await self._aget(f"/mints/{mint_id}")
+        params = {"lang": lang} if lang else None
+        response = await self._aget(f"/mints/{mint_id}", params=params)
         response.raise_for_status()
         self._track_response(response)
 
         data = cast(Mapping[str, Any], response.json())
-        mint = self._to_models([data])[0]
+        mint = self.to_models([data])[0]
 
         logger.info(f"Retrieved mint {mint_id}: {mint.name} {response.cached_indicator}")
         return mint

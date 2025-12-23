@@ -1,14 +1,15 @@
 """Issuers CLI commands."""
 
 import asyncio
-import sys
 
 import click
 
-from numistalib import logger
 from numistalib.cli.theme import CLISettings
-from numistalib.config import create_async_client_from_settings, get_settings
+from numistalib.config import Settings
+from numistalib.models import Issuer
 from numistalib.services import IssuerService
+
+# pyright: reportUnusedFunction = false
 
 
 def register_issuers_commands(parent: click.Group) -> None:
@@ -20,62 +21,44 @@ def register_issuers_commands(parent: click.Group) -> None:
         Parent click group to attach commands to
     """
 
-    @parent.command()
+    @click.command(name="issuers")
     @click.option("--lang", default="en", type=click.Choice(["en", "es", "fr"]), help="Language")
     @click.option("--limit", type=int, default=50, help="Results per page")
-    def issuers(lang: str, limit: int) -> None:
-        """List all issuing countries and territories.
+    @click.option("-t", "--table", is_flag=True, help="Render results as a table")
+    def issuers(lang: str, limit: int, table: bool) -> None:
+        """List issuing entities (panel default, table with -t/--table)."""
+        console = CLISettings.console()
+        settings = Settings()
+        client = Settings.to_async_client(settings)
+        service = IssuerService(client)
+        model_cls = service.MODEL
 
-        Issuers are countries, territories, and political entities that issue currency.
-        This is different from 'issues', which are production variants (year/mint) of types.
-
-        Iterates through all pages automatically.
-
-        Examples:
-            numistalib issuers
-            numistalib issuers --lang es --limit 100
-        """
         try:
-            settings = get_settings()
-            client = create_async_client_from_settings(settings)
-            service = IssuerService(client)
-            model_cls = service.MODEL
-            model_label = model_cls.__name__ if model_cls else "Issuer"
+            issuers_list: list[Issuer] = []
 
-            CLISettings.console().print(
-                CLISettings.header_panel(f"Issuers [{model_label}]")
-            )
-
-            table = CLISettings.table_from_model_class(
-                model_cls,
-                include_cache=True,
-                title="Issuers (Paginated)",
-            )
-
-            count = 0
-
-            async def consume_issuers() -> None:
-                nonlocal count
+            async def consume_issuers() -> list[Issuer]:
                 async for issuer in service.get_issuers_paginated(lang=lang, limit=limit):
-                    count += 1
-                    CLISettings.table_add_model_row(
-                        table,
-                        issuer,
-                        include_cache=True,
-                        cache_icon=service.last_cache_indicator,
-                    )
+                    issuers_list.append(issuer)
+                return issuers_list
 
-            asyncio.run(consume_issuers())
+            issuers_list = asyncio.run(consume_issuers())
 
-            if count == 0:
-                CLISettings.console().print("[warning]No issuers found[/warning]")
-                CLISettings.console().print(CLISettings.footer_panel())
+            if not issuers_list:
+                console.print("[warning]No issuers found[/warning]")
                 return
-            CLISettings.console().print(table)
-            CLISettings.console().print(f"\n[success]Found {count} issuers[/success]")
-            CLISettings.console().print(CLISettings.footer_panel())
+
+            if table:
+                output = model_cls.render_table(issuers_list, "Issuers")
+                console.print(output)
+            else:
+                for issuer in issuers_list:
+                    panel = service._format_panel(issuer)
+                    console.print(panel)
+
+            console.print(f"\n[success]Found {len(issuers_list)} issuer{'s' if len(issuers_list) != 1 else ''}[/success]")
 
         except (RuntimeError, OSError, ValueError) as err:
-            CLISettings.console().print(f"[danger]Error: {err}[/danger]")
-            logger.exception("Error listing issuers")
-            sys.exit(1)
+            service.handle_cli_error(err, "listing issuers", "isr-list")
+
+    parent.add_command(issuers, name="issuers")
+    parent.add_command(issuers, name="isr")

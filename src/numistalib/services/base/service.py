@@ -1,10 +1,13 @@
 """Abstract base classes for Numista services."""
 
+import sys
 from abc import ABC, abstractmethod
 from collections.abc import Coroutine, Mapping
-from typing import Any, cast
+from typing import Any, NoReturn, cast
 
-from numistalib import logger, __version__
+from rich.panel import Panel
+
+from numistalib import __version__, logger
 from numistalib.client import (
     CACHE_MISS_ICON,
     AsyncClientProtocol,
@@ -132,7 +135,7 @@ class BaseService(ABC):
         self._last_response = response
 
     @abstractmethod
-    def _to_models(self, items: list[Mapping[str, Any]], **kwargs: Any) -> list[Any]:
+    def to_models(self, items: list[Mapping[str, Any]], **kwargs: Any) -> list[Any]:
         """Convert raw API items to typed domain models.
 
         Parameters
@@ -148,6 +151,98 @@ class BaseService(ABC):
             List of typed domain models
         """
         pass
+
+    def _format_panel(
+        self,
+        item: Any,
+        fields: list[tuple[str, Any]] | None = None,  # noqa: ARG002
+        style_overrides: dict[str, Any] | None = None,
+    ) -> Panel:
+        """Format a model instance as a Rich Panel with service context.
+
+        Composes the item's as_panel() method with service name and cache indicator
+        in the panel title. This provides consistent panel rendering across all CLI
+        commands while respecting model-specific formatting.
+
+        Parameters
+        ----------
+        item : Any
+            Model instance with as_panel() method
+        fields : list[tuple[str, Any]], optional
+            Optional field list override (if not using item's _build_detail_fields)
+        style_overrides : dict[str, Any], optional
+            Optional style overrides passed to item.as_panel()
+
+        Returns
+        -------
+        Panel
+            Rich Panel with service name, cache indicator, and formatted content
+
+        Examples
+        --------
+        >>> service = IssuerService(client)
+        >>> issuer = service.get_issuer(1)
+        >>> panel = service._format_panel(issuer)
+        >>> console.print(panel)  # Shows "💾 Issuer" or "🌐 Issuer" in title
+        """
+        # Get panel from model (delegates to model's presentation logic)
+        panel = item.as_panel(style_overrides=style_overrides)
+
+        # Enhance title with cache indicator and service context
+        base_title = panel.title or self.title_text
+        enhanced_title = f"{self.last_cache_indicator} {base_title}"
+
+        # Rebuild panel with enhanced title (preserving other attributes)
+        from numistalib.cli.theme import CLISettings
+
+        return CLISettings.panel(
+            panel.renderable,
+            title=enhanced_title,
+            box=panel.box,
+            padding=panel.padding,
+            **(style_overrides or {}),
+        )
+
+    def handle_cli_error(
+        self,
+        err: Exception,
+        context: str,
+        command: str,
+    ) -> NoReturn:
+        """Handle CLI errors with consistent logging and user-friendly display.
+
+        Logs full traceback to module logger for debugging, displays friendly
+        error message to user via Rich error console, then exits with code 1.
+
+        Parameters
+        ----------
+        err : Exception
+            The exception that occurred
+        context : str
+            Human-readable context (e.g., "listing catalogues", "fetching issuer details")
+        command : str
+            Command name for log correlation (e.g., "cat-list", "isr-get")
+
+        Examples
+        --------
+        >>> try:
+        ...     results = service.list_catalogues()
+        ... except (RuntimeError, OSError, ValueError) as e:
+        ...     service._handle_cli_error(e, "listing catalogues", "cat-list")
+        """
+        # Log full traceback for debugging
+        logger.exception(
+            f"Error in {context} (command: {command}): {err}",
+            exc_info=err,
+        )
+
+        # Display friendly message to user
+        from numistalib.cli.theme import CLISettings
+        console = CLISettings.console()
+        console.print(f"[danger]Error in {context}: {err}[/danger]")
+
+        # Exit with error code
+        sys.exit(1)
 
     @staticmethod
     def _build_params(
@@ -183,7 +278,7 @@ class SimpleListService(BaseService):
 
     Subclasses must:
     1. Define CLASS_ITEMS_KEY (e.g., "catalogues")
-    2. Implement _to_models() to convert raw items
+    2. Implement to_models() to convert raw items
     """
 
     CLASS_ITEMS_KEY: str = "items"
@@ -217,7 +312,7 @@ class NestedResourceService(BaseService):
 
     Subclasses must:
     1. Define CLASS_ITEMS_KEY
-    2. Implement _to_models() with required context parameters
+    2. Implement to_models() with required context parameters
     """
 
     CLASS_ITEMS_KEY: str = "items"
@@ -249,10 +344,10 @@ class EntityService(BaseService):
     - /users/{user_id} → {"user": {...}}
     - /types/{type_id} → {...}
 
-    Subclasses implement _to_models() for single-item conversion.
+    Subclasses implement to_models() for single-item conversion.
     """
 
-    def _to_models(
+    def to_models(
         self, items: list[Mapping[str, Any]], **kwargs: Any
     ) -> list[Any]:
         """Convert single entity (wrapped in list for interface consistency).
@@ -288,4 +383,4 @@ class EntityService(BaseService):
         Any
             Typed domain model
         """
-        return self._to_models([item], **kwargs)[0]
+        return self.to_models([item], **kwargs)[0]

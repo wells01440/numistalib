@@ -5,8 +5,9 @@ import sys
 import click
 
 from numistalib.cli.theme import CLISettings
-from numistalib.config import get_settings
+from numistalib.config import Settings
 
+# pyright: reportUnusedFunction = false
 
 def register_config_commands(parent: click.Group) -> None:
     """Register config commands with parent group.
@@ -33,14 +34,12 @@ def register_config_commands(parent: click.Group) -> None:
         """
         try:
             console = CLISettings.console()
-            console.print(CLISettings.header_panel("Configuration"))
-            settings = get_settings()
+            settings = Settings()
             value = getattr(settings, key.lower(), None)
             if value is None:
                 console.print(f"[danger]Setting '{key}' not found[/danger]")
                 sys.exit(1)
             console.print(f"[header]{key}:[/header] {value}")
-            console.print(CLISettings.footer_panel())
         except (AttributeError, ValueError, KeyError) as err:
             CLISettings.console().print(f"[danger]Error: {err}[/danger]")
             sys.exit(1)
@@ -50,22 +49,18 @@ def register_config_commands(parent: click.Group) -> None:
         """List all configuration settings."""
         try:
             console = CLISettings.console()
-            console.print(CLISettings.header_panel("Configuration"))
-            settings = get_settings()
+            settings = Settings()
             table = CLISettings.create_table("numistalib Configuration")
-            CLISettings.table_add_columns(
-                table,
-                ["Setting", "Value"]
-            )
+            table.add_column("Setting")
+            table.add_column("Value")
 
             for field_name in type(settings).model_fields:
                 value = getattr(settings, field_name)
                 if field_name == "api_key":
                     value = "***" if value else None
-                CLISettings.table_add_row(table, [field_name, value])
+                table.add_row(field_name, str(value) if value is not None else "")
 
             console.print(table)
-            console.print(CLISettings.footer_panel())
         except (AttributeError, ValueError) as err:
             CLISettings.console().print(f"[danger]Error: {err}[/danger]")
             sys.exit(1)

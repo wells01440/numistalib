@@ -26,8 +26,8 @@ class CollectionService(CollectionServiceBase):
         """
         super().__init__(client)
 
-    def _to_models(
-        self, items: list[Mapping[str, Any]], user_id: int | None = None, **kwargs: Any
+    def to_models(  # noqa: PLR6301
+        self, items: list[Mapping[str, Any]], user_id: int | None = None, **kwargs: Any  # noqa: ARG002
     ) -> list[CollectedItem]:
         """Convert API response items to CollectedItem models.
 
@@ -129,7 +129,7 @@ class CollectionService(CollectionServiceBase):
         data = cast(Mapping[str, Any], response.json())
         items_raw = cast(list[Mapping[str, Any]], data.get("collected_items", []))
 
-        items = self._to_models(items_raw, user_id=user_id)
+        items = self.to_models(items_raw, user_id=user_id)
 
         logger.info(
             f"Retrieved {len(items)} collected items for user {user_id} {response.cached_indicator}"
@@ -172,7 +172,7 @@ class CollectionService(CollectionServiceBase):
         self._track_response(response)
         data = cast(Mapping[str, Any], response.json())
 
-        item = self._to_models([data], user_id=user_id)[0]
+        item = self.to_models([data], user_id=user_id)[0]
 
         logger.info(f"Retrieved collected item {item_id} {response.cached_indicator}")
         return item
@@ -270,7 +270,7 @@ class CollectionService(CollectionServiceBase):
         data = cast(Mapping[str, Any], response.json())
         items_raw = cast(list[Mapping[str, Any]], data.get("collected_items", []))
 
-        items = self._to_models(items_raw, user_id=user_id)
+        items = self.to_models(items_raw, user_id=user_id)
 
         logger.info(
             f"Retrieved {len(items)} collected items for user {user_id} {response.cached_indicator}"
@@ -308,7 +308,7 @@ class CollectionService(CollectionServiceBase):
         self._track_response(response)
         data = cast(Mapping[str, Any], response.json())
 
-        item = self._to_models([data], user_id=user_id)[0]
+        item = self.to_models([data], user_id=user_id)[0]
 
         logger.info(f"Retrieved collected item {item_id} {response.cached_indicator}")
         return item
@@ -385,7 +385,7 @@ class CollectionService(CollectionServiceBase):
         self._track_response(response)
         data = cast(Mapping[str, Any], response.json())
 
-        item = self._to_models([data], user_id=user_id)[0]
+        item = self.to_models([data], user_id=user_id)[0]
 
         logger.info(f"Added collected item {item.numista_id} {response.cached_indicator}")
         return item
@@ -419,7 +419,7 @@ class CollectionService(CollectionServiceBase):
         self._track_response(response)
         data = cast(Mapping[str, Any], response.json())
 
-        item = self._to_models([data], user_id=user_id)[0]
+        item = self.to_models([data], user_id=user_id)[0]
 
         logger.info(f"Added collected item {item.numista_id} {response.cached_indicator}")
         return item
@@ -460,7 +460,7 @@ class CollectionService(CollectionServiceBase):
         self._track_response(response)
         data = cast(Mapping[str, Any], response.json())
 
-        item = self._to_models([data], user_id=user_id)[0]
+        item = self.to_models([data], user_id=user_id)[0]
 
         logger.info(f"Edited collected item {item_id} {response.cached_indicator}")
         return item
@@ -500,7 +500,7 @@ class CollectionService(CollectionServiceBase):
         self._track_response(response)
         data = cast(Mapping[str, Any], response.json())
 
-        item = self._to_models([data], user_id=user_id)[0]
+        item = self.to_models([data], user_id=user_id)[0]
 
         logger.info(f"Edited collected item {item_id} {response.cached_indicator}")
         return item

@@ -71,10 +71,10 @@ numista-lib config get cache_dir
 
 ```python
 from numista_lib.client import NumistaApiClient
-from numista_lib.config import get_settings, logger
+from numista_lib.config import Settings, logger
 from numista_lib.services import TypeService
 
-settings = get_settings()
+settings = Settings()
 
 with NumistaApiClient(settings, logger) as client:
     service = TypeService(client, logger)
