@@ -5,7 +5,6 @@ Tests:
 - collections items
 """
 
-import pytest
 from click.testing import CliRunner
 
 
