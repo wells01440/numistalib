@@ -135,7 +135,7 @@ class BaseService(ABC):
         self._last_response = response
 
     @abstractmethod
-    def _to_models(self, items: list[Mapping[str, Any]], **kwargs: Any) -> list[Any]:
+    def to_models(self, items: list[Mapping[str, Any]], **kwargs: Any) -> list[Any]:
         """Convert raw API items to typed domain models.
 
         Parameters
@@ -278,7 +278,7 @@ class SimpleListService(BaseService):
 
     Subclasses must:
     1. Define CLASS_ITEMS_KEY (e.g., "catalogues")
-    2. Implement _to_models() to convert raw items
+    2. Implement to_models() to convert raw items
     """
 
     CLASS_ITEMS_KEY: str = "items"
@@ -312,7 +312,7 @@ class NestedResourceService(BaseService):
 
     Subclasses must:
     1. Define CLASS_ITEMS_KEY
-    2. Implement _to_models() with required context parameters
+    2. Implement to_models() with required context parameters
     """
 
     CLASS_ITEMS_KEY: str = "items"
@@ -344,10 +344,10 @@ class EntityService(BaseService):
     - /users/{user_id} → {"user": {...}}
     - /types/{type_id} → {...}
 
-    Subclasses implement _to_models() for single-item conversion.
+    Subclasses implement to_models() for single-item conversion.
     """
 
-    def _to_models(
+    def to_models(
         self, items: list[Mapping[str, Any]], **kwargs: Any
     ) -> list[Any]:
         """Convert single entity (wrapped in list for interface consistency).
@@ -383,4 +383,4 @@ class EntityService(BaseService):
         Any
             Typed domain model
         """
-        return self._to_models([item], **kwargs)[0]
+        return self.to_models([item], **kwargs)[0]

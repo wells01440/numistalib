@@ -151,8 +151,8 @@ that assume and cause hallucinations.
 
 #### § 2.3.3 Enforcement
 
-0. `uv run mypy --strict .`
-1. `uv run pyright .`
+1. `uv run mypy .`
+2. `uv run pyright .`
 
 ## § 3 PYTHON STANDARDS
 

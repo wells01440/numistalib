@@ -24,7 +24,7 @@ class MintService(MintServiceBase):
         """
         super().__init__(client)
 
-    def _to_models(  # noqa: PLR6301
+    def to_models(  # noqa: PLR6301
         self, items: list[Mapping[str, Any]], **kwargs: Any  # noqa: ARG002
     ) -> list[Mint]:
         """Convert API response items to Mint models.
@@ -96,7 +96,7 @@ class MintService(MintServiceBase):
         self._track_response(response)
 
         items = self._extract_items_from_response(response)
-        mints = self._to_models(items)
+        mints = self.to_models(items)
 
         logger.info(f"Retrieved {len(mints)} mints {response.cached_indicator}")
         return mints
@@ -127,7 +127,7 @@ class MintService(MintServiceBase):
         self._track_response(response)
 
         data = cast(Mapping[str, Any], response.json())
-        mint = self._to_models([data])[0]
+        mint = self.to_models([data])[0]
 
         logger.info(f"Retrieved mint {mint_id}: {mint.name} {response.cached_indicator}")
         return mint
@@ -157,7 +157,7 @@ class MintService(MintServiceBase):
         self._track_response(response)
 
         items = self._extract_items_from_response(response)
-        mints = self._to_models(items)
+        mints = self.to_models(items)
 
         logger.info(f"Retrieved {len(mints)} mints {response.cached_indicator}")
         return mints
@@ -188,7 +188,7 @@ class MintService(MintServiceBase):
         self._track_response(response)
 
         data = cast(Mapping[str, Any], response.json())
-        mint = self._to_models([data])[0]
+        mint = self.to_models([data])[0]
 
         logger.info(f"Retrieved mint {mint_id}: {mint.name} {response.cached_indicator}")
         return mint

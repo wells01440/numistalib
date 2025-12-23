@@ -5,7 +5,8 @@ from typing import Any, cast
 
 from numistalib import logger
 from numistalib.client import AsyncClientProtocol, NumistaResponse, SyncClientProtocol
-from numistalib.models.issues import Issue
+from numistalib.models.issues import Issue, Mark, Signature
+from numistalib.models.references import Catalogue, Reference
 from numistalib.services.issues.base import IssueServiceBase
 
 
@@ -24,7 +25,7 @@ class IssueService(IssueServiceBase):
         """
         super().__init__(client)
 
-    def _to_models(  # noqa: PLR6301
+    def to_models(  # noqa: PLR6301
         self, items: list[Mapping[str, Any]], type_id: int | None = None, **kwargs: Any  # noqa: ARG002
     ) -> list[Issue]:
         """Convert API response items to Issue models.
@@ -48,6 +49,42 @@ class IssueService(IssueServiceBase):
 
         issues: list[Issue] = []
         for item in items:
+            # Parse marks array
+            marks_data = item.get("marks", [])
+            marks = [
+                Mark(
+                    mark_id=mark["id"],
+                    title=mark.get("title"),
+                    picture=mark.get("picture"),
+                    letters=mark.get("letters"),
+                )
+                for mark in marks_data
+            ]
+
+            # Parse signatures array
+            signatures_data = item.get("signatures", [])
+            signatures = [
+                Signature(
+                    signer_name=sig["signer_name"],
+                    signer_title=sig.get("signer_title"),
+                )
+                for sig in signatures_data
+            ]
+
+            # Parse references array
+            references_data = item.get("references", [])
+            references = [
+                Reference(
+                    catalogue=Catalogue(
+                        id=ref["catalogue"]["id"],
+                        code=ref["catalogue"]["code"],
+                    ),
+                    number=ref["number"],
+                    url=ref.get("url"),
+                )
+                for ref in references_data
+            ]
+
             issues.append(
                 Issue(
                     numista_id=cast(int, item["id"]),
@@ -55,8 +92,13 @@ class IssueService(IssueServiceBase):
                     is_dated=cast(bool | None, item.get("is_dated")) or False,
                     year=cast(int | None, item.get("year")),
                     gregorian_year=cast(int | None, item.get("gregorian_year")),
+                    min_year=cast(int | None, item.get("min_year")),
+                    max_year=cast(int | None, item.get("max_year")),
                     mint_letter=cast(str | None, item.get("mint_letter")),
+                    marks=marks,
+                    signatures=signatures,
                     mintage=cast(int | None, item.get("mintage")),
+                    references=references,
                     comment=cast(str | None, item.get("comment")),
                 )
             )
@@ -98,7 +140,7 @@ class IssueService(IssueServiceBase):
         items = cast(list[Mapping[str, Any]], data) if isinstance(data, list) else cast(
             list[Mapping[str, Any]], data.get("issues", [])
         )
-        issues = self._to_models(items, type_id=type_id)
+        issues = self.to_models(items, type_id=type_id)
 
         logger.info(
             f"Retrieved {len(issues)} issues for type {type_id} {response.cached_indicator}"
@@ -145,7 +187,7 @@ class IssueService(IssueServiceBase):
         self._track_response(response)
         data = cast(Mapping[str, Any], response.json())
 
-        issue = self._to_models([data], type_id=type_id)[0]
+        issue = self.to_models([data], type_id=type_id)[0]
 
         logger.info(
             f"Added issue {issue.numista_id} for type {type_id} {response.cached_indicator}"
@@ -183,7 +225,7 @@ class IssueService(IssueServiceBase):
         items = cast(list[Mapping[str, Any]], data) if isinstance(data, list) else cast(
             list[Mapping[str, Any]], data.get("issues", [])
         )
-        issues = self._to_models(items, type_id=type_id)
+        issues = self.to_models(items, type_id=type_id)
 
         logger.info(
             f"Retrieved {len(issues)} issues for type {type_id} {response.cached_indicator}"
@@ -227,7 +269,7 @@ class IssueService(IssueServiceBase):
         self._track_response(response)
         data = cast(Mapping[str, Any], response.json())
 
-        issue = self._to_models([data], type_id=type_id)[0]
+        issue = self.to_models([data], type_id=type_id)[0]
 
         logger.info(
             f"Added issue {issue.numista_id} for type {type_id} {response.cached_indicator}"
@@ -280,7 +322,7 @@ class IssueService(IssueServiceBase):
                 items = cast(list[Mapping[str, Any]], mapping.get(self.CLASS_ITEMS_KEY, []))
                 next_url = cast(str | None, mapping.get("next_url"))
 
-            issues = self._to_models(items, type_id=type_id)
+            issues = self.to_models(items, type_id=type_id)
             for issue in issues:
                 yield issue
 

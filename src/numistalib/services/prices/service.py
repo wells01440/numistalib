@@ -24,15 +24,18 @@ class PriceService(PriceServiceBase):
         """
         super().__init__(client)
 
-    def _to_models(  # noqa: PLR6301
+    def to_models(  # noqa: PLR6301
         self, items: list[Mapping[str, Any]], issue_id: int | None = None, **kwargs: Any  # noqa: ARG002
     ) -> list[Price]:
-        """Convert API response items to Price models.
+        """Convert API response to Price models.
+
+        The API returns {currency: "EUR", prices: [{grade: "f", price: 180}]},
+        so we need to extract the top-level currency and merge it with each price.
 
         Parameters
         ----------
         items : list[Mapping[str, Any]]
-            Raw API response items
+            Raw API response items (single dict with currency and prices array)
         issue_id : int | None
             Numista issue ID (required context)
         **kwargs : Any
@@ -46,14 +49,23 @@ class PriceService(PriceServiceBase):
         if issue_id is None:
             raise ValueError("issue_id is required for price conversion")
 
+        # Items should be a list with one dict containing currency and prices
+        if not items or len(items) == 0:
+            return []
+
+        # Extract currency from top-level response
+        response_data = items[0] if isinstance(items, list) else items
+        currency = cast(str, response_data.get("currency", "USD"))
+        price_list = response_data.get("prices", [])
+
         prices: list[Price] = []
-        for item in items:
+        for price_item in price_list:
             prices.append(
                 Price(
                     issue_id=issue_id,
-                    grade=cast(str, item["grade"]),
-                    currency=cast(str, item["currency"]),
-                    value=cast(float, item["value"]),
+                    grade=cast(str, price_item["grade"]),
+                    currency=currency,
+                    value=cast(float, price_item["price"]),
                 )
             )
         return prices
@@ -111,7 +123,7 @@ class PriceService(PriceServiceBase):
         self._track_response(response)
 
         items = self._extract_items_from_response(response)
-        prices = self._to_models(items, issue_id=issue_id)
+        prices = self.to_models(items, issue_id=issue_id)
 
         logger.info(
             f"Retrieved {len(prices)} prices for issue {issue_id} {response.cached_indicator}"
@@ -166,7 +178,7 @@ class PriceService(PriceServiceBase):
         self._track_response(response)
 
         items = self._extract_items_from_response(response)
-        prices = self._to_models(items, issue_id=issue_id)
+        prices = self.to_models(items, issue_id=issue_id)
 
         logger.info(
             f"Retrieved {len(prices)} prices for issue {issue_id} {response.cached_indicator}"

@@ -7,6 +7,7 @@ import click
 from numistalib.cli.theme import CLISettings
 from numistalib.config import Settings
 
+# pyright: reportUnusedFunction = false
 
 def register_config_commands(parent: click.Group) -> None:
     """Register config commands with parent group.
@@ -50,16 +51,14 @@ def register_config_commands(parent: click.Group) -> None:
             console = CLISettings.console()
             settings = Settings()
             table = CLISettings.create_table("numistalib Configuration")
-            CLISettings.table_add_columns(
-                table,
-                ["Setting", "Value"]
-            )
+            table.add_column("Setting")
+            table.add_column("Value")
 
             for field_name in type(settings).model_fields:
                 value = getattr(settings, field_name)
                 if field_name == "api_key":
                     value = "***" if value else None
-                CLISettings.table_add_row(table, [field_name, value])
+                table.add_row(field_name, str(value) if value is not None else "")
 
             console.print(table)
         except (AttributeError, ValueError) as err:

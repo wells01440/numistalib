@@ -23,7 +23,7 @@ class UserService(UserServiceBase):
         """
         super().__init__(client)
 
-    def _to_models(  # noqa: PLR6301
+    def to_models(  # noqa: PLR6301
         self, items: list[Mapping[str, Any]], **kwargs: Any  # noqa: ARG002
     ) -> list[User]:
         """Convert API response items to User models.
@@ -79,7 +79,7 @@ class UserService(UserServiceBase):
         self._track_response(response)
         data = cast(Mapping[str, Any], response.json())
 
-        user = self._to_models([data.get("user", {})])[0]
+        user = self.to_models([data.get("user", {})])[0]
 
         logger.info(f"Retrieved user {user_id}: {user.username} {response.cached_indicator}")
         return user
@@ -213,7 +213,7 @@ class UserService(UserServiceBase):
         self._track_response(response)
         data = cast(Mapping[str, Any], response.json())
 
-        user = self._to_models([data.get("user", {})])[0]
+        user = self.to_models([data.get("user", {})])[0]
 
         logger.info(f"Retrieved user {user_id}: {user.username} {response.cached_indicator}")
         return user

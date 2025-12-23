@@ -7,6 +7,7 @@ from numistalib.cli.theme import CLISettings
 from numistalib.config import Settings
 from numistalib.services import CatalogueService
 
+# pyright: reportUnusedFunction = false
 
 def register_catalogues_commands(parent: click.Group) -> None:
     """Register catalogues commands with parent group.
@@ -22,13 +23,12 @@ def register_catalogues_commands(parent: click.Group) -> None:
     def catalogues_cmd(table: bool) -> None:
         """List all reference catalogues (panel default, table with -t/--table)."""
         console = CLISettings.console()
+        settings = Settings()
+        client = Settings.to_client(settings)
+        service = CatalogueService(client)
+        model_cls = service.MODEL
 
         try:
-            settings = Settings()
-            client = Settings.to_client(settings)
-            service = CatalogueService(client)
-            model_cls = service.MODEL
-
             results = service.get_catalogues()
 
             if not results:
@@ -36,7 +36,7 @@ def register_catalogues_commands(parent: click.Group) -> None:
                 return
 
             if table:
-                output = model_cls.as_table(results, "Reference Catalogues")
+                output = model_cls.render_table(results, "Reference Catalogues")
                 console.print(output)
                 console.print(f"\n[success]Found {len(results)} catalogues[/success]")
                 return

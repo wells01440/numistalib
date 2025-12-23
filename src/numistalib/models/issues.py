@@ -3,12 +3,54 @@
 Pydantic models for Numista coin issues (specific years/mints of a type).
 """
 
-from datetime import date
-from typing import Any
+from datetime import date, datetime
+from typing import Any, Self
 
 from pydantic import Field, HttpUrl, computed_field, field_validator
+from rich.table import Table
 
 from numistalib.models.base import NumistaBaseModel
+from numistalib.models.references import Reference
+
+
+class Mark(NumistaBaseModel):
+    """Mint mark, privy mark, or die mark on a coin.
+
+    Parameters
+    ----------
+    mark_id : int
+        Unique ID of the mark
+    title : str | None
+        Title/name of the mark (optional)
+    picture : HttpUrl | None
+        URL to picture of the mark (optional)
+    letters : str | None
+        Letters of the mark (optional)
+
+    Notes
+    -----
+    Marks either have a picture or letters, not both.
+    """
+
+    mark_id: int = Field(description="Mark ID")
+    title: str | None = Field(None, description="Mark title")
+    picture: HttpUrl | None = Field(None, description="URL to mark picture")
+    letters: str | None = Field(None, description="Mark letters")
+
+
+class Signature(NumistaBaseModel):
+    """Signature on a banknote.
+
+    Parameters
+    ----------
+    signer_name : str
+        Name of the person who signed
+    signer_title : str | None
+        Job title of the person who signed (optional)
+    """
+
+    signer_name: str = Field(description="Signer name")
+    signer_title: str | None = Field(None, description="Signer job title")
 
 
 class Issue(NumistaBaseModel):
@@ -64,9 +106,59 @@ class Issue(NumistaBaseModel):
     is_dated: bool = Field(description="Whether issue has a visible date")
     year: int | None = Field(None, description="Year visible on coin")
     gregorian_year: int | None = Field(None, description="Gregorian calendar year")
+    min_year: int | None = Field(None, description="First year of issuance (non-dated)")
+    max_year: int | None = Field(None, description="Last year of issuance (non-dated)")
     mint_letter: str | None = Field(None, max_length=10, description="Mint mark")
+    marks: list[Mark] = Field(default_factory=list, description="Mint/privy/die marks")
+    signatures: list[Signature] = Field(default_factory=list, description="Signatures (banknotes)")
     mintage: int | None = Field(None, description="Number minted")
+    references: list[Reference] = Field(default_factory=list, description="Catalogue references")
     comment: str | None = Field(None, description="Additional notes")
+
+    @classmethod
+    def render_table(cls, items: list[Self], title: str = "") -> Table:
+        """Generate table for issue list.
+
+        Parameters
+        ----------
+        items : list[Self]
+            List of Issue instances
+        title : str
+            Table title
+
+        Returns
+        -------
+        Table
+            Rich table with issue information
+        """
+        table = Table(show_header=True, box=None, pad_edge=False, title=title)
+        table.add_column("ID", no_wrap=True)
+        table.add_column("Type ID", no_wrap=True)
+        table.add_column("Year", no_wrap=True)
+        table.add_column("Mint", no_wrap=True)
+        table.add_column("Mintage", no_wrap=True, justify="right")
+        table.add_column("Comment", no_wrap=False)
+
+        for issue in items:
+            # Display year or year range
+            year_display = ""
+            if issue.year:
+                year_display = str(issue.year)
+            elif issue.min_year and issue.max_year:
+                year_display = f"{issue.min_year}-{issue.max_year}"
+            elif issue.min_year:
+                year_display = f"{issue.min_year}+"
+
+            table.add_row(
+                str(issue.numista_id),
+                str(issue.type_id),
+                year_display,
+                issue.mint_letter or "",
+                f"{issue.mintage:,}" if issue.mintage else "",
+                issue.comment or ""
+            )
+
+        return table
 
 
 class IssueTerms(NumistaBaseModel):
@@ -110,7 +202,6 @@ class IssueTerms(NumistaBaseModel):
             if "00" in v or v.endswith("-00"):
                 return None
             # Try multiple date formats
-            from datetime import datetime
             formats = [
                 "%Y-%m-%d",      # 1988-02-15
                 "%Y/%m/%d",      # 1988/02/15

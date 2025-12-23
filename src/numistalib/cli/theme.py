@@ -167,16 +167,21 @@ class CLISettings:
         model_cls: type[BaseModel],
         include_cache: bool = False,
     ) -> list[str]:
-        """Infer human-readable column names from a Pydantic model."""
+        """Infer concise column names from a Pydantic model.
+
+        Uses short, humanized field names instead of verbose descriptions.
+        This prevents overly long headers when model field descriptions
+        contain detailed documentation.
+        """
         columns: list[str] = []
 
         if include_cache:
             columns.append("Cache")
 
-        # Use model_fields for reliable ordering and metadata
+        # Use model_fields for reliable ordering
         for field_name, field_info in model_cls.model_fields.items():
-            # Prefer description if available, else title-cased name
-            column_name = field_info.description or field_name.replace("_", " ").title()
+            # Always use short, humanized field name
+            column_name = field_name.replace("_", " ").title()
             columns.append(column_name)
 
         return columns

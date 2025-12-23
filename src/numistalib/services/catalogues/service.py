@@ -24,7 +24,7 @@ class CatalogueService(CatalogueServiceBase):
         """
         super().__init__(client)
 
-    def _to_models(  # noqa: PLR6301
+    def to_models(  # noqa: PLR6301
         self, items: list[Mapping[str, Any]], **kwargs: Any  # noqa: ARG002
     ) -> list[Catalogue]:
         """Convert API response items to Catalogue models.
@@ -78,7 +78,7 @@ class CatalogueService(CatalogueServiceBase):
         self._track_response(response)
 
         items = self._extract_items_from_response(response)
-        catalogues = self._to_models(items)
+        catalogues = self.to_models(items)
 
         logger.info(f"Retrieved {len(catalogues)} catalogues {response.cached_indicator}")
         return catalogues
@@ -103,7 +103,7 @@ class CatalogueService(CatalogueServiceBase):
         self._track_response(response)
 
         items = self._extract_items_from_response(response)
-        catalogues = self._to_models(items)
+        catalogues = self.to_models(items)
 
         logger.info(f"Retrieved {len(catalogues)} catalogues {response.cached_indicator}")
         return catalogues

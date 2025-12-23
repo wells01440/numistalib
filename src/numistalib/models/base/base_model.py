@@ -4,13 +4,17 @@ Common configuration, behavior, and abstract base classes for Pydantic models.
 """
 import re
 from abc import ABC
-from typing import Any
+from typing import Any, Self, Iterable
 
 import rich.repr
 from bs4 import BeautifulSoup
 from pydantic import BaseModel, ConfigDict
 from pydantic.alias_generators import to_camel
+from rich.console import Group, RenderableType
 from rich.table import Table
+from rich.console import Console, ConsoleOptions
+from rich.text import Text
+from pydantic_core import core_schema
 
 # Panel formatting constants
 PANEL_VALUE_COLUMN: int = 20
@@ -234,67 +238,212 @@ class NumistaBaseModel(ABC, BaseModel):
         """
         return list(self.formatted_fields_dict.values())
 
-    def formatted_fields_deep(self) -> dict[str, str]:
-        """Return formatted fields and recurse into related model lists without tables."""
-        formatted: dict[str, str] = {}
+    # def formatted_fields_deep(self) -> dict[str, str]:
+    #     """Return formatted fields and recurse into related model lists without tables."""
+    #     formatted: dict[str, str] = {}
 
-        def process_field(field_name: str, value: Any) -> None:
-            if value is None:
-                return
+    #     def process_field(field_name: str, value: Any) -> None:
+    #         if value is None:
+    #             return
 
-            label = field_name.replace("_", " ").title()
+    #         label = field_name.replace("_", " ").title()
 
-            if isinstance(value, list) and value and all(isinstance(item, NumistaBaseModel) for item in value):
-                item_blocks = ["\n".join(item.formatted_fields) for item in value]
-                formatted[field_name] = format_field(label, "\n\n".join(item_blocks))
-                return
+    #         if isinstance(value, list) and value and all(isinstance(item, NumistaBaseModel) for item in value):
+    #             item_blocks = ["\n".join(item.formatted_fields) for item in value]
+    #             formatted[field_name] = format_field(label, "\n\n".join(item_blocks))
+    #             return
 
-            formatted[field_name] = format_field(label, value)
+    #         formatted[field_name] = format_field(label, value)
 
-        for field_name in self.__class__.model_fields.keys():
-            process_field(field_name, getattr(self, field_name, None))
+    #     for field_name in self.__class__.model_fields.keys():
+    #         process_field(field_name, getattr(self, field_name, None))
 
-        for field_name in self.__class__.model_computed_fields.keys():
-            if field_name in ("panel_template", "formatted_fields_dict", "formatted_fields_deep"):
-                continue
-            process_field(field_name, getattr(self, field_name, None))
+    #     for field_name in self.__class__.model_computed_fields.keys():
+    #         if field_name in ("panel_template", "formatted_fields_dict", "formatted_fields_deep"):
+    #             continue
+    #         process_field(field_name, getattr(self, field_name, None))
 
-        return formatted
+    #     return formatted
 
-    @staticmethod
-    def as_table(items: list[Any], title: str = "") -> Table:
-        """Return a Rich Table representation of model instances.
+    def render_compact(self) -> RenderableType:
+        """Render compact representation for grid display.
 
-        Generates a standard table with headers and rows using model field names.
-
-        Parameters
-        ----------
-        items : list[Any]
-            List of model instances to display
-        title : str
-            Table title
+        Default implementation returns formatted title and key metadata.
+        Override in subclasses for custom compact display.
 
         Returns
         -------
-        rich.table.Table
-            Rich Table object with headers and data rows
+        RenderableType
+            Compact renderable for grid/column layout
+        """
+        # Get a simple text representation with key fields
+        lines: list[str] = []
+        
+        # Try to get a primary identifier
+        title = getattr(self, 'title', None)
+        if title is not None:
+            lines.append(str(title))
+        else:
+            name = getattr(self, 'name', None)
+            if name is not None:
+                lines.append(str(name))
+            else:
+                numista_id = getattr(self, 'numista_id', None)
+                if numista_id is not None:
+                    lines.append(f"ID: {numista_id}")
+        
+        # Add secondary info if available
+        year = getattr(self, 'year', None)
+        if year is not None:
+            lines.append(f"Year: {year}")
+        else:
+            min_year = getattr(self, 'min_year', None)
+            max_year = getattr(self, 'max_year', None)
+            if min_year is not None and max_year is not None:
+                year_info = str(min_year) if min_year == max_year else f"{min_year}-{max_year}"
+                lines.append(f"Years: {year_info}")
+        
+        country = getattr(self, 'country', None)
+        if country is not None:
+            country_name = getattr(country, 'name', None)
+            if country_name is not None:
+                lines.append(str(country_name))
+            else:
+                lines.append(str(country))
+        else:
+            issuer = getattr(self, 'issuer', None)
+            if issuer is not None:
+                issuer_name = getattr(issuer, 'name', None)
+                if issuer_name is not None:
+                    lines.append(str(issuer_name))
+                else:
+                    lines.append(str(issuer))
+        
+        return "\n".join(lines) if lines else str(self)
+
+    @classmethod
+    def render_list(cls, items: list[Self]) -> Group | str:
+        """Render list of items as Rich Group with horizontal rule separators.
+        
+        Helper for CLI list rendering. Calls render_compact() on each item
+        and adds horizontal rules between items when there are multiple.
+        
+        Parameters
+        ----------
+        items : list[Self]
+            List of model instances to render
+            
+        Returns
+        -------
+        Group | str
+            Rich Group containing all items with separators, or message if empty
         """
         if not items:
-            return Table(title=title)
+            return "No items available"
+        
+        content: list[RenderableType] = []
+        for i, item in enumerate(items):
+            content.append(item.render_compact())
+            # Add horizontal rule separator between items (not after last)
+            if i < len(items) - 1:
+                content.append("")  # Blank line
+                content.append("─" * 80)  # Horizontal rule
+                content.append("")  # Blank line
+        
+        return Group(*content)
 
-        # Get all field names from the first item
-        all_cols: list[str] = list(items[0].__class__.model_fields.keys())
+    def as_panel(self, style_overrides: dict[str, Any] | None = None) -> Any:
+        """Render model as Rich Panel.
+        
+        Default implementation creates a panel with formatted fields.
+        Override in subclasses for custom panel layout.
+        
+        Parameters
+        ----------
+        style_overrides : dict[str, Any] | None
+            Optional style overrides for the panel
+            
+        Returns
+        -------
+        Panel
+            Rich Panel with model data
+        """
+        from numistalib.cli.theme import CLISettings
+        
+        # Get formatted fields as content
+        content = "\n".join(self.formatted_fields)
+        
+        # Get title (try common field names)
+        title = None
+        for field_name in ["title", "name", "code"]:
+            if hasattr(self, field_name):
+                title = getattr(self, field_name)
+                break
+        
+        if not title:
+            title = self.__class__.__name__
+        
+        return CLISettings.panel(content=content, title=str(title))
 
-        # Create table with headers
-        table = Table(show_header=True, box=None, pad_edge=False, title=title)
-        for col in all_cols:
-            # Convert field name to human-readable header
-            header = col.replace("_", " ").title()
-            table.add_column(header, no_wrap=True)
 
-        # Add rows with simple string values
-        for row in items:
-            row_values = [str(getattr(row, col, "")) for col in all_cols]
-            table.add_row(*row_values)
+class RichField:
+    """Wrapper for Rich renderables to use as Pydantic fields.
 
-        return table
+    Stores any Rich renderable (Panel, Table, Text, or plain string/None)
+    and implements the Rich console protocol for direct rendering.
+
+    Also provides a simple `format_field` helper used by tests to produce
+    aligned label/value output.
+    """
+
+    def __init__(self, value: Any | None = None) -> None:
+        self.value = value
+
+    def __str__(self) -> str:
+        if self.value is None:
+            return ""
+        return str(self.value)
+
+    # Rich console protocol
+    def __rich_console__(self, console: Console, options: ConsoleOptions) -> Iterable[RenderableType]:
+        if self.value is None:
+            yield Text("")
+        elif isinstance(self.value, (str, Text)):
+            yield self.value if isinstance(self.value, Text) else Text(self.value)
+        else:
+            # Assume it's a Rich renderable; let Rich handle it
+            yield self.value  # type: ignore[misc]
+
+    def format_field(self, label: str, width: int = 20, fill_char: str = " ") -> str:
+        """Return a simple one-line formatted label/value string.
+
+        Parameters
+        ----------
+        label : str
+            Field label to display before the value
+        width : int
+            Column at which value starts (minimum)
+        fill_char : str
+            Character used to pad between label and value
+        """
+        label_text = f"{label}:"
+        pad_len = max(0, width - len(label_text))
+        padding = fill_char * pad_len
+        return f"{label_text}{padding}{self.__str__()}"
+
+    @classmethod
+    def __get_pydantic_core_schema__(cls, source_type: Any, handler: Any) -> core_schema.CoreSchema:  # type: ignore[name-defined]
+        """Pydantic v2 integration: accept any input and wrap as RichField.
+
+        Allows using `RichField` as a typed field without enabling
+        `arbitrary_types_allowed` globally.
+        """
+        def _validate(value: Any) -> "RichField":
+            return value if isinstance(value, RichField) else RichField(value)
+
+        return core_schema.no_info_after_validator_function(
+            _validate,
+            core_schema.any_schema(),
+            serialization=core_schema.plain_serializer_function_ser_schema(lambda v: str(v), when_used="json"),
+        )
+

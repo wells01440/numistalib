@@ -7,6 +7,8 @@ from numistalib.cli.theme import CLISettings
 from numistalib.config import Settings
 from numistalib.services import MintService
 
+# pyright: reportUnusedFunction = false
+
 
 def register_mints_commands(parent: click.Group) -> None:
     """Register mints commands with parent group.
@@ -26,19 +28,19 @@ def register_mints_commands(parent: click.Group) -> None:
             numistalib mints
             numistalib mints --lang es
         """
-        try:
-            settings = Settings()
-            client = Settings.to_client(settings)
-            service = MintService(client)
-            model_cls = getattr(service, "MODEL", None)
+        settings = Settings()
+        client = Settings.to_client(settings)
+        service = MintService(client)
+        model_cls = getattr(service, "MODEL", None)
 
+        try:
             results = service.get_mints(lang=lang)
 
             if not results:
                 CLISettings.console().print("[warning]No mints found[/warning]")
                 return
 
-            output = model_cls.as_table(results, "Mints")
+            output = model_cls.render_table(results, "Mints")
             CLISettings.console().print(output)
             CLISettings.console().print(f"\n[success]Found {len(results)} mints[/success]")
 
@@ -51,11 +53,11 @@ def register_mints_commands(parent: click.Group) -> None:
     def mint(mint_id: int, lang: str) -> None:
         """Show details for a specific mint."""
         console = CLISettings.console()
-        try:
-            settings = Settings()
-            client = Settings.to_client(settings)
-            service = MintService(client)
+        settings = Settings()
+        client = Settings.to_client(settings)
+        service = MintService(client)
 
+        try:
             result = service.get_mint(mint_id, lang=lang)
 
             panel = service._format_panel(result)

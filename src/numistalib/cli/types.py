@@ -5,16 +5,14 @@ from typing import Any
 
 import click
 from rich.table import Table
-from rich.console import Group
 
 from numistalib.cli.theme import CLISettings
 from numistalib.config import Settings
-from numistalib.models.types import TypeBasic, TypeFull
+from numistalib.models.types import Ruler, TypeBasic, TypeFull
 from numistalib.services import TypeBasicService, TypeFullService
 
 # pyright: reportOptionalMemberAccess = false
-# pyright: reportUnknownArgumentType = false
-# pyright: reportUnknownMemberType = false
+# pyright: reportUnusedFunction = false
 
 async def _consume_type_search_results(
     service: TypeBasicService,
@@ -48,116 +46,6 @@ async def _consume_type_search_results(
     return count
 
 
-def print_type_details(service: TypeFullService, t: TypeFull) -> None:
-    """Print detailed type information using theme-aware, vertical scrolling layout."""
-    console = CLISettings.console()
-
-    general_panel = CLISettings.panel(
-        title=f"{service.last_cache_indicator} Type Details",
-        content=f"""
-{t.formatted_fields_dict.get("numista_Id")}
-{t.formatted_fields_dict.get("numista_url")}
-{t.formatted_fields_dict.get("title")}
-{t.formatted_fields_dict.get("series")}
-{t.formatted_fields_dict.get("category")}
-{t.formatted_fields_dict.get("year_range")}
-{t.demonetization.formatted_fields_dict.get("is_demonetized",  "")}
-{t.formatted_fields_dict.get("commemorated_topic")}
-
-[header]Tags:[/header]
-{" ".join([f"[inverse]{g}[/inverse]" for g in t.tags]) if t.tags else ""}
-        """)
-
-
-    value_panel = CLISettings.panel(
-        title="Value",
-        content=f"""
-{t.value.formatted_fields_dict.get("text", "")}
-{t.value.formatted_fields_dict.get("numeric_value", "")}
-{t.value.formatted_fields_dict.get("numerator", "")}
-{t.value.formatted_fields_dict.get("denominator", "")}
-[header]Currency:[/header]
-{t.value.currency.formatted_fields_dict.get("name", "")}
-{t.value.currency.formatted_fields_dict.get("full_name", "")}
-{t.value.currency.formatted_fields_dict.get("symbol", "")}
-{t.value.currency.formatted_fields_dict.get("numista_id", "")}
-""")
-
-    issuer_panel = CLISettings.panel(
-        title="Issuer",
-        content=f"""
-{t.formatted_fields_dict.get("issuing_entity")}
-{t.formatted_fields_dict.get("issue_terms")}
-{t.issuer.formatted_fields_dict.get("code", "")}
-{t.issuer.formatted_fields_dict.get("name", "")}""")
-    mints_panel = CLISettings.panel(
-        title="Mints",
-        content=t.as_table(t.mints, title="Mints") if t.mints else "No mints available")
-
-
-    specs_panel = CLISettings.panel(
-        title="Physical Specifications",
-        content= f"""
-{t.formatted_fields_dict.get("orientation", "")}
-{t.formatted_fields_dict.get("shape", "")}
-{t.formatted_fields_dict.get("size", "")}
-{t.formatted_fields_dict.get("thickness", "")}
-[header]Composition:[/header]
-{t.composition.formatted_fields_dict.get("text", "")}
-""")
-
-    edge_panel = CLISettings.panel(
-        title="Edge Specifications",
-        content=Group(
-            "\n".join([f for f in t.edge.formatted_fields]) if t.edge else "No edge specifications",
-            t.edge.renderable_thumbnail if t.edge and t.edge.renderable_thumbnail else ""
-        ) if t.edge else "No edge specifications")
-    obverse_panel = CLISettings.panel(
-        title="Obverse Specifications",
-        content=Group(
-            "\n".join([f for f in t.obverse.formatted_fields]),
-            t.obverse.renderable_thumbnail if t.obverse.renderable_thumbnail else ""
-        ))
-
-    reverse_panel = CLISettings.panel(
-        title="Reverse Specifications",
-        content=Group(
-            "\n".join([f for f in t.reverse.formatted_fields]),
-            t.reverse.renderable_thumbnail if t.reverse.renderable_thumbnail else ""
-        ))
-
-    rulers_panel = CLISettings.panel(
-        title="Rulers",
-        content=t.as_table(t.rulers, title="") if t.rulers else "No rulers available")
-
-    references_panel = CLISettings.panel(
-        title="References",
-        content=t.as_table(t.references, title="") if t.references else "No references available")
-
-    related_types_panel = CLISettings.panel(
-        title="Related Types",
-        content=t.as_table(t.related_types, title="") if t.related_types else "No related types available")
-
-    comments_panel = CLISettings.panel(
-        title="Comments",
-        content=t.formatted_fields_dict.get("comments", "")
-    )
-
-    console.print(general_panel)
-    console.print(value_panel)
-    console.print(issuer_panel)
-    console.print(mints_panel)
-    console.print(specs_panel)
-    console.print(edge_panel)
-    console.print(obverse_panel)
-    console.print(reverse_panel)
-    console.print(rulers_panel)
-    console.print(references_panel)
-    console.print(related_types_panel)
-    console.print(comments_panel)
-    console.print(CLISettings.LICENSE_TEXT, style="footer")
-
-
 def register_types_commands(parent: click.Group) -> None:
     """Register types commands with parent group."""
 
@@ -170,7 +58,7 @@ def register_types_commands(parent: click.Group) -> None:
     @click.option("-i", "--issuer", help="Issuer code (e.g., 'united-states')")
     @click.option("-y", "--year", type=int, help="Filter by year")
     @click.option("-c", "--category", type=click.Choice(["coin", "banknote", "exonumia"]), help="Category")
-    @click.option("--limit", type=int, default=50, help="Maximum results to return")
+    @click.option("--limit", type=int, default=50, help="Maximum total results")
     @click.option("--lang", default="en", type=click.Choice(["en", "es", "fr"]), help="Language")
     def types_search(
         query: str | None,
@@ -189,9 +77,7 @@ def register_types_commands(parent: click.Group) -> None:
         try:
             # settings already created above
 
-            table = CLISettings.create_table("Search Results", include_cache_column=True)
-            columns = CLISettings.infer_columns_from_model(TypeBasic, include_cache=True)
-            CLISettings.add_columns_to_table(table, columns)
+            # Use model-driven table rendering for concise headers and values
 
             search_params: dict[str, Any] = {
                 "query": query,
@@ -202,13 +88,23 @@ def register_types_commands(parent: click.Group) -> None:
                 "lang": lang,
             }
 
-            count = asyncio.run(_consume_type_search_results(service, table, search_params))
+            # Collect items via async pagination to pass to model's renderer
+            collected: list[TypeBasic] = []
+            async def _collect() -> None:
+                async for result in service.search_types_paginated(**search_params):
+                    collected.append(result)
+            asyncio.run(_collect())
 
-            if count == 0:
+            # Render table using model's classmethod
+            output_table = TypeBasic.render_list(collected)
+            console.print(output_table)
+            result_count = len(collected)
+
+            if result_count == 0:
                 console.print("[warning]No results found[/warning]")
             else:
-                console.print(table)
-                console.print(f"\n[success]Displayed {count} result{'s' if count != 1 else ''}[/success]")
+                suffix = f" for '{query}'" if query else ""
+                console.print(f"\n[success]Displayed {result_count} result{'s' if result_count != 1 else ''}{suffix}[/success]")
 
         except Exception as err:
             service.handle_cli_error(err, "searching types", "types-search")
@@ -222,9 +118,12 @@ def register_types_commands(parent: click.Group) -> None:
         settings = Settings()
         client = Settings.to_client(settings)
         service = TypeFullService(client)
-        try:
 
+        try:
             result = service.get_type(type_id, lang=lang)
-            print_type_details(service, result)
+            console = CLISettings.console()
+            for panel in result.render_detail(service.last_cache_indicator):
+                console.print(panel)
+            console.print(CLISettings.LICENSE_TEXT, style="footer")
         except Exception as err:
             service.handle_cli_error(err, f"retrieving type {type_id}", "types-get")

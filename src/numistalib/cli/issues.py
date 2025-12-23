@@ -6,9 +6,12 @@ import click
 
 from numistalib.cli.theme import CLISettings
 from numistalib.config import Settings
+from numistalib.models import Issue
 from numistalib.services import IssueService
 
-COMMENT_MAX_LENGTH = 40
+# pyright: reportUnusedFunction = false
+
+COMMENT_MAX_LENGTH = 400
 
 
 def register_issues_commands(parent: click.Group) -> None:
@@ -27,15 +30,15 @@ def register_issues_commands(parent: click.Group) -> None:
     @click.option("-t", "--table", is_flag=True, help="Render results as a table")
     def issues(type_id: int, limit: int, lang: str, table: bool) -> None:
         """Show issues for a type (panel by default, table with -t/--table)."""
-        try:
-            console = CLISettings.console()
-            settings = Settings()
-            client = Settings.to_async_client(settings)
-            service = IssueService(client)
-            model_cls = service.MODEL
+        console = CLISettings.console()
+        settings = Settings()
+        client = Settings.to_async_client(settings)
+        service = IssueService(client)
+        model_cls = service.MODEL
 
-            async def consume_issues() -> list:
-                issues_list = []
+        try:
+            async def consume_issues() -> list[Issue]:
+                issues_list: list[Issue] = []
                 async for issue in service.get_issues_paginated(type_id=type_id, lang=lang, limit=limit):
                     issues_list.append(issue)
                 return issues_list
@@ -47,7 +50,7 @@ def register_issues_commands(parent: click.Group) -> None:
                 return
 
             if table:
-                output = model_cls.as_table(issues_list, f"Issues for Type {type_id}")
+                output = model_cls.render_table(issues_list, f"Issues for Type {type_id}")
                 console.print(output)
             else:
                 for issue in issues_list:

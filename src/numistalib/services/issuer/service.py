@@ -24,7 +24,7 @@ class IssuerService(IssuerServiceBase):
         """
         super().__init__(client)
 
-    def _to_models(  # noqa: PLR6301
+    def to_models(  # noqa: PLR6301
         self, items: list[Mapping[str, Any]], **kwargs: Any  # noqa: ARG002
     ) -> list[Issuer]:
         """Convert API response items to Issuer models.
@@ -88,7 +88,7 @@ class IssuerService(IssuerServiceBase):
         self._track_response(response)
 
         items = self._extract_items_from_response(response)
-        issuers = self._to_models(items)
+        issuers = self.to_models(items)
 
         logger.info(f"Retrieved {len(issuers)} issuers {response.cached_indicator}")
         return issuers
@@ -124,7 +124,7 @@ class IssuerService(IssuerServiceBase):
         self._track_response(response)
 
         items = self._extract_items_from_response(response)
-        issuers = self._to_models(items)
+        issuers = self.to_models(items)
 
         logger.info(f"Retrieved {len(issuers)} issuers {response.cached_indicator}")
         return issuers
@@ -163,7 +163,7 @@ class IssuerService(IssuerServiceBase):
 
             data = cast(Mapping[str, Any], response.json())
             items = cast(list[Mapping[str, Any]], data.get(self.CLASS_ITEMS_KEY, []))
-            issuers = self._to_models(items)
+            issuers = self.to_models(items)
 
             for issuer in issuers:
                 yield issuer

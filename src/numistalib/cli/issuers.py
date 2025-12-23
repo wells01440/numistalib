@@ -6,7 +6,10 @@ import click
 
 from numistalib.cli.theme import CLISettings
 from numistalib.config import Settings
+from numistalib.models import Issuer
 from numistalib.services import IssuerService
+
+# pyright: reportUnusedFunction = false
 
 
 def register_issuers_commands(parent: click.Group) -> None:
@@ -25,15 +28,15 @@ def register_issuers_commands(parent: click.Group) -> None:
     def issuers(lang: str, limit: int, table: bool) -> None:
         """List issuing entities (panel default, table with -t/--table)."""
         console = CLISettings.console()
+        settings = Settings()
+        client = Settings.to_async_client(settings)
+        service = IssuerService(client)
+        model_cls = service.MODEL
+
         try:
-            settings = Settings()
-            client = Settings.to_async_client(settings)
-            service = IssuerService(client)
-            model_cls = service.MODEL
+            issuers_list: list[Issuer] = []
 
-            issuers_list: list = []
-
-            async def consume_issuers() -> list:
+            async def consume_issuers() -> list[Issuer]:
                 async for issuer in service.get_issuers_paginated(lang=lang, limit=limit):
                     issuers_list.append(issuer)
                 return issuers_list
@@ -45,7 +48,7 @@ def register_issuers_commands(parent: click.Group) -> None:
                 return
 
             if table:
-                output = model_cls.as_table(issuers_list, "Issuers")
+                output = model_cls.render_table(issuers_list, "Issuers")
                 console.print(output)
             else:
                 for issuer in issuers_list:

@@ -76,7 +76,7 @@ class TypeBasicService(TypeBasicServiceBase):
     def __init__(self, client: SyncClientProtocol | AsyncClientProtocol) -> None:
         super().__init__(client)
 
-    def _to_models(self, items: list[Mapping[str, Any]], **kwargs: Any) -> list[TypeBasic]:  # noqa: PLR6301, ARG002
+    def to_models(self, items: list[Mapping[str, Any]], **kwargs: Any) -> list[TypeBasic]:  # noqa: PLR6301, ARG002
         return [TypeBasic.model_validate(item) for item in items]
 
     def search_types(self, params: SearchParams) -> list[TypeBasic]:
@@ -201,7 +201,7 @@ class TypeFullService(TypeFullServiceBase):
     def __init__(self, client: SyncClientProtocol | AsyncClientProtocol) -> None:
         super().__init__(client)
 
-    def _to_models(self, items: list[Mapping[str, Any]], **kwargs: Any) -> list[TypeFull]:  # noqa: PLR6301, ARG002
+    def to_models(self, items: list[Mapping[str, Any]], **kwargs: Any) -> list[TypeFull]:  # noqa: PLR6301, ARG002
         return [TypeFull.model_validate(item) for item in items]
 
     def get_type(self, type_id: int, *, lang: str | None = None) -> TypeFull:
@@ -264,9 +264,9 @@ class TypeFullService(TypeFullServiceBase):
 class TypeService(TypeFullService, TypeBasicService, TypeServiceBase):  # type: ignore[misc]
     """Composite type service combining search (basic) and detail (full).
 
-    Note: mypy reports _to_models conflict between TypeBasicService (returns list[TypeBasic])
+    Note: mypy reports to_models conflict between TypeBasicService (returns list[TypeBasic])
     and TypeFullService (returns list[TypeFull]). This is inherent to composite service design;
-    each parent class uses its own _to_models internally. Python MRO resolves correctly at runtime.
+    each parent class uses its own to_models internally. Python MRO resolves correctly at runtime.
     """
 
     def __init__(self, client: SyncClientProtocol | AsyncClientProtocol) -> None:

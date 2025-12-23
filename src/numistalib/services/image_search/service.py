@@ -27,7 +27,7 @@ class ImageSearchService(ImageSearchServiceBase):
         """
         super().__init__(client)
 
-    def _to_models(  # noqa: PLR6301
+    def to_models(  # noqa: PLR6301
         self, items: list[Mapping[str, Any]], **kwargs: Any  # noqa: ARG002
     ) -> list[TypeBasic]:
         """Convert API response items to TypeBasic models.
@@ -124,7 +124,7 @@ class ImageSearchService(ImageSearchServiceBase):
         data = cast(Mapping[str, Any], response.json())
         items = cast(list[Mapping[str, Any]], data.get(self.CLASS_ITEMS_KEY, []))
 
-        types = self._to_models(items)
+        types = self.to_models(items)
 
         logger.info(
             f"Image search found {len(types)} matching types {response.cached_indicator}"
@@ -189,7 +189,7 @@ class ImageSearchService(ImageSearchServiceBase):
         data = cast(Mapping[str, Any], response.json())
         items = cast(list[Mapping[str, Any]], data.get(self.CLASS_ITEMS_KEY, []))
 
-        types = self._to_models(items)
+        types = self.to_models(items)
 
         logger.info(
             f"Image search found {len(types)} matching types {response.cached_indicator}"

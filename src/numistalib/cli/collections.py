@@ -4,6 +4,7 @@ import click
 
 from numistalib.cli.theme import CLISettings
 
+# pyright: reportUnusedFunction = false
 
 def register_collections_commands(parent: click.Group) -> None:
     """Register collections commands with parent group.
@@ -21,7 +22,7 @@ def register_collections_commands(parent: click.Group) -> None:
 
     @collections.command(name="list")
     @click.argument("user_id", type=int)
-    def collections_list(_user_id: int) -> None:
+    def collections_list(user_id: int) -> None:
         """List collections for a user.
 
         Examples:
@@ -33,7 +34,7 @@ def register_collections_commands(parent: click.Group) -> None:
     @collections.command(name="items")
     @click.argument("user_id", type=int)
     @click.option("--collection-id", type=int, help="Filter by collection ID")
-    def collections_items(_user_id: int, _collection_id: int | None) -> None:
+    def collections_items(user_id: int, collection_id: int | None) -> None:
         """List items in a user's collection.
 
         Examples:

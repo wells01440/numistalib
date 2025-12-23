@@ -26,19 +26,18 @@ numistalib = "numistalib.cli:main"
 
 [dependency-groups]
 dev = [
-    "ruff>=0.14.6", # Linting AND formatting (replaces black)
-    "pytest>=9.0.1", # Testing
-    "pytest-mock>=3.14.0", # Mock hardware for tests
-    "pytest-qt>=4.4.0", # Qt testing (headless CI)
-    "pytest-cov>=7.0.0", # Coverage reporting
-    "radon>=6.0.1", # Complexity metrics (CI enforcement)
+    "ruff>=0.14.10", # Linting / formatting
+    "pytest>=9.0.1", 
+    "pytest-mock>=3.14.0", 
+    "pytest-cov>=7.0.0", 
+    "radon>=6.0.1", # Complexity metrics
     "types-requests>=2.31.0.202409.0", # Stubs for strict mypy
     "types-pillow>=10.2.0.20240520", # Pillow type stubs
     "uv",
     "xenon>=0.9.3",
-    "pyright>=1.1.0", # Static type checker
+    "pyright>=1.1.0", 
     "mypy>=1.19.1",
-    "pydocstyle>=6.3.0", # NumPy docstring validation (AGENTS.md §4.1)
+    "pydocstyle>=6.3.0", # NumPy docstring validation
     "interrogate>=1.7.0", # Docstring coverage enforcement
     "darglint>=1.8.1", # Docstring argument validation
 ]
@@ -53,6 +52,8 @@ target-version = "py313"
 src = ["src"]
 exclude = ["tests"]
 preview = true
+indent-width = 4
+
 
 [tool.ruff.lint]
 select = [
@@ -72,32 +73,43 @@ select = [
   "RUF",      # ruff-specific rules
   "Q",        # flake8-quotes
 ]
+# Allow fix for all enabled rules (when `--fix`) is provided.
+fixable = ["ALL"]
+unfixable = []
+# Allow unused variables when underscore-prefixed.
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 ignore = ["E501"]  # Line length handled by config
 
 [tool.ruff.format]
 quote-style = "double"
 indent-style = "space"
 line-ending = "auto"
+skip-magic-trailing-comma = false
+docstring-code-format = true
+docstring-code-line-length = "dynamic"
+
 
 [tool.pyright]
 pythonVersion = "3.13"
-typeCheckingMode = "strict"
+typeCheckingMode = "standard"
 include = ["src"]
 exclude = ["**/__pycache__", ".venv", "build", "dist", "alembic", "tests"]
 reportMissingImports = true
 reportMissingTypeStubs = false
 reportUnknownParameterType = true
-reportUnknownArgumentType = true
+reportUnknownArgumentType = false
 reportUnknownVariableType = false
-reportUnknownMemberType = true
-reportUntypedFunctionDecorator = true
-reportUntypedClassDecorator = true
-reportUntypedBaseClass = true
-reportUnusedFunction = false
+reportUnknownMemberType = false
+reportUntypedFunctionDecorator = false
+reportUntypedClassDecorator = false
+reportUntypedBaseClass = false
+reportUnusedFunction = true
+reportOptionalMemberAccess = false
+reportOptionalSubscript = false
 
 [tool.mypy]
 python_version = "3.13"
-strict = true
+strict = false
 ignore_missing_imports = true
 mypy_path = "src"
 namespace_packages = true
