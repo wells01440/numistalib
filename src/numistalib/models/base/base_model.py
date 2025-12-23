@@ -425,6 +425,6 @@ class RichField:
         return core_schema.no_info_after_validator_function(
             _validate,
             core_schema.any_schema(),
-            serialization=core_schema.plain_serializer_function_ser_schema(lambda v: str(v), when_used="json"),
+            serialization=core_schema.plain_serializer_function_ser_schema(str, when_used="json"),
         )
 
