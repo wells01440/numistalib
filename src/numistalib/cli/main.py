@@ -13,6 +13,7 @@ from numistalib.cli.issuers import register_issuers_commands
 from numistalib.cli.issues import register_issues_commands
 from numistalib.cli.literature import register_literature_commands
 from numistalib.cli.mints import register_mints_commands
+from numistalib.cli.oauth import register_oauth_commands
 from numistalib.cli.prices import register_prices_commands
 from numistalib.cli.types import register_types_commands
 from numistalib.cli.users import register_users_commands
@@ -38,6 +39,7 @@ def main() -> None:
     register_literature_commands(cli)
     register_prices_commands(cli)
     register_users_commands(cli)
+    register_oauth_commands(cli)
     cli()
 
 

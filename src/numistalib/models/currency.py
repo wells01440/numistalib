@@ -2,7 +2,8 @@
 
 Pydantic models for Numista currency information.
 """
-
+import pycountry
+from typing import Any
 
 from pydantic import Field, computed_field
 
@@ -43,9 +44,34 @@ class Currency(NumistaBaseModel):
     full_name: str = Field(max_length=255, description="Currency full name")
     symbol: str | None = Field(None, max_length=10, description="Currency symbol")
 
+    @computed_field(description="ISO 4217 currency information")
+    def iso_currency(self) -> "pycountry.db.Data | None":
+        """Get ISO 4217 currency information."""
+        if self.code:
+            currency = pycountry.currencies.get(alpha_3=self.code)
+            if currency:
+                return currency
+
     @computed_field(description="Formatted currency display")
     def display_format(self) -> str:
         """Format currency with symbol if available."""
         if self.symbol:
             return f"{self.symbol} {self.full_name}"
         return self.full_name
+
+
+class CurrencyValue(NumistaBaseModel):
+    """Currency value information."""
+
+    text: str = Field(description="Textual representation of the value")
+    numeric_value: float | None = Field(None, description="Numeric value")
+    numerator: int | None = Field(None, description="Numerator for fractional values")
+    denominator: int | None = Field(None, description="Denominator for fractional values")
+    currency: Currency | None = Field(None, description="Currency information")
+
+    def render_panel(self, 
+            title: str = "",
+            column_set: list[str] | None = ["name", "full_name", "symbol", "numista_id"]
+        ) -> Any:
+
+        return super().render_panel(title, column_set)

@@ -30,27 +30,8 @@ from pydantic import (
 from pydantic_core import Url
 from textual_image.renderable import Image as TImage
 
-from numistalib.models import Currency, Issuer, Mint, NumistaBaseModel, Reference
+from numistalib.models import Country, CurrencyValue, Issuer, Mint, NumistaBaseModel, Reference, issuer
 from numistalib.models.issues import IssueTerms
-
-
-class Country(NumistaBaseModel):
-    code: str = Field(max_length=50)
-    name: str = Field(max_length=255)
-
-    def __str__(self) -> str:
-        """Return formatted country with code and name."""
-        return f"{self.name} ({self.code})"
-
-
-class CurrencyValue(NumistaBaseModel):
-    """Currency value information."""
-
-    text: str = Field(description="Textual representation of the value")
-    numeric_value: float | None = Field(None, description="Numeric value")
-    numerator: int | None = Field(None, description="Numerator for fractional values")
-    denominator: int | None = Field(None, description="Denominator for fractional values")
-    currency: Currency | None = Field(None, description="Currency information")
 
 
 class Demonetization(NumistaBaseModel):
@@ -251,20 +232,16 @@ class SideBase(NumistaBaseModel, ABC):
     @cached_property
     def renderable_image(self) -> Any | None:
         """Ready-to-print textual_image renderable (full picture)."""
-        try:
-            img = TImage(self.pillow_image)
-            return img
-        except ImportError:
+        if self.pillow_image is None:
             return None
+        return TImage(self.pillow_image)
 
     @cached_property
     def renderable_thumbnail(self) -> Any | None:
         """Ready-to-print thumbnail."""
-        try:
-            img = TImage(self.pillow_thumbnail)
-            return img
-        except ImportError:
+        if self.pillow_thumbnail is None:
             return None
+        return TImage(self.pillow_thumbnail)
 
     @computed_field(description="Formatted copyright link for textual display")
     def copyright_link(self) -> str:
@@ -377,7 +354,7 @@ class Edge(NumistaBaseModel):
     lettering_translation: str | None = Field(None, description="Translation of edge lettering")
 
     @cached_property
-    def pillow_image(self) -> PILImage.Image:
+    def pillow_image(self) -> PILImage.Image | None:
         """Download and cache the full picture as a Pillow Image."""
         if not self.picture:
             return None
@@ -386,7 +363,7 @@ class Edge(NumistaBaseModel):
         return PILImage.open(BytesIO(response.content))
 
     @cached_property
-    def pillow_thumbnail(self) -> PILImage.Image:
+    def pillow_thumbnail(self) -> PILImage.Image | None:
         """Download and cache the thumbnail as a Pillow Image."""
         if not self.thumbnail:
             return None
@@ -857,45 +834,12 @@ class TypeFull(TypeBase):
         general_panel = CLISettings.panel(
             title=f"{cache_indicator} Type Details",
             content="\n".join(general_lines)
-        )
+        )        
 
-        # Value panel - filter out None values
-        value_lines = []
-        if self.value:
-            for key in ["text", "numeric_value", "numerator", "denominator"]:
-                field = self.value.formatted_fields_dict.get(key)
-                if field:
-                    value_lines.append(field)
+        value_panel = self.value.render_panel() if self.value else ""
 
-            if self.value.currency:
-                value_lines.append("[header]Currency:[/header]")
-                for key in ["name", "full_name", "symbol", "numista_id"]:
-                    field = self.value.currency.formatted_fields_dict.get(key)
-                    if field:
-                        value_lines.append(field)
-
-        value_panel = CLISettings.panel(
-            title="Value",
-            content="\n".join(value_lines) if value_lines else ""
-        )
-
-        # Issuer panel - filter out None values
-        issuer_lines = []
-        for key in ["issuing_entity", "issue_terms"]:
-            field = self.formatted_fields_dict.get(key)
-            if field:
-                issuer_lines.append(field)
-
-        if self.issuer:
-            for key in ["code", "name"]:
-                field = self.issuer.formatted_fields_dict.get(key)
-                if field:
-                    issuer_lines.append(field)
-
-        issuer_panel = CLISettings.panel(
-            title="Issuer",
-            content="\n".join(issuer_lines) if issuer_lines else ""
-        )
+       
+        issuer_panel = self.issuer.render_panel() if self.issuer else ""
 
         mints_panel = CLISettings.panel(
             title="Mints",
@@ -904,7 +848,7 @@ class TypeFull(TypeBase):
 
         # Physical specifications panel - filter out None values
         specs_lines = []
-        for key in ["orientation", "shape", "size", "thickness"]:
+        for key in ["orientation", "orientation_symbol", "shape", "size", "thickness"]:
             field = self.formatted_fields_dict.get(key)
             if field:
                 specs_lines.append(field)

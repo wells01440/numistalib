@@ -58,6 +58,18 @@ class Mint(NumistaBaseModel):
     wikidata_id: str | None = Field(None, max_length=100, description="Wikidata identifier")
     country_code: str | None = Field(None, max_length=50, description="Issuing country code (deprecated)")
 
+    @computed_field(description="Nomisma URL if available")
+    def nomisma_url(self) -> str | None:
+        if self.nomisma_id:
+            return f"https://nomisma.org/id/{self.nomisma_id}"
+        return None
+
+    @computed_field(description="Wikidata URL if available")
+    def wikidata_url(self) -> str | None:
+        if self.wikidata_id:
+            return f"https://www.wikidata.org/wiki/{self.wikidata_id}"
+        return None
+
     @computed_field(description="Formatted mint identifier")
     def mint_identifier(self) -> str:
         """Mint code if available, otherwise name."""

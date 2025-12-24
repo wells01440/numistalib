@@ -76,7 +76,7 @@ class TypeBasicService(TypeBasicServiceBase):
     def __init__(self, client: SyncClientProtocol | AsyncClientProtocol) -> None:
         super().__init__(client)
 
-    def to_models(self, items: list[Mapping[str, Any]], **kwargs: Any) -> list[TypeBasic]:  # noqa: PLR6301, ARG002
+    def _to_models(self, items: list[Mapping[str, Any]], **kwargs: Any) -> list[TypeBasic]:  # noqa: PLR6301, ARG002
         return [TypeBasic.model_validate(item) for item in items]
 
     def search_types(self, params: SearchParams) -> list[TypeBasic]:
@@ -201,7 +201,7 @@ class TypeFullService(TypeFullServiceBase):
     def __init__(self, client: SyncClientProtocol | AsyncClientProtocol) -> None:
         super().__init__(client)
 
-    def to_models(self, items: list[Mapping[str, Any]], **kwargs: Any) -> list[TypeFull]:  # noqa: PLR6301, ARG002
+    def _to_models(self, items: list[Mapping[str, Any]], **kwargs: Any) -> list[TypeFull]:  # noqa: PLR6301, ARG002
         return [TypeFull.model_validate(item) for item in items]
 
     def get_type(self, type_id: int, *, lang: str | None = None) -> TypeFull:
@@ -243,7 +243,7 @@ class TypeFullService(TypeFullServiceBase):
 
         type_obj = TypeFull.model_validate(data)
 
-        logger.info(f"Added type {type_obj.id} {response.cached_indicator}")
+        logger.info(f"Added type {type_obj.numista_id} {response.cached_indicator}")
         return type_obj
 
     async def add_type_async(self, type_data: dict[str, object], lang: str | None = None) -> TypeFull:
@@ -257,7 +257,7 @@ class TypeFullService(TypeFullServiceBase):
 
         type_obj = TypeFull.model_validate(data)
 
-        logger.info(f"Added type {type_obj.id} {response.cached_indicator}")
+        logger.info(f"Added type {type_obj.numista_id} {response.cached_indicator}")
         return type_obj
 
 

@@ -53,9 +53,9 @@ class MintService(MintServiceBase):
                 name = "Unknown"
 
             country_code = item.get("country_code")
-            country = cast(Mapping[str, Any] | None, item.get("country"))
-            if country_code is None and country is not None:
-                country_code = country.get("code")
+            country_data = cast(Mapping[str, Any] | None, item.get("country"))
+            if country_code is None and country_data is not None:
+                country_code = country_data.get("code")
 
             mints.append(
                 Mint(
@@ -63,6 +63,13 @@ class MintService(MintServiceBase):
                     name=cast(str, name),
                     code=cast(str | None, item.get("code")),
                     country_code=cast(str | None, country_code),
+                    local_name=cast(str | None, item.get("local_name")),
+                    place=cast(str | None, item.get("place")),
+                    country=None,
+                    start_year=cast(int | None, item.get("start_year")),
+                    end_year=cast(int | None, item.get("end_year")),
+                    nomisma_id=cast(str | None, item.get("nomisma_id")),
+                    wikidata_id=cast(str | None, item.get("wikidata_id")),
                 )
             )
         return mints

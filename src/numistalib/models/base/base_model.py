@@ -12,8 +12,11 @@ from pydantic import BaseModel, ConfigDict
 from pydantic.alias_generators import to_camel
 from rich.console import Group, RenderableType
 from rich.console import Console, ConsoleOptions
+from rich.table import Table
 from rich.text import Text
 from pydantic_core import core_schema
+
+from numistalib.cli.theme import CLISettings
 
 # Panel formatting constants
 PANEL_VALUE_COLUMN: int = 20
@@ -162,7 +165,7 @@ class NumistaBaseModel(ABC, BaseModel):
         frozen=False,
         extra="forbid",
         validate_assignment=True,
-        arbitrary_types_allowed=False,
+        arbitrary_types_allowed=True,
         populate_by_name=True,
         alias_generator=to_camel,
         use_enum_values=True,
@@ -237,102 +240,82 @@ class NumistaBaseModel(ABC, BaseModel):
         """
         return list(self.formatted_fields_dict.values())
 
-    # def formatted_fields_deep(self) -> dict[str, str]:
-    #     """Return formatted fields and recurse into related model lists without tables."""
-    #     formatted: dict[str, str] = {}
-
-    #     def process_field(field_name: str, value: Any) -> None:
-    #         if value is None:
-    #             return
-
-    def render_compact(self) -> RenderableType:
-        """Render compact representation for grid display.
-
-        Default implementation returns formatted title and key metadata.
-        Override in subclasses for custom compact display.
-
-        Returns
-        -------
-        RenderableType
-            Compact renderable for grid/column layout
-        """
-        # Get a simple text representation with key fields
-        lines: list[str] = []
-        
-        # Try to get a primary identifier
-        title = getattr(self, 'title', None)
-        if title is not None:
-            lines.append(str(title))
-        else:
-            name = getattr(self, 'name', None)
-            if name is not None:
-                lines.append(str(name))
-            else:
-                numista_id = getattr(self, 'numista_id', None)
-                if numista_id is not None:
-                    lines.append(f"ID: {numista_id}")
-        
-        # Add secondary info if available
-        year = getattr(self, 'year', None)
-        if year is not None:
-            lines.append(f"Year: {year}")
-        else:
-            min_year = getattr(self, 'min_year', None)
-            max_year = getattr(self, 'max_year', None)
-            if min_year is not None and max_year is not None:
-                year_info = str(min_year) if min_year == max_year else f"{min_year}-{max_year}"
-                lines.append(f"Years: {year_info}")
-        
-        country = getattr(self, 'country', None)
-        if country is not None:
-            country_name = getattr(country, 'name', None)
-            if country_name is not None:
-                lines.append(str(country_name))
-            else:
-                lines.append(str(country))
-        else:
-            issuer = getattr(self, 'issuer', None)
-            if issuer is not None:
-                issuer_name = getattr(issuer, 'name', None)
-                if issuer_name is not None:
-                    lines.append(str(issuer_name))
-                else:
-                    lines.append(str(issuer))
-        
-        return "\n".join(lines) if lines else str(self)
-
     @classmethod
     def render_list(cls, items: list[Self]) -> Group | str:
         """Render list of items as Rich Group with horizontal rule separators.
-        
-        Helper for CLI list rendering. Calls render_compact() on each item
-        and adds horizontal rules between items when there are multiple.
-        
+
+        Helper for CLI list rendering. Renders each item compactly and adds
+        horizontal rules between items when there are multiple.
+
         Parameters
         ----------
         items : list[Self]
             List of model instances to render
-            
+
         Returns
         -------
         Group | str
-            Rich Group containing all items with separators, or message if empty
+            Rich Group containing all items with separators, a single compact
+            renderable for 1 item, or message if empty.
         """
         if not items:
             return "No items available"
-        
+
+        def _render_item_compact(item: Self) -> str:
+            lines: list[str] = []
+
+            title = getattr(item, "title", None)
+            if title is not None:
+                lines.append(str(title))
+            else:
+                name = getattr(item, "name", None)
+                if name is not None:
+                    lines.append(str(name))
+                else:
+                    numista_id = getattr(item, "numista_id", None)
+                    if numista_id is not None:
+                        lines.append(f"ID: {numista_id}")
+
+            year = getattr(item, "year", None)
+            if year is not None:
+                lines.append(f"Year: {year}")
+            else:
+                min_year = getattr(item, "min_year", None)
+                max_year = getattr(item, "max_year", None)
+                if min_year is not None and max_year is not None:
+                    year_info = str(min_year) if min_year == max_year else f"{min_year}-{max_year}"
+                    lines.append(f"Years: {year_info}")
+
+            country = getattr(item, "country", None)
+            if country is not None:
+                country_name = getattr(country, "name", None)
+                lines.append(str(country_name) if country_name is not None else str(country))
+            else:
+                issuer = getattr(item, "issuer", None)
+                if issuer is not None:
+                    issuer_name = getattr(issuer, "name", None)
+                    lines.append(str(issuer_name) if issuer_name is not None else str(issuer))
+
+            return "\n".join(lines) if lines else str(item)
+
+        if len(items) == 1:
+            return _render_item_compact(items[0])
+
         content: list[RenderableType] = []
         for i, item in enumerate(items):
-            content.append(item.render_compact())
-            # Add horizontal rule separator between items (not after last)
+            content.append(_render_item_compact(item))
             if i < len(items) - 1:
-                content.append("")  # Blank line
-                content.append("─" * 80)  # Horizontal rule
-                content.append("")  # Blank line
-        
+                content.append("")
+                content.append("─" * 80)
+                content.append("")
+
         return Group(*content)
 
-    def as_panel(self, style_overrides: dict[str, Any] | None = None) -> Any:
+    def render_panel(
+            self, 
+            title: str = "",
+            column_set: list[str] | None = None
+        ) -> Any:
         """Render model as Rich Panel.
         
         Default implementation creates a panel with formatted fields.
@@ -342,28 +325,67 @@ class NumistaBaseModel(ABC, BaseModel):
         ----------
         style_overrides : dict[str, Any] | None
             Optional style overrides for the panel
+        title : str
+            Optional panel title
+        column_set : list[str] | None
+            Optional list of columns to include in the panel
             
         Returns
         -------
         Panel
             Rich Panel with model data
         """
-        from numistalib.cli.theme import CLISettings
-        
-        # Get formatted fields as content
-        content = "\n".join(self.formatted_fields)
-        
-        # Get title (try common field names)
-        title = None
-        for field_name in ["title", "name", "code"]:
-            if hasattr(self, field_name):
-                title = getattr(self, field_name)
-                break
-        
         if not title:
             title = self.__class__.__name__
+
+        if not column_set:
+            content = "\n".join(self.formatted_fields)
+        else:
+            content = "\n".join(
+                self.formatted_fields_dict[col]
+                for col in column_set
+                if col in self.formatted_fields_dict
+            )
         
-        return CLISettings.panel(content=content, title=str(title))
+        return CLISettings.panel(
+                content=content,
+                title=str(title),
+            )
+    
+
+    @classmethod
+    def render_table(cls, items: list[Any], title: str = "") -> Table:
+        """Render list of items as Rich Table.
+
+        Default implementation creates a simple table with basic fields.
+        Override in subclasses for custom table layout.
+
+        Parameters
+        ----------
+        items : list[Self]
+            List of model instances to render
+        title : str
+            Optional table title
+
+        Returns
+        -------
+        Table
+            Rich Table with model data
+        """
+        if not items:
+            return Table(title=title)  # Empty table
+
+        #template item
+        t_item = items[0]
+        table = Table(show_header=True, box=None, pad_edge=False, title=title)
+
+        for field_name in t_item.__class__.model_fields.keys():
+            table.add_column(field_name.replace("_", " ").title(), no_wrap=True)
+        for field_name in t_item.__class__.model_computed_fields.keys():
+            table.add_column(field_name.replace("_", " ").title(), no_wrap=True)
+        for item in items:
+            table.add_row(str(item))
+        return table
 
 
 class RichField:

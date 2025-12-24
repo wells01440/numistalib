@@ -1,12 +1,18 @@
 """Literature service implementation."""
 
 from collections.abc import Mapping
-from typing import Any, cast
+from typing import Any, Literal, cast
+
+from pydantic import HttpUrl
+from pydantic import TypeAdapter
 
 from numistalib import logger
 from numistalib.client import AsyncClientProtocol, NumistaResponse, SyncClientProtocol
-from numistalib.models import Publication
+from numistalib.models import Contributor, PartOf, Publication, PublicationPlace, Publisher
 from numistalib.services.literature.base import LiteratureServiceBase
+
+_HTTP_URL_ADAPTER: TypeAdapter[HttpUrl] = TypeAdapter(HttpUrl)
+_HTTP_URL_LIST_ADAPTER: TypeAdapter[list[HttpUrl]] = TypeAdapter(list[HttpUrl])
 
 
 class LiteratureService(LiteratureServiceBase):
@@ -41,17 +47,87 @@ class LiteratureService(LiteratureServiceBase):
         """
         publications: list[Publication] = []
         for item in items:
+            raw_publishers = cast(list[Any], item.get("publishers", []))
+            publishers = (
+                [
+                    Publisher(**cast(Mapping[str, Any], p))
+                    if isinstance(p, Mapping)
+                    else Publisher(name=cast(str, p))
+                    for p in raw_publishers
+                ]
+                or None
+            )
+
+            raw_publication_places = cast(list[Any], item.get("publication_places", []))
+            publication_places = (
+                [
+                    PublicationPlace(**cast(Mapping[str, Any], pp))
+                    if isinstance(pp, Mapping)
+                    else PublicationPlace(name=cast(str, pp))
+                    for pp in raw_publication_places
+                ]
+                or None
+            )
+
+            raw_part_of = item.get("part_of")
+            part_of: list[PartOf] | None
+            if raw_part_of is None:
+                part_of = None
+            elif isinstance(raw_part_of, list):
+                part_of = [PartOf(**cast(Mapping[str, Any], po)) for po in raw_part_of if isinstance(po, Mapping)] or None
+            elif isinstance(raw_part_of, Mapping):
+                part_of = [PartOf(**cast(Mapping[str, Any], raw_part_of))]
+            else:
+                part_of = None
+
+            raw_homepage_url = item.get("homepage_url")
+            homepage_url = (
+                _HTTP_URL_ADAPTER.validate_python(raw_homepage_url)
+                if isinstance(raw_homepage_url, str) and raw_homepage_url.strip()
+                else None
+            )
+
+            raw_download_urls = item.get("download_urls")
+            download_urls = (
+                _HTTP_URL_LIST_ADAPTER.validate_python(raw_download_urls)
+                if isinstance(raw_download_urls, list) and raw_download_urls
+                else None
+            )
+
+            raw_url = item.get("url")
+            url = (
+                _HTTP_URL_ADAPTER.validate_python(raw_url)
+                if isinstance(raw_url, str) and raw_url.strip()
+                else None
+            )
+
             publications.append(
                 Publication(
-                    numista_id=cast(int, item["id"]),
-                    publication_type=cast(str, item.get("type", "unknown")),
+                    id=cast(str, str(item["id"])),
+                    type=cast(Literal["volume", "article", "volume_group", "article_group"], item.get("type", "volume")),
                     title=cast(str, item["title"]),
-                    authors=cast(list[str] | None, item.get("authors")),
+                    translated_title=cast(str | None, item.get("translated_title")),
+                    volume_number=cast(str | None, item.get("volume_number")),
+                    subtitle=cast(str | None, item.get("subtitle")),
+                    translated_subtitle=cast(str | None, item.get("translated_subtitle")),
+                    edition=cast(str | None, item.get("edition")),
+                    languages=cast(list[str] | None, item.get("languages")),
+                    page_count=cast(int | None, item.get("page_count")),
+                    cover=cast(Literal["softcover", "hardcover", "spiral", "hidden_spiral"] | None, item.get("cover")),
+                    isbn10=cast(str | None, item.get("isbn10")),
+                    isbn13=cast(str | None, item.get("isbn13")),
+                    issn=cast(str | None, item.get("issn")),
+                    oclc_number=cast(str | None, item.get("oclc_number")),
+                    contributors=[Contributor(**c) for c in item.get("contributors", [])] or None,
+                    publishers=publishers,
+                    publication_places=publication_places,
+                    part_of=part_of,
+                    bibliographical_notice=cast(str | None, item.get("bibliographical_notice")),
+                    homepage_url=homepage_url,
+                    download_urls=download_urls,
+                    url=url,
                     year=cast(int | None, item.get("year")),
-                    publisher=cast(str | None, item.get("publisher")),
-                    isbn=cast(str | None, item.get("isbn")),
                     pages=cast(str | None, item.get("pages")),
-                    url=cast(str | None, item.get("url")),
                 )
             )
         return publications

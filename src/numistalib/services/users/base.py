@@ -135,3 +135,104 @@ class UserServiceBase(EntityService):
             List of collected items
         """
         pass
+
+    @abstractmethod
+    def get_collected_item(self, user_id: int, item_id: int) -> CollectedItem:
+        """Get a specific collected item for a user.
+
+        Parameters
+        ----------
+        user_id : int
+            Numista user ID
+        item_id : int
+            Collected item ID
+
+        Returns
+        -------
+        CollectedItem
+            Collected item details
+        """
+        pass
+
+    @abstractmethod
+    def add_collected_item(self, user_id: int, payload: dict[str, object]) -> CollectedItem:
+        """Add an item to the user's collection.
+
+        Parameters
+        ----------
+        user_id : int
+            Numista user ID
+        payload : dict[str, object]
+            Request body matching the API schema for adding a collected item
+
+        Returns
+        -------
+        CollectedItem
+            Created collected item
+        """
+        pass
+
+    @abstractmethod
+    def edit_collected_item(
+        self,
+        user_id: int,
+        item_id: int,
+        payload: dict[str, object],
+    ) -> CollectedItem:
+        """Edit a collected item in the user's collection.
+
+        Parameters
+        ----------
+        user_id : int
+            Numista user ID
+        item_id : int
+            Collected item ID
+        payload : dict[str, object]
+            Partial update payload (only provided fields are updated)
+
+        Returns
+        -------
+        CollectedItem
+            Updated collected item
+        """
+        pass
+
+    @abstractmethod
+    def delete_collected_item(self, user_id: int, item_id: int) -> None:
+        """Delete a collected item from the user's collection.
+
+        Parameters
+        ----------
+        user_id : int
+            Numista user ID
+        item_id : int
+            Collected item ID
+        """
+        pass
+
+    @abstractmethod
+    async def get_collected_item_async(self, user_id: int, item_id: int) -> CollectedItem:
+        """Get a specific collected item for a user (async)."""
+        pass
+
+    @abstractmethod
+    async def add_collected_item_async(
+        self, user_id: int, payload: dict[str, object]
+    ) -> CollectedItem:
+        """Add an item to the user's collection (async)."""
+        pass
+
+    @abstractmethod
+    async def edit_collected_item_async(
+        self,
+        user_id: int,
+        item_id: int,
+        payload: dict[str, object],
+    ) -> CollectedItem:
+        """Edit a collected item (async)."""
+        pass
+
+    @abstractmethod
+    async def delete_collected_item_async(self, user_id: int, item_id: int) -> None:
+        """Delete a collected item (async)."""
+        pass

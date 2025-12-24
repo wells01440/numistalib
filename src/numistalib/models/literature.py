@@ -40,7 +40,7 @@ class Publisher(NumistaBaseModel):
     """
 
     name: str = Field(description="Name of the publisher")
-    id: int | None = Field(None, description="Unique ID of the publisher")
+    id: int | None = Field(default=None, description="Unique ID of the publisher")
 
 
 class PublicationPlace(NumistaBaseModel):
@@ -55,7 +55,7 @@ class PublicationPlace(NumistaBaseModel):
     """
 
     name: str = Field(description="City and country of publication")
-    geonames_id: str | None = Field(None, description="GeoNames ID for location reference")
+    geonames_id: str | None = Field(default=None, description="GeoNames ID for location reference")
 
 
 class PartOf(NumistaBaseModel):

@@ -8,6 +8,7 @@ import logging
 import random
 import time
 from abc import ABC, abstractmethod
+from pathlib import Path
 from typing import Any, Protocol
 
 import httpx
@@ -116,6 +117,7 @@ class NumistaClient(ABC):
             Configuration parameters
         """
         self.api_key = kwargs.get("api_key")
+        self.oauth_access_token = kwargs.get("oauth_access_token")
         self.api_base_url = kwargs.get("api_base_url", "https://api.numista.com/v3")
         self.rate_limit_period = kwargs.get("rate_limit_period", DEFAULT_RATE_LIMIT_PERIOD)
         self.rate_limit_requests = int(kwargs.get("rate_limit_requests", DEFAULT_RATE_LIMIT_REQUESTS))
@@ -134,6 +136,9 @@ class NumistaClient(ABC):
             # "User-Agent": f"numistalib/{__version__}",
         }
 
+        if self.oauth_access_token:
+            self.headers["Authorization"] = f"Bearer {self.oauth_access_token}"
+
         logger.debug(f"{self.__class__.__name__} initialized")
 
     @property
@@ -142,7 +147,6 @@ class NumistaClient(ABC):
 
         Creates the cache directory if it doesn't exist.
         """
-        from pathlib import Path
         cache_dir = Path(self.database_cache_dir)
         cache_dir.mkdir(parents=True, exist_ok=True)
         return str(cache_dir / self.database_cache_db)

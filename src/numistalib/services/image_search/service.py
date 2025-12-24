@@ -3,9 +3,11 @@
 from collections.abc import Mapping
 from typing import Any, cast
 
+from pydantic import HttpUrl
+
 from numistalib import logger
 from numistalib.client import AsyncClientProtocol, NumistaResponse, SyncClientProtocol
-from numistalib.models.types import TypeBasic
+from numistalib.models.types import Country, TypeBasic
 from numistalib.services.image_search.base import ImageSearchServiceBase
 
 
@@ -46,17 +48,28 @@ class ImageSearchService(ImageSearchServiceBase):
         """
         types: list[TypeBasic] = []
         for item in items:
+            issuer_obj = cast(Mapping[str, Any], item.get("issuer", {}))
+            country_val = item.get("country", issuer_obj.get("country"))
+            country_obj: Country | None = None
+            if isinstance(country_val, Mapping):
+                country_obj = cast(Country, country_val)
+            elif country_val is not None:
+                country_obj = cast(Country, country_val)
+
+            obverse_url = item.get("obverse_thumbnail")
+            reverse_url = item.get("reverse_thumbnail")
+            
             types.append(
                 TypeBasic(
-                    numista_id=cast(int, item["id"]),
+                    id=cast(int, item["id"]),
                     title=cast(str, item["title"]),
-                    category=cast(str, item["category"]),
-                    issuer_code=cast(str, item["issuer"]["code"]),
-                    issuer_name=cast(str, item["issuer"]["name"]),
+                    category=cast(str, item["category"]),  # type: ignore[arg-type]
+                    issuer=issuer_obj,  # type: ignore[arg-type]
+                    country=country_obj,
                     min_year=cast(int | None, item.get("min_year")),
                     max_year=cast(int | None, item.get("max_year")),
-                    obverse_thumbnail=cast(str | None, item.get("obverse_thumbnail")),
-                    reverse_thumbnail=cast(str | None, item.get("reverse_thumbnail")),
+                    obverse_thumbnail=HttpUrl(obverse_url) if obverse_url else None,
+                    reverse_thumbnail=HttpUrl(reverse_url) if reverse_url else None,
                 )
             )
         return types

@@ -17,7 +17,8 @@ from numistalib.models.collections import (
     TypeDetail,
     UserCollection,
 )
-from numistalib.models.currency import Currency
+from numistalib.models.countries import Country
+from numistalib.models.currency import Currency, CurrencyValue
 from numistalib.models.errors import ErrorResponse
 from numistalib.models.issuer import Issuer
 from numistalib.models.issues import Issue, IssueTerms
@@ -29,6 +30,7 @@ from numistalib.models.literature import (
     Publisher,
 )
 from numistalib.models.mints import Mint
+from numistalib.models.oauth import OAuthToken
 from numistalib.models.prices import Price
 from numistalib.models.references import LocalizedLabel, Reference
 from numistalib.models.types import Printer, TypeBasic, TypeFull, Watermark
@@ -39,7 +41,9 @@ __all__ = [
     "Catalogue",
     "CollectedItem",
     "Contributor",
+    "Country",
     "Currency",
+    "CurrencyValue",
     "ErrorResponse",
     "GradingCompany",
     "GradingDesignation",
@@ -53,6 +57,7 @@ __all__ = [
     "LocalizedLabel",
     "Mint",
     "NumistaBaseModel",
+    "OAuthToken",
     "PartOf",
     "Picture",
     "Price",
