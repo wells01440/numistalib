@@ -32,6 +32,15 @@ class DummyClient:
     def post(self, url: str, **kwargs: Any) -> NumistaResponse:  # type: ignore[override]
         raise NotImplementedError("Subclass must implement post() for specific test cases")
 
+    def patch(self, url: str, **kwargs: Any) -> NumistaResponse:  # type: ignore[override]
+        raise NotImplementedError("Subclass must implement patch() for specific test cases")
+
+    def put(self, url: str, **kwargs: Any) -> NumistaResponse:  # type: ignore[override]
+        raise NotImplementedError("Subclass must implement put() for specific test cases")
+
+    def delete(self, url: str, **kwargs: Any) -> NumistaResponse:  # type: ignore[override]
+        raise NotImplementedError("Subclass must implement delete() for specific test cases")
+
 
 @pytest.fixture
 def mock_settings() -> Settings:
