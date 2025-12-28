@@ -9,6 +9,7 @@ from numistalib.services import CatalogueService
 
 # pyright: reportUnusedFunction = false
 
+
 def register_catalogues_commands(parent: click.Group) -> None:
     """Register catalogues commands with parent group.
 

@@ -1,6 +1,8 @@
 """Tests for Rich renderable fields in Pydantic models."""
 
-import pytest
+from io import StringIO
+
+from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
 from rich.text import Text
@@ -117,12 +119,12 @@ class TestRichField:
             status: RichField
 
         model = Model(status=RichField(Text("Active", style="green")))
-        
+
         # Test basic formatting
         formatted = model.status.format_field("Status", width=20)
         assert "Status:" in formatted
         assert "Active" in formatted
-        assert len(formatted.split(":")[0]) + len(":") <= 20
+        assert len(formatted.split(":")[0]) + len(":") <= 20  # noqa: PLR2004
 
         # Test with custom fill character
         formatted_dots = model.status.format_field("Status", width=20, fill_char=".")
@@ -141,12 +143,9 @@ class TestRichField:
         assert hasattr(model.panel, "__rich_console__")
 
         # Should be renderable by Rich
-        from rich.console import Console
-        from io import StringIO
-
         output = StringIO()
         console = Console(file=output, force_terminal=True)
         console.print(model.panel)
-        
+
         result = output.getvalue()
         assert len(result) > 0  # Should produce output

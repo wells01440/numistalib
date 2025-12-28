@@ -16,9 +16,6 @@ from typing import Annotated, Any, Literal
 import httpx
 from bs4 import BeautifulSoup
 from PIL import Image as PILImage
-from rich.repr import T
-from rich.table import Table
-from rich.text import Text
 from pydantic import (
     AnyUrl,
     Field,
@@ -29,6 +26,8 @@ from pydantic import (
     model_validator,
 )
 from pydantic_core import Url
+from rich.table import Table
+from rich.text import Text
 from textual_image.renderable import Image as TImage
 
 from numistalib.models import Currency, Issuer, Mint, NumistaBaseModel, Reference
@@ -94,7 +93,7 @@ class Demonetization(NumistaBaseModel):
         return None
 
 
-class Composition(NumistaBaseModel):
+class Composition(NumistaBaseModel):  # noqa: PLW1641
     """Metal composition information for coin types."""
 
     text: str = Field(description="Metal composition description")
@@ -189,14 +188,14 @@ class Ruler(NumistaBaseModel):
     @classmethod
     def render_table(cls, items: list[Ruler], title: str = "") -> Table:
         """Generate table for ruler list with computed group fields.
-        
+
         Parameters
         ----------
         items : list[Ruler]
             List of Ruler instances
         title : str
             Table title
-            
+
         Returns
         -------
         Table
@@ -267,7 +266,7 @@ class SideBase(NumistaBaseModel, ABC):
         """Ready-to-print textual_image renderable (full picture)."""
         if self.pillow_image:
             return TImage(self.pillow_image)
-            
+
     @cached_property
     def renderable_thumbnail(self) -> Any | None:
         """Ready-to-print thumbnail."""
@@ -360,7 +359,7 @@ class Reverse(SideBase):
 
 class Edge(NumistaBaseModel):
     """Edge specifications for a coin type.
-    
+
     Parameters
     ----------
     description : str | None
@@ -395,7 +394,7 @@ class Edge(NumistaBaseModel):
             response = httpx.get(self.picture, follow_redirects=True, timeout=30.0)
             response.raise_for_status()
             return PILImage.open(BytesIO(response.content))
-        
+
     @cached_property
     def pillow_thumbnail(self) -> PILImage.Image | None:
         """Download and cache the thumbnail as a Pillow Image."""
@@ -419,7 +418,7 @@ class Edge(NumistaBaseModel):
 
 class Watermark(SideBase):
     """Watermark specifications for banknotes.
-    
+
     Extends SideBase with all standard side fields (engravers, designers,
     description, lettering, picture, etc.) for watermark representation.
     """
@@ -428,9 +427,9 @@ class Watermark(SideBase):
 
 class Printer(NumistaBaseModel):
     """Printer information for banknotes.
-    
+
     Similar to Mint but for banknote printers.
-    
+
     Parameters
     ----------
     id : int
@@ -535,7 +534,7 @@ class TypeBasic(TypeBase):
         return text_block
 
     @classmethod
-    def render_table(cls, items: list["TypeBasic"], title: str = "") -> Table:
+    def render_table(cls, items: list[TypeBasic], title: str = "") -> Table:
         """Render a concise table for type search results.
 
         Columns include key catalogue search fields expected by the CLI:
@@ -691,7 +690,7 @@ class TypeFull(TypeBase):
 
     # Required fields that only exist in full version
     url: HttpUrl = Field(..., description="Numista URL")
-    issuer: Issuer 
+    issuer: Issuer
     # Optional full-only fields
     issue_terms: IssueTerms | None = Field(None, alias="issueTerms", description="Issue Terms")
     issuing_entity: dict[str, Any] | None = Field(None, description="① Issuing entity")
@@ -725,7 +724,7 @@ class TypeFull(TypeBase):
     @property
     def orientation_symbol(self) -> str | None:
         """Return symbol representation of orientation.
-        
+
         Returns ⇈ (upup arrows) for medal, ⇅ (updown arrows) for coin, or None.
         """
         if not self.orientation:
@@ -741,10 +740,10 @@ class TypeFull(TypeBase):
     @property
     def comments_rendered(self) -> str | None:
         """Return terminal-safe scrubbed comments.
-        
+
         Comments field may contain HTML with line feeds, links, images, and formatting.
         This computed field scrubs HTML artifacts for clean terminal display with Rich markup.
-        
+
         Returns
         -------
         str | None
@@ -827,7 +826,6 @@ class TypeFull(TypeBase):
         Any
             Group of Rich panels for display
         """
-        import re
         import textwrap
 
         from rich.console import Group
@@ -925,7 +923,7 @@ class TypeFull(TypeBase):
         edge_panel = CLISettings.panel(
             title="Edge Specifications",
             content=Group(
-                "\n".join([f for f in self.edge.formatted_fields]) if self.edge else "",
+                "\n".join(list(self.edge.formatted_fields)) if self.edge else "",
                 self.edge.renderable_thumbnail if self.edge and self.edge.renderable_thumbnail else ""
             ) if self.edge else ""
         )
@@ -933,7 +931,7 @@ class TypeFull(TypeBase):
         obverse_panel = CLISettings.panel(
             title="Obverse Specifications",
             content=Group(
-                "\n".join([f for f in self.obverse.formatted_fields]),
+                "\n".join(list(self.obverse.formatted_fields)),
                 self.obverse.renderable_thumbnail if self.obverse.renderable_thumbnail else ""
             )
         )
@@ -941,7 +939,7 @@ class TypeFull(TypeBase):
         reverse_panel = CLISettings.panel(
             title="Reverse Specifications",
             content=Group(
-                "\n".join([f for f in self.reverse.formatted_fields]),
+                "\n".join(list(self.reverse.formatted_fields)),
                 self.reverse.renderable_thumbnail if self.reverse.renderable_thumbnail else ""
             )
         )
@@ -968,14 +966,14 @@ class TypeFull(TypeBase):
         if self.comments_rendered:
             # Wrap each line to panel width - 4 (for panel borders/padding)
             wrapped_lines = []
-            for line in self.comments_rendered.split('\n'):
+            for line in self.comments_rendered.split("\n"):
                 # Use textwrap to break long lines at word boundaries
                 if len(line) > (CLISettings.PANEL_WIDTH - 4):
                     wrapped = textwrap.fill(line, width=CLISettings.PANEL_WIDTH - 4, break_long_words=False, break_on_hyphens=False)
                     wrapped_lines.append(wrapped)
                 else:
                     wrapped_lines.append(line)
-            comments_text = '\n'.join(wrapped_lines)
+            comments_text = "\n".join(wrapped_lines)
 
         comments_panel = CLISettings.panel(
             title="Comments",

@@ -4,7 +4,6 @@ Tests:
 - issues (get issues for a type)
 """
 
-import pytest
 from click.testing import CliRunner
 
 

@@ -1,12 +1,11 @@
 """Collection service implementation."""
 
 from collections.abc import Mapping
-from datetime import date
 from typing import Any, cast
 
 from numistalib import logger
 from numistalib.client import AsyncClientProtocol, NumistaResponse, SyncClientProtocol
-from numistalib.models.collections import CollectedItem, UserCollection
+from numistalib.models.collections import CollectedItem, GradingDetails, Picture, TypeDetail, UserCollection
 from numistalib.services.collections.base import CollectionServiceBase
 
 
@@ -45,8 +44,6 @@ class CollectionService(CollectionServiceBase):
         list[CollectedItem]
             Parsed collected item models
         """
-        from numistalib.models.collections import GradingDetails, Picture, TypeDetail
-
         collected_items: list[CollectedItem] = []
         for item in items:
             type_dict = cast(Mapping[str, Any], item["type"])

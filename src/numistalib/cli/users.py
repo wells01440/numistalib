@@ -6,6 +6,7 @@ from numistalib.cli.theme import CLISettings
 
 # pyright: reportUnusedFunction=false
 
+
 def register_users_commands(parent: click.Group) -> None:
     """Register users commands with parent group.
 
@@ -22,7 +23,7 @@ def register_users_commands(parent: click.Group) -> None:
 
     @users.command(name="get")
     @click.argument("user_id", type=int)
-    def users_get(user_id: int) -> None:
+    def users_get(user_id: int) -> None:  # noqa: ARG001
         """Get details about a user.
 
         Examples:
@@ -32,7 +33,7 @@ def register_users_commands(parent: click.Group) -> None:
 
     @users.command(name="search")
     @click.option("-q", "--query", required=True, help="Username search query")
-    def users_search(query: str) -> None:
+    def users_search(query: str) -> None:  # noqa: ARG001
         """Search for users.
 
         Examples:

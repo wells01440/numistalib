@@ -8,11 +8,12 @@ from rich.table import Table
 
 from numistalib.cli.theme import CLISettings
 from numistalib.config import Settings
-from numistalib.services import TypeBasicService, TypeFullService
 from numistalib.models import TypeBasic
+from numistalib.services import TypeBasicService, TypeFullService
 
 # pyright: reportOptionalMemberAccess = false
 # pyright: reportUnusedFunction = false
+
 
 async def _consume_type_search_results(
     service: TypeBasicService,
@@ -90,6 +91,7 @@ def register_types_commands(parent: click.Group) -> None:
 
             # Collect items via async pagination to pass to model's renderer
             collected: list[TypeBasic] = []
+
             async def _collect() -> None:
                 async for result in service.search_types_paginated(**search_params):
                     collected.append(result)
@@ -106,7 +108,7 @@ def register_types_commands(parent: click.Group) -> None:
                 suffix = f" for '{query}'" if query else ""
                 console.print(f"\n[success]Displayed {result_count} result{'s' if result_count != 1 else ''}{suffix}[/success]")
 
-        except Exception as err:
+        except Exception as err:  # noqa: BLE001
             service.handle_cli_error(err, "searching types", "types-search")
 
     @types.command(name="get")
@@ -125,5 +127,5 @@ def register_types_commands(parent: click.Group) -> None:
             for panel in result.render_detail(service.last_cache_indicator):
                 console.print(panel)
             console.print(CLISettings.LICENSE_TEXT, style="footer")
-        except Exception as err:
+        except Exception as err:  # noqa: BLE001
             service.handle_cli_error(err, f"retrieving type {type_id}", "types-get")

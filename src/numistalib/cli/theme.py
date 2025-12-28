@@ -179,7 +179,7 @@ class CLISettings:
             columns.append("Cache")
 
         # Use model_fields for reliable ordering
-        for field_name, field_info in model_cls.model_fields.items():
+        for field_name, _field_info in model_cls.model_fields.items():
             # Always use short, humanized field name
             column_name = field_name.replace("_", " ").title()
             columns.append(column_name)

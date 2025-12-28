@@ -4,16 +4,16 @@ Common configuration, behavior, and abstract base classes for Pydantic models.
 """
 import re
 from abc import ABC
-from typing import Any, Self, Iterable
+from collections.abc import Iterable
+from typing import Any, Self
 
 import rich.repr
 from bs4 import BeautifulSoup
 from pydantic import BaseModel, ConfigDict
 from pydantic.alias_generators import to_camel
-from rich.console import Group, RenderableType
-from rich.console import Console, ConsoleOptions
-from rich.text import Text
 from pydantic_core import core_schema
+from rich.console import Console, ConsoleOptions, Group, RenderableType
+from rich.text import Text
 
 # Panel formatting constants
 PANEL_VALUE_COLUMN: int = 20
@@ -214,7 +214,7 @@ class NumistaBaseModel(ABC, BaseModel):
 
         # Also include computed fields
         for field_name in self.__class__.model_computed_fields.keys():
-            if field_name in ("panel_template", "formatted_fields_dict"):
+            if field_name in {"panel_template", "formatted_fields_dict"}:
                 continue  # Skip these special fields
             value = getattr(self, field_name, None)
             if value is not None:
@@ -258,61 +258,61 @@ class NumistaBaseModel(ABC, BaseModel):
         """
         # Get a simple text representation with key fields
         lines: list[str] = []
-        
+
         # Try to get a primary identifier
-        title = getattr(self, 'title', None)
+        title = getattr(self, "title", None)
         if title is not None:
             lines.append(str(title))
         else:
-            name = getattr(self, 'name', None)
+            name = getattr(self, "name", None)
             if name is not None:
                 lines.append(str(name))
             else:
-                numista_id = getattr(self, 'numista_id', None)
+                numista_id = getattr(self, "numista_id", None)
                 if numista_id is not None:
                     lines.append(f"ID: {numista_id}")
-        
+
         # Add secondary info if available
-        year = getattr(self, 'year', None)
+        year = getattr(self, "year", None)
         if year is not None:
             lines.append(f"Year: {year}")
         else:
-            min_year = getattr(self, 'min_year', None)
-            max_year = getattr(self, 'max_year', None)
+            min_year = getattr(self, "min_year", None)
+            max_year = getattr(self, "max_year", None)
             if min_year is not None and max_year is not None:
                 year_info = str(min_year) if min_year == max_year else f"{min_year}-{max_year}"
                 lines.append(f"Years: {year_info}")
-        
-        country = getattr(self, 'country', None)
+
+        country = getattr(self, "country", None)
         if country is not None:
-            country_name = getattr(country, 'name', None)
+            country_name = getattr(country, "name", None)
             if country_name is not None:
                 lines.append(str(country_name))
             else:
                 lines.append(str(country))
         else:
-            issuer = getattr(self, 'issuer', None)
+            issuer = getattr(self, "issuer", None)
             if issuer is not None:
-                issuer_name = getattr(issuer, 'name', None)
+                issuer_name = getattr(issuer, "name", None)
                 if issuer_name is not None:
                     lines.append(str(issuer_name))
                 else:
                     lines.append(str(issuer))
-        
+
         return "\n".join(lines) if lines else str(self)
 
     @classmethod
     def render_list(cls, items: list[Self]) -> Group | str:
         """Render list of items as Rich Group with horizontal rule separators.
-        
+
         Helper for CLI list rendering. Calls render_compact() on each item
         and adds horizontal rules between items when there are multiple.
-        
+
         Parameters
         ----------
         items : list[Self]
             List of model instances to render
-            
+
         Returns
         -------
         Group | str
@@ -320,7 +320,7 @@ class NumistaBaseModel(ABC, BaseModel):
         """
         if not items:
             return "No items available"
-        
+
         content: list[RenderableType] = []
         for i, item in enumerate(items):
             content.append(item.render_compact())
@@ -329,40 +329,40 @@ class NumistaBaseModel(ABC, BaseModel):
                 content.append("")  # Blank line
                 content.append("─" * 80)  # Horizontal rule
                 content.append("")  # Blank line
-        
+
         return Group(*content)
 
     def as_panel(self, style_overrides: dict[str, Any] | None = None) -> Any:
         """Render model as Rich Panel.
-        
+
         Default implementation creates a panel with formatted fields.
         Override in subclasses for custom panel layout.
-        
+
         Parameters
         ----------
         style_overrides : dict[str, Any] | None
             Optional style overrides for the panel
-            
+
         Returns
         -------
         Panel
             Rich Panel with model data
         """
         from numistalib.cli.theme import CLISettings
-        
+
         # Get formatted fields as content
         content = "\n".join(self.formatted_fields)
-        
+
         # Get title (try common field names)
         title = None
         for field_name in ["title", "name", "code"]:
             if hasattr(self, field_name):
                 title = getattr(self, field_name)
                 break
-        
+
         if not title:
             title = self.__class__.__name__
-        
+
         return CLISettings.panel(content=content, title=str(title))
 
 
@@ -409,7 +409,7 @@ class RichField:
         label_text = f"{label}:"
         pad_len = max(0, width - len(label_text))
         padding = fill_char * pad_len
-        return f"{label_text}{padding}{self.__str__()}"
+        return f"{label_text}{padding}{self!s}"
 
     @classmethod
     def __get_pydantic_core_schema__(cls, source_type: Any, handler: Any) -> core_schema.CoreSchema:  # type: ignore[name-defined]
@@ -426,4 +426,3 @@ class RichField:
             core_schema.any_schema(),
             serialization=core_schema.plain_serializer_function_ser_schema(str, when_used="json"),
         )
-

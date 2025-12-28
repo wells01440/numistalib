@@ -5,7 +5,6 @@ Tests:
 - literature search
 """
 
-import pytest
 from click.testing import CliRunner
 
 

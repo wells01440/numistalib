@@ -31,14 +31,14 @@ class Price(NumistaBaseModel):
     @classmethod
     def render_table(cls, items: list[Self], title: str = "") -> Table:
         """Generate table for price list.
-        
+
         Parameters
         ----------
         items : list[Self]
             List of Price instances
         title : str
             Table title
-            
+
         Returns
         -------
         Table
@@ -49,7 +49,7 @@ class Price(NumistaBaseModel):
         table.add_column("Grade", no_wrap=True)
         table.add_column("Currency", no_wrap=True)
         table.add_column("Value", no_wrap=True, justify="right")
-        
+
         for price in items:
             table.add_row(
                 str(price.issue_id),
@@ -57,5 +57,5 @@ class Price(NumistaBaseModel):
                 price.currency,
                 f"{price.value:.2f}"
             )
-        
+
         return table

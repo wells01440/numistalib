@@ -33,14 +33,14 @@ class Catalogue(NumistaBaseModel):
     @classmethod
     def render_table(cls, items: list[Self], title: str = "") -> Table:
         """Generate table for catalogue list.
-        
+
         Parameters
         ----------
         items : list[Self]
             List of Catalogue instances
         title : str
             Table title
-            
+
         Returns
         -------
         Table
@@ -52,7 +52,7 @@ class Catalogue(NumistaBaseModel):
         table.add_column("Title", no_wrap=False)
         table.add_column("Author", no_wrap=False)
         table.add_column("Publisher", no_wrap=False)
-        
+
         for cat in items:
             table.add_row(
                 str(cat.numista_id),
@@ -61,7 +61,7 @@ class Catalogue(NumistaBaseModel):
                 cat.author or "",
                 cat.publisher or ""
             )
-        
+
         return table
 
     def to_dict(self) -> dict[str, object]:
