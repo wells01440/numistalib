@@ -1,6 +1,22 @@
 # Numista-lib
 
+[![Documentation Status](https://readthedocs.org/projects/numistalib/badge/?version=latest)](https://numistalib.readthedocs.io/en/latest/?badge=latest)
+
 Python wrapper for the Numista API with caching, rate limiting, and retry logic.
+
+## 📖 Documentation
+
+**[Read the Docs](https://numistalib.readthedocs.io/)** — Complete documentation with search, versioning, and offline formats.
+
+**Quick Links:**
+
+- [Installation](https://numistalib.readthedocs.io/en/latest/installation.html)
+- [Quickstart](https://numistalib.readthedocs.io/en/latest/quickstart.html)
+- [CLI Guide](https://numistalib.readthedocs.io/en/latest/cli_guide.html)
+- [Python API Guide](https://numistalib.readthedocs.io/en/latest/python_api_guide.html)
+- [API Reference](https://numistalib.readthedocs.io/en/latest/api/)
+- [Configuration](https://numistalib.readthedocs.io/en/latest/configuration.html)
+- [Architecture](https://numistalib.readthedocs.io/en/latest/architecture.html)
 
 ## Features
 

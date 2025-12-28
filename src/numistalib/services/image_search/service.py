@@ -44,22 +44,7 @@ class ImageSearchService(ImageSearchServiceBase):
         list[TypeBasic]
             List of type models
         """
-        types: list[TypeBasic] = []
-        for item in items:
-            types.append(
-                TypeBasic(
-                    numista_id=cast(int, item["id"]),
-                    title=cast(str, item["title"]),
-                    category=cast(str, item["category"]),
-                    issuer_code=cast(str, item["issuer"]["code"]),
-                    issuer_name=cast(str, item["issuer"]["name"]),
-                    min_year=cast(int | None, item.get("min_year")),
-                    max_year=cast(int | None, item.get("max_year")),
-                    obverse_thumbnail=cast(str | None, item.get("obverse_thumbnail")),
-                    reverse_thumbnail=cast(str | None, item.get("reverse_thumbnail")),
-                )
-            )
-        return types
+        return [TypeBasic.model_validate(item) for item in items]
 
     def search_by_image(
         self,

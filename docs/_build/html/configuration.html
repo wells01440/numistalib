@@ -1,0 +1,649 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Configuration &mdash; numistalib 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=01f34227"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Advanced Usage" href="advanced_usage.html" />
+    <link rel="prev" title="Python API Guide" href="python_api_guide.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            numistalib
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cli_guide.html">CLI Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="python_api_guide.html">Python API Guide</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#configuration-methods">Configuration Methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#environment-variables">§ 1 Environment Variables</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#core-settings">Core Settings</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#numista-api-key">NUMISTA_API_KEY</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#numista-base-url">NUMISTA_BASE_URL</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#cache-settings">Cache Settings</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#cache-dir">CACHE_DIR</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cache-ttl-seconds">CACHE_TTL_SECONDS</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#rate-limiting">Rate Limiting</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#rate-limit">RATE_LIMIT</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#rate-limit-window">RATE_LIMIT_WINDOW</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#retry-settings">Retry Settings</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#max-retries">MAX_RETRIES</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#retry-backoff-factor">RETRY_BACKOFF_FACTOR</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#logging">Logging</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#log-level">LOG_LEVEL</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#env-file-configuration">§ 2 .env File Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#programmatic-configuration">§ 3 Programmatic Configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#using-settings-object">Using Settings Object</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#custom-cache-directory">Custom Cache Directory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#disable-caching">Disable Caching</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#aggressive-rate-limiting">Aggressive Rate Limiting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#increase-retry-attempts">Increase Retry Attempts</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#configuration-validation">§ 4 Configuration Validation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#viewing-current-configuration">§ 5 Viewing Current Configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#via-cli">Via CLI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#programmatically">Programmatically</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#multi-environment-setup">§ 6 Multi-Environment Setup</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#development">Development</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#production">Production</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#docker-configuration">§ 7 Docker Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#best-practices">§ 8 Best Practices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#security">Security</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#performance">Performance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reliability">Reliability</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#troubleshooting">§ 9 Troubleshooting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#api-key-not-found">“API key not found”</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#permission-denied-cache-directory">“Permission denied” (cache directory)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#rate-limit-errors">Rate limit errors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cache-not-working">Cache not working</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#configuration-reference">§ 10 Configuration Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="advanced_usage.html">Advanced Usage</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api/client.html">Client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/services.html">Services</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/models.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/cli.html">CLI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Additional Information</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing to numistalib</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="DEPLOYMENT.html">Documentation Deployment Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="README.html">numistalib Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">numistalib</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Configuration</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/configuration.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="configuration">
+<h1>Configuration<a class="headerlink" href="#configuration" title="Link to this heading"></a></h1>
+<p>Complete guide to configuring numistalib.</p>
+<section id="configuration-methods">
+<h2>Configuration Methods<a class="headerlink" href="#configuration-methods" title="Link to this heading"></a></h2>
+<p>numistalib can be configured through:</p>
+<ol class="arabic simple" start="0">
+<li><p>Environment variables (recommended)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.env</span></code> file</p></li>
+<li><p>Direct Settings object</p></li>
+</ol>
+</section>
+<section id="environment-variables">
+<h2>§ 1 Environment Variables<a class="headerlink" href="#environment-variables" title="Link to this heading"></a></h2>
+<section id="core-settings">
+<h3>Core Settings<a class="headerlink" href="#core-settings" title="Link to this heading"></a></h3>
+<section id="numista-api-key">
+<h4>NUMISTA_API_KEY<a class="headerlink" href="#numista-api-key" title="Link to this heading"></a></h4>
+<p><strong>Required</strong>. Your Numista API key.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">NUMISTA_API_KEY</span><span class="o">=</span><span class="s2">&quot;your_api_key_here&quot;</span>
+</pre></div>
+</div>
+<p>Get your key at: <a class="reference external" href="https://en.numista.com/api/">https://en.numista.com/api/</a></p>
+</section>
+<section id="numista-base-url">
+<h4>NUMISTA_BASE_URL<a class="headerlink" href="#numista-base-url" title="Link to this heading"></a></h4>
+<p>Base URL for the Numista API.</p>
+<ul class="simple">
+<li><p><strong>Default</strong>: <code class="docutils literal notranslate"><span class="pre">https://api.numista.com/v3</span></code></p></li>
+<li><p><strong>Type</strong>: string</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">NUMISTA_BASE_URL</span><span class="o">=</span><span class="s2">&quot;https://api.numista.com/v3&quot;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="cache-settings">
+<h3>Cache Settings<a class="headerlink" href="#cache-settings" title="Link to this heading"></a></h3>
+<section id="cache-dir">
+<h4>CACHE_DIR<a class="headerlink" href="#cache-dir" title="Link to this heading"></a></h4>
+<p>Directory for persistent HTTP cache.</p>
+<ul class="simple">
+<li><p><strong>Default</strong>: <code class="docutils literal notranslate"><span class="pre">.numista_cache</span></code></p></li>
+<li><p><strong>Type</strong>: string (path)</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">CACHE_DIR</span><span class="o">=</span><span class="s2">&quot;/path/to/cache&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="cache-ttl-seconds">
+<h4>CACHE_TTL_SECONDS<a class="headerlink" href="#cache-ttl-seconds" title="Link to this heading"></a></h4>
+<p>Time-to-live for cached responses.</p>
+<ul class="simple">
+<li><p><strong>Default</strong>: <code class="docutils literal notranslate"><span class="pre">604800</span></code> (7 days)</p></li>
+<li><p><strong>Type</strong>: integer (seconds)</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">CACHE_TTL_SECONDS</span><span class="o">=</span><span class="m">86400</span><span class="w">  </span><span class="c1"># 1 day</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="rate-limiting">
+<h3>Rate Limiting<a class="headerlink" href="#rate-limiting" title="Link to this heading"></a></h3>
+<section id="rate-limit">
+<h4>RATE_LIMIT<a class="headerlink" href="#rate-limit" title="Link to this heading"></a></h4>
+<p>Maximum number of requests per time window.</p>
+<ul class="simple">
+<li><p><strong>Default</strong>: <code class="docutils literal notranslate"><span class="pre">45</span></code></p></li>
+<li><p><strong>Type</strong>: integer</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">RATE_LIMIT</span><span class="o">=</span><span class="m">30</span>
+</pre></div>
+</div>
+</section>
+<section id="rate-limit-window">
+<h4>RATE_LIMIT_WINDOW<a class="headerlink" href="#rate-limit-window" title="Link to this heading"></a></h4>
+<p>Time window for rate limiting.</p>
+<ul class="simple">
+<li><p><strong>Default</strong>: <code class="docutils literal notranslate"><span class="pre">60</span></code> (seconds)</p></li>
+<li><p><strong>Type</strong>: integer</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">RATE_LIMIT_WINDOW</span><span class="o">=</span><span class="m">60</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="retry-settings">
+<h3>Retry Settings<a class="headerlink" href="#retry-settings" title="Link to this heading"></a></h3>
+<section id="max-retries">
+<h4>MAX_RETRIES<a class="headerlink" href="#max-retries" title="Link to this heading"></a></h4>
+<p>Maximum number of retry attempts for failed requests.</p>
+<ul class="simple">
+<li><p><strong>Default</strong>: <code class="docutils literal notranslate"><span class="pre">3</span></code></p></li>
+<li><p><strong>Type</strong>: integer</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">MAX_RETRIES</span><span class="o">=</span><span class="m">5</span>
+</pre></div>
+</div>
+</section>
+<section id="retry-backoff-factor">
+<h4>RETRY_BACKOFF_FACTOR<a class="headerlink" href="#retry-backoff-factor" title="Link to this heading"></a></h4>
+<p>Multiplier for exponential backoff.</p>
+<ul class="simple">
+<li><p><strong>Default</strong>: <code class="docutils literal notranslate"><span class="pre">2.0</span></code></p></li>
+<li><p><strong>Type</strong>: float</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">RETRY_BACKOFF_FACTOR</span><span class="o">=</span><span class="m">1</span>.5
+</pre></div>
+</div>
+</section>
+</section>
+<section id="logging">
+<h3>Logging<a class="headerlink" href="#logging" title="Link to this heading"></a></h3>
+<section id="log-level">
+<h4>LOG_LEVEL<a class="headerlink" href="#log-level" title="Link to this heading"></a></h4>
+<p>Logging verbosity level.</p>
+<ul class="simple">
+<li><p><strong>Default</strong>: <code class="docutils literal notranslate"><span class="pre">INFO</span></code></p></li>
+<li><p><strong>Type</strong>: string</p></li>
+<li><p><strong>Valid values</strong>: <code class="docutils literal notranslate"><span class="pre">DEBUG</span></code>, <code class="docutils literal notranslate"><span class="pre">INFO</span></code>, <code class="docutils literal notranslate"><span class="pre">WARNING</span></code>, <code class="docutils literal notranslate"><span class="pre">ERROR</span></code>, <code class="docutils literal notranslate"><span class="pre">CRITICAL</span></code></p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">LOG_LEVEL</span><span class="o">=</span>DEBUG
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+<hr class="docutils" />
+<section id="env-file-configuration">
+<h2>§ 2 .env File Configuration<a class="headerlink" href="#env-file-configuration" title="Link to this heading"></a></h2>
+<p>Create a <code class="docutils literal notranslate"><span class="pre">.env</span></code> file in your project root:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Numista API</span>
+<span class="nv">NUMISTA_API_KEY</span><span class="o">=</span>your_api_key_here
+<span class="nv">NUMISTA_BASE_URL</span><span class="o">=</span>https://api.numista.com/v3
+
+<span class="c1"># Cache</span>
+<span class="nv">CACHE_DIR</span><span class="o">=</span>.numista_cache
+<span class="nv">CACHE_TTL_SECONDS</span><span class="o">=</span><span class="m">604800</span>
+
+<span class="c1"># Rate Limiting</span>
+<span class="nv">RATE_LIMIT</span><span class="o">=</span><span class="m">45</span>
+<span class="nv">RATE_LIMIT_WINDOW</span><span class="o">=</span><span class="m">60</span>
+
+<span class="c1"># Retry</span>
+<span class="nv">MAX_RETRIES</span><span class="o">=</span><span class="m">3</span>
+<span class="nv">RETRY_BACKOFF_FACTOR</span><span class="o">=</span><span class="m">2</span>.0
+
+<span class="c1"># Logging</span>
+<span class="nv">LOG_LEVEL</span><span class="o">=</span>INFO
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">.env</span></code> file is automatically loaded when using <code class="docutils literal notranslate"><span class="pre">Settings()</span></code>.</p>
+</section>
+<hr class="docutils" />
+<section id="programmatic-configuration">
+<h2>§ 3 Programmatic Configuration<a class="headerlink" href="#programmatic-configuration" title="Link to this heading"></a></h2>
+<section id="using-settings-object">
+<h3>Using Settings Object<a class="headerlink" href="#using-settings-object" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">Settings</span>
+
+<span class="c1"># Load from environment/.env</span>
+<span class="n">settings</span> <span class="o">=</span> <span class="n">Settings</span><span class="p">()</span>
+
+<span class="c1"># Override specific values</span>
+<span class="n">settings</span> <span class="o">=</span> <span class="n">Settings</span><span class="p">(</span>
+    <span class="n">numista_api_key</span><span class="o">=</span><span class="s2">&quot;your_key&quot;</span><span class="p">,</span>
+    <span class="n">cache_ttl_seconds</span><span class="o">=</span><span class="mi">86400</span><span class="p">,</span>  <span class="c1"># 1 day</span>
+    <span class="n">rate_limit</span><span class="o">=</span><span class="mi">30</span>
+<span class="p">)</span>
+
+<span class="c1"># Use with client</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.client</span><span class="w"> </span><span class="kn">import</span> <span class="n">NumistaApiClient</span>
+
+<span class="k">with</span> <span class="n">NumistaApiClient</span><span class="p">(</span><span class="n">settings</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+    <span class="c1"># Use client</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+</section>
+<section id="custom-cache-directory">
+<h3>Custom Cache Directory<a class="headerlink" href="#custom-cache-directory" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">Settings</span>
+
+<span class="n">cache_path</span> <span class="o">=</span> <span class="n">Path</span><span class="o">.</span><span class="n">home</span><span class="p">()</span> <span class="o">/</span> <span class="s2">&quot;.cache&quot;</span> <span class="o">/</span> <span class="s2">&quot;numista&quot;</span>
+<span class="n">settings</span> <span class="o">=</span> <span class="n">Settings</span><span class="p">(</span><span class="n">cache_dir</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">cache_path</span><span class="p">))</span>
+</pre></div>
+</div>
+</section>
+<section id="disable-caching">
+<h3>Disable Caching<a class="headerlink" href="#disable-caching" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">settings</span> <span class="o">=</span> <span class="n">Settings</span><span class="p">(</span><span class="n">cache_ttl_seconds</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Note: This will still create the cache directory but responses won’t be stored.</p>
+</section>
+<section id="aggressive-rate-limiting">
+<h3>Aggressive Rate Limiting<a class="headerlink" href="#aggressive-rate-limiting" title="Link to this heading"></a></h3>
+<p>For API quota conservation:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">settings</span> <span class="o">=</span> <span class="n">Settings</span><span class="p">(</span>
+    <span class="n">rate_limit</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>        <span class="c1"># 20 requests</span>
+    <span class="n">rate_limit_window</span><span class="o">=</span><span class="mi">60</span>  <span class="c1"># per minute</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="increase-retry-attempts">
+<h3>Increase Retry Attempts<a class="headerlink" href="#increase-retry-attempts" title="Link to this heading"></a></h3>
+<p>For unreliable networks:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">settings</span> <span class="o">=</span> <span class="n">Settings</span><span class="p">(</span>
+    <span class="n">max_retries</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+    <span class="n">retry_backoff_factor</span><span class="o">=</span><span class="mf">3.0</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="configuration-validation">
+<h2>§ 4 Configuration Validation<a class="headerlink" href="#configuration-validation" title="Link to this heading"></a></h2>
+<p>Settings are validated using Pydantic:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">Settings</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">settings</span> <span class="o">=</span> <span class="n">Settings</span><span class="p">(</span>
+        <span class="n">rate_limit</span><span class="o">=-</span><span class="mi">5</span>  <span class="c1"># Invalid!</span>
+    <span class="p">)</span>
+<span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Configuration error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="viewing-current-configuration">
+<h2>§ 5 Viewing Current Configuration<a class="headerlink" href="#viewing-current-configuration" title="Link to this heading"></a></h2>
+<section id="via-cli">
+<h3>Via CLI<a class="headerlink" href="#via-cli" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>numistalib<span class="w"> </span>config<span class="w"> </span>list
+</pre></div>
+</div>
+<p>Shows all current settings including:</p>
+<ul class="simple">
+<li><p>API key (masked)</p></li>
+<li><p>Cache directory</p></li>
+<li><p>TTL</p></li>
+<li><p>Rate limits</p></li>
+<li><p>Retry settings</p></li>
+</ul>
+</section>
+<section id="programmatically">
+<h3>Programmatically<a class="headerlink" href="#programmatically" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">Settings</span>
+
+<span class="n">settings</span> <span class="o">=</span> <span class="n">Settings</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;API Key: </span><span class="si">{</span><span class="n">settings</span><span class="o">.</span><span class="n">numista_api_key</span><span class="p">[:</span><span class="mi">8</span><span class="p">]</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cache Dir: </span><span class="si">{</span><span class="n">settings</span><span class="o">.</span><span class="n">cache_dir</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cache TTL: </span><span class="si">{</span><span class="n">settings</span><span class="o">.</span><span class="n">cache_ttl_seconds</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Rate Limit: </span><span class="si">{</span><span class="n">settings</span><span class="o">.</span><span class="n">rate_limit</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">settings</span><span class="o">.</span><span class="n">rate_limit_window</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="multi-environment-setup">
+<h2>§ 6 Multi-Environment Setup<a class="headerlink" href="#multi-environment-setup" title="Link to this heading"></a></h2>
+<section id="development">
+<h3>Development<a class="headerlink" href="#development" title="Link to this heading"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">.env.development</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NUMISTA_API_KEY</span><span class="o">=</span>dev_key
+<span class="nv">CACHE_DIR</span><span class="o">=</span>.cache_dev
+<span class="nv">CACHE_TTL_SECONDS</span><span class="o">=</span><span class="m">3600</span>
+<span class="nv">LOG_LEVEL</span><span class="o">=</span>DEBUG
+</pre></div>
+</div>
+</section>
+<section id="production">
+<h3>Production<a class="headerlink" href="#production" title="Link to this heading"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">.env.production</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NUMISTA_API_KEY</span><span class="o">=</span>prod_key
+<span class="nv">CACHE_DIR</span><span class="o">=</span>/var/cache/numista
+<span class="nv">CACHE_TTL_SECONDS</span><span class="o">=</span><span class="m">604800</span>
+<span class="nv">LOG_LEVEL</span><span class="o">=</span>WARNING
+</pre></div>
+</div>
+<p>Load specific environment:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">Settings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+
+<span class="n">env_file</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;.env.production&quot;</span><span class="p">)</span>
+<span class="n">settings</span> <span class="o">=</span> <span class="n">Settings</span><span class="p">(</span><span class="n">_env_file</span><span class="o">=</span><span class="n">env_file</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="docker-configuration">
+<h2>§ 7 Docker Configuration<a class="headerlink" href="#docker-configuration" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">docker-compose.yml</span></code>:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;3.8&#39;</span>
+
+<span class="nt">services</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">numistalib</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">python:3.13</span>
+<span class="w">    </span><span class="nt">environment</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">NUMISTA_API_KEY=${NUMISTA_API_KEY}</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CACHE_DIR=/cache</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CACHE_TTL_SECONDS=604800</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">RATE_LIMIT=45</span>
+<span class="w">    </span><span class="nt">volumes</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./cache:/cache</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./app:/app</span>
+<span class="w">    </span><span class="nt">working_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/app</span>
+<span class="w">    </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">python your_script.py</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="best-practices">
+<h2>§ 8 Best Practices<a class="headerlink" href="#best-practices" title="Link to this heading"></a></h2>
+<section id="security">
+<h3>Security<a class="headerlink" href="#security" title="Link to this heading"></a></h3>
+<ol class="arabic simple" start="0">
+<li><p><strong>Never commit <code class="docutils literal notranslate"><span class="pre">.env</span></code> files</strong> to version control</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">.env</span></code> to <code class="docutils literal notranslate"><span class="pre">.gitignore</span></code></p></li>
+<li><p>Use environment-specific files (<code class="docutils literal notranslate"><span class="pre">.env.local</span></code>, <code class="docutils literal notranslate"><span class="pre">.env.production</span></code>)</p></li>
+<li><p>Rotate API keys periodically</p></li>
+</ol>
+</section>
+<section id="performance">
+<h3>Performance<a class="headerlink" href="#performance" title="Link to this heading"></a></h3>
+<ol class="arabic simple" start="0">
+<li><p><strong>Use default cache TTL</strong> (7 days) for stable data</p></li>
+<li><p>Reduce cache TTL for frequently changing data</p></li>
+<li><p>Adjust rate limits based on your API tier</p></li>
+<li><p>Use async methods for batch operations</p></li>
+</ol>
+</section>
+<section id="reliability">
+<h3>Reliability<a class="headerlink" href="#reliability" title="Link to this heading"></a></h3>
+<ol class="arabic simple" start="0">
+<li><p><strong>Keep retry settings moderate</strong> (3-5 attempts)</p></li>
+<li><p>Use exponential backoff factor ≥ 2.0</p></li>
+<li><p>Monitor rate limit usage</p></li>
+<li><p>Handle errors gracefully</p></li>
+</ol>
+</section>
+</section>
+<hr class="docutils" />
+<section id="troubleshooting">
+<h2>§ 9 Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading"></a></h2>
+<section id="api-key-not-found">
+<h3>“API key not found”<a class="headerlink" href="#api-key-not-found" title="Link to this heading"></a></h3>
+<p>Ensure <code class="docutils literal notranslate"><span class="pre">NUMISTA_API_KEY</span></code> is set:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">echo</span><span class="w"> </span><span class="nv">$NUMISTA_API_KEY</span>
+</pre></div>
+</div>
+<p>Or check <code class="docutils literal notranslate"><span class="pre">.env</span></code> file exists and contains the key.</p>
+</section>
+<section id="permission-denied-cache-directory">
+<h3>“Permission denied” (cache directory)<a class="headerlink" href="#permission-denied-cache-directory" title="Link to this heading"></a></h3>
+<p>Ensure the cache directory is writable:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>-p<span class="w"> </span>.numista_cache
+chmod<span class="w"> </span><span class="m">755</span><span class="w"> </span>.numista_cache
+</pre></div>
+</div>
+</section>
+<section id="rate-limit-errors">
+<h3>Rate limit errors<a class="headerlink" href="#rate-limit-errors" title="Link to this heading"></a></h3>
+<p>Check your rate limit settings:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>numistalib<span class="w"> </span>config<span class="w"> </span>get<span class="w"> </span>rate_limit
+numistalib<span class="w"> </span>config<span class="w"> </span>get<span class="w"> </span>rate_limit_window
+</pre></div>
+</div>
+<p>Reduce request frequency or increase limits if your API tier supports it.</p>
+</section>
+<section id="cache-not-working">
+<h3>Cache not working<a class="headerlink" href="#cache-not-working" title="Link to this heading"></a></h3>
+<p>Verify cache directory and TTL:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>numistalib<span class="w"> </span>config<span class="w"> </span>get<span class="w"> </span>cache_dir
+numistalib<span class="w"> </span>config<span class="w"> </span>get<span class="w"> </span>cache_ttl_seconds
+ls<span class="w"> </span>-la<span class="w"> </span>.numista_cache/
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="configuration-reference">
+<h2>§ 10 Configuration Reference<a class="headerlink" href="#configuration-reference" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Setting</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">numista_api_key</span></code></p></td>
+<td><p>str</p></td>
+<td><p><em>required</em></p></td>
+<td><p>Numista API key</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">numista_base_url</span></code></p></td>
+<td><p>str</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">https://api.numista.com/v3</span></code></p></td>
+<td><p>API base URL</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">cache_dir</span></code></p></td>
+<td><p>str</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">.numista_cache</span></code></p></td>
+<td><p>Cache directory path</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">cache_ttl_seconds</span></code></p></td>
+<td><p>int</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">604800</span></code></p></td>
+<td><p>Cache TTL (7 days)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">rate_limit</span></code></p></td>
+<td><p>int</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">45</span></code></p></td>
+<td><p>Requests per window</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">rate_limit_window</span></code></p></td>
+<td><p>int</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">60</span></code></p></td>
+<td><p>Rate limit window (seconds)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">max_retries</span></code></p></td>
+<td><p>int</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">3</span></code></p></td>
+<td><p>Maximum retry attempts</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">retry_backoff_factor</span></code></p></td>
+<td><p>float</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">2.0</span></code></p></td>
+<td><p>Exponential backoff multiplier</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">log_level</span></code></p></td>
+<td><p>str</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">INFO</span></code></p></td>
+<td><p>Logging level</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<hr class="docutils" />
+<section id="next-steps">
+<h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="advanced_usage.html"><span class="std std-doc">Advanced Usage</span></a> - Complex configuration scenarios</p></li>
+<li><p><a class="reference internal" href="architecture.html"><span class="std std-doc">Architecture</span></a> - Understanding how configuration works</p></li>
+<li><p><a class="reference internal" href="cli_guide.html"><span class="std std-doc">CLI Guide</span></a> - Using configuration with CLI</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="python_api_guide.html" class="btn btn-neutral float-left" title="Python API Guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="advanced_usage.html" class="btn btn-neutral float-right" title="Advanced Usage" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Andy Wells.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

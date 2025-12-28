@@ -1,0 +1,789 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Python API Guide &mdash; numistalib 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=01f34227"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Configuration" href="configuration.html" />
+    <link rel="prev" title="CLI Guide" href="cli_guide.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            numistalib
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cli_guide.html">CLI Guide</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Python API Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#basic-usage">Basic Usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#client-setup">Client Setup</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#types-service">§ 1 Types Service</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#import">Import</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#create-service">Create Service</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#search-types">Search Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#get-type-details">Get Type Details</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#async-search-paginated">Async Search (Paginated)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#catalogues-service">§ 2 Catalogues Service</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#import-create">Import &amp; Create</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#get-all-catalogues">Get All Catalogues</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#issuers-service">§ 3 Issuers Service</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Import &amp; Create</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#get-all-issuers">Get All Issuers</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#issues-service">§ 4 Issues Service</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id2">Import &amp; Create</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#get-type-issues">Get Type Issues</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#mints-service">§ 5 Mints Service</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id3">Import &amp; Create</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#list-all-mints">List All Mints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#get-mint-details">Get Mint Details</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#collections-service">§ 6 Collections Service</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id4">Import &amp; Create</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#list-user-collections">List User Collections</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#get-collection-items">Get Collection Items</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#image-search-service">§ 7 Image Search Service</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id5">Import &amp; Create</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#search-by-image">Search by Image</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#literature-service">§ 8 Literature Service</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id6">Import &amp; Create</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#get-publication">Get Publication</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#prices-service">§ 9 Prices Service</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id7">Import &amp; Create</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#get-price-estimates">Get Price Estimates</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#users-service">§ 10 Users Service</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id8">Import &amp; Create</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#get-user-profile">Get User Profile</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#async-usage">§ 11 Async Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#working-with-models">§ 12 Working with Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#accessing-fields">Accessing Fields</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#model-serialization">Model Serialization</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#cache-awareness">§ 13 Cache Awareness</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#error-handling">§ 14 Error Handling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#complete-example">Complete Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced_usage.html">Advanced Usage</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api/client.html">Client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/services.html">Services</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/models.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/cli.html">CLI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Additional Information</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing to numistalib</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="DEPLOYMENT.html">Documentation Deployment Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="README.html">numistalib Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">numistalib</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Python API Guide</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/python_api_guide.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="python-api-guide">
+<h1>Python API Guide<a class="headerlink" href="#python-api-guide" title="Link to this heading"></a></h1>
+<p>Complete guide to using numistalib as a Python library.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>numistalib provides a clean, type-safe Python API for accessing Numista data programmatically. All responses are validated Pydantic models with full type hints.</p>
+</section>
+<section id="basic-usage">
+<h2>Basic Usage<a class="headerlink" href="#basic-usage" title="Link to this heading"></a></h2>
+<section id="client-setup">
+<h3>Client Setup<a class="headerlink" href="#client-setup" title="Link to this heading"></a></h3>
+<p>Every interaction starts with the client:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.client</span><span class="w"> </span><span class="kn">import</span> <span class="n">NumistaApiClient</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">Settings</span>
+
+<span class="n">settings</span> <span class="o">=</span> <span class="n">Settings</span><span class="p">()</span>  <span class="c1"># Loads from .env</span>
+
+<span class="k">with</span> <span class="n">NumistaApiClient</span><span class="p">(</span><span class="n">settings</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+    <span class="c1"># Use services with this client</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+<p>The client supports both synchronous and asynchronous operations.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="types-service">
+<h2>§ 1 Types Service<a class="headerlink" href="#types-service" title="Link to this heading"></a></h2>
+<p>Search and retrieve coin/banknote/exonumia types.</p>
+<section id="import">
+<h3>Import<a class="headerlink" href="#import" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.services.types.service</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypeService</span>
+</pre></div>
+</div>
+</section>
+<section id="create-service">
+<h3>Create Service<a class="headerlink" href="#create-service" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">service</span> <span class="o">=</span> <span class="n">TypeService</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="search-types">
+<h3>Search Types<a class="headerlink" href="#search-types" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">results</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">search_types</span><span class="p">(</span>
+    <span class="n">query</span><span class="o">=</span><span class="s2">&quot;dollar&quot;</span><span class="p">,</span>
+    <span class="n">page</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">count</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+    <span class="n">lang</span><span class="o">=</span><span class="s2">&quot;en&quot;</span>
+<span class="p">)</span>
+
+<span class="k">for</span> <span class="n">coin_type</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">coin_type</span><span class="o">.</span><span class="n">numista_id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">coin_type</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Issuer: </span><span class="si">{</span><span class="n">coin_type</span><span class="o">.</span><span class="n">issuer</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Years: </span><span class="si">{</span><span class="n">coin_type</span><span class="o">.</span><span class="n">min_year</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">coin_type</span><span class="o">.</span><span class="n">max_year</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">query</span></code> (str, optional): Search keywords</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">issuer</span></code> (str, optional): Issuer code</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">category</span></code> (str, optional): “coin”, “banknote”, or “exonumia”</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">year</span></code> (str, optional): Year or range (e.g., “2020” or “2000-2010”)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">catalogue</span></code> (int, optional): Catalogue ID</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">number</span></code> (str, optional): Catalogue number</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ruler</span></code> (int, optional): Ruler ID</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">material</span></code> (int, optional): Material ID</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">date</span></code> (str, optional): Date or range</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">size</span></code> (str, optional): Size in mm or range</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">weight</span></code> (str, optional): Weight in grams or range</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">page</span></code> (int): Page number (default: 1)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">count</span></code> (int): Results per page (default: 50, max: 50)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">lang</span></code> (str): Language code (default: “en”)</p></li>
+</ul>
+<p><strong>Returns:</strong> <code class="docutils literal notranslate"><span class="pre">list[TypeBasic]</span></code></p>
+</section>
+<section id="get-type-details">
+<h3>Get Type Details<a class="headerlink" href="#get-type-details" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">full_type</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">get_type</span><span class="p">(</span><span class="mi">95420</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="s2">&quot;en&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Title: </span><span class="si">{</span><span class="n">full_type</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Weight: </span><span class="si">{</span><span class="n">full_type</span><span class="o">.</span><span class="n">weight</span><span class="si">}</span><span class="s2">g&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Diameter: </span><span class="si">{</span><span class="n">full_type</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">mm&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Composition: </span><span class="si">{</span><span class="n">full_type</span><span class="o">.</span><span class="n">composition</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Obverse: </span><span class="si">{</span><span class="n">full_type</span><span class="o">.</span><span class="n">obverse</span><span class="o">.</span><span class="n">description</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Reverse: </span><span class="si">{</span><span class="n">full_type</span><span class="o">.</span><span class="n">reverse</span><span class="o">.</span><span class="n">description</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">type_id</span></code> (int): Numista type ID</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">lang</span></code> (str): Language code (default: “en”)</p></li>
+</ul>
+<p><strong>Returns:</strong> <code class="docutils literal notranslate"><span class="pre">TypeFull</span></code></p>
+</section>
+<section id="async-search-paginated">
+<h3>Async Search (Paginated)<a class="headerlink" href="#async-search-paginated" title="Link to this heading"></a></h3>
+<p>For large datasets, use the async paginated search:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.client</span><span class="w"> </span><span class="kn">import</span> <span class="n">NumistaApiClient</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.services.types.service</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypeService</span>
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">search_all_dollars</span><span class="p">():</span>
+    <span class="n">settings</span> <span class="o">=</span> <span class="n">Settings</span><span class="p">()</span>
+    
+    <span class="k">async</span> <span class="k">with</span> <span class="n">NumistaApiClient</span><span class="p">(</span><span class="n">settings</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+        <span class="n">service</span> <span class="o">=</span> <span class="n">TypeService</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
+        
+        <span class="n">all_results</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">async</span> <span class="k">for</span> <span class="n">coin_type</span> <span class="ow">in</span> <span class="n">service</span><span class="o">.</span><span class="n">paginated_search</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="s2">&quot;dollar&quot;</span><span class="p">):</span>
+            <span class="n">all_results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">coin_type</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found: </span><span class="si">{</span><span class="n">coin_type</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">all_results</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">search_all_dollars</span><span class="p">())</span>
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="catalogues-service">
+<h2>§ 2 Catalogues Service<a class="headerlink" href="#catalogues-service" title="Link to this heading"></a></h2>
+<p>Access reference catalogue information.</p>
+<section id="import-create">
+<h3>Import &amp; Create<a class="headerlink" href="#import-create" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.services.catalogues.service</span><span class="w"> </span><span class="kn">import</span> <span class="n">CataloguesService</span>
+
+<span class="n">service</span> <span class="o">=</span> <span class="n">CataloguesService</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="get-all-catalogues">
+<h3>Get All Catalogues<a class="headerlink" href="#get-all-catalogues" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">catalogues</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">get_catalogues</span><span class="p">()</span>
+
+<span class="k">for</span> <span class="n">cat</span> <span class="ow">in</span> <span class="n">catalogues</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">cat</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">cat</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Author: </span><span class="si">{</span><span class="n">cat</span><span class="o">.</span><span class="n">author</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Type: </span><span class="si">{</span><span class="n">cat</span><span class="o">.</span><span class="n">type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Returns:</strong> <code class="docutils literal notranslate"><span class="pre">list[Catalogue]</span></code></p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="issuers-service">
+<h2>§ 3 Issuers Service<a class="headerlink" href="#issuers-service" title="Link to this heading"></a></h2>
+<p>Access issuer (country/entity) information.</p>
+<section id="id1">
+<h3>Import &amp; Create<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.services.issuer.service</span><span class="w"> </span><span class="kn">import</span> <span class="n">IssuerService</span>
+
+<span class="n">service</span> <span class="o">=</span> <span class="n">IssuerService</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="get-all-issuers">
+<h3>Get All Issuers<a class="headerlink" href="#get-all-issuers" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">issuers</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">get_issuers</span><span class="p">(</span><span class="n">lang</span><span class="o">=</span><span class="s2">&quot;en&quot;</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">issuer</span> <span class="ow">in</span> <span class="n">issuers</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">issuer</span><span class="o">.</span><span class="n">code</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">issuer</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">issuer</span><span class="o">.</span><span class="n">wikidata_id</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Wikidata: </span><span class="si">{</span><span class="n">issuer</span><span class="o">.</span><span class="n">wikidata_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">lang</span></code> (str): Language code (default: “en”)</p></li>
+</ul>
+<p><strong>Returns:</strong> <code class="docutils literal notranslate"><span class="pre">list[Issuer]</span></code></p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="issues-service">
+<h2>§ 4 Issues Service<a class="headerlink" href="#issues-service" title="Link to this heading"></a></h2>
+<p>Get issue information for types.</p>
+<section id="id2">
+<h3>Import &amp; Create<a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.services.issues.service</span><span class="w"> </span><span class="kn">import</span> <span class="n">IssuesService</span>
+
+<span class="n">service</span> <span class="o">=</span> <span class="n">IssuesService</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="get-type-issues">
+<h3>Get Type Issues<a class="headerlink" href="#get-type-issues" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">issues</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">get_issues</span><span class="p">(</span><span class="n">type_id</span><span class="o">=</span><span class="mi">95420</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="s2">&quot;en&quot;</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">issue</span> <span class="ow">in</span> <span class="n">issues</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Issue </span><span class="si">{</span><span class="n">issue</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Years: </span><span class="si">{</span><span class="n">issue</span><span class="o">.</span><span class="n">min_year</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">issue</span><span class="o">.</span><span class="n">max_year</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Mintage: </span><span class="si">{</span><span class="n">issue</span><span class="o">.</span><span class="n">mintage</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">issue</span><span class="o">.</span><span class="n">mint</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Mint: </span><span class="si">{</span><span class="n">issue</span><span class="o">.</span><span class="n">mint</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">type_id</span></code> (int): Type ID</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">lang</span></code> (str): Language code (default: “en”)</p></li>
+</ul>
+<p><strong>Returns:</strong> <code class="docutils literal notranslate"><span class="pre">list[Issue]</span></code></p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="mints-service">
+<h2>§ 5 Mints Service<a class="headerlink" href="#mints-service" title="Link to this heading"></a></h2>
+<p>Access mint information.</p>
+<section id="id3">
+<h3>Import &amp; Create<a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.services.mints.service</span><span class="w"> </span><span class="kn">import</span> <span class="n">MintsService</span>
+
+<span class="n">service</span> <span class="o">=</span> <span class="n">MintsService</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="list-all-mints">
+<h3>List All Mints<a class="headerlink" href="#list-all-mints" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">mints</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">get_mints</span><span class="p">(</span><span class="n">lang</span><span class="o">=</span><span class="s2">&quot;en&quot;</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">mint</span> <span class="ow">in</span> <span class="n">mints</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">mint</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">mint</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">mint</span><span class="o">.</span><span class="n">location</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Location: </span><span class="si">{</span><span class="n">mint</span><span class="o">.</span><span class="n">location</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">lang</span></code> (str): Language code (default: “en”)</p></li>
+</ul>
+<p><strong>Returns:</strong> <code class="docutils literal notranslate"><span class="pre">list[Mint]</span></code></p>
+</section>
+<section id="get-mint-details">
+<h3>Get Mint Details<a class="headerlink" href="#get-mint-details" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">mint</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">get_mint</span><span class="p">(</span><span class="n">mint_id</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="s2">&quot;en&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Name: </span><span class="si">{</span><span class="n">mint</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Location: </span><span class="si">{</span><span class="n">mint</span><span class="o">.</span><span class="n">location</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Period: </span><span class="si">{</span><span class="n">mint</span><span class="o">.</span><span class="n">start_year</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">mint</span><span class="o">.</span><span class="n">end_year</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">mint_id</span></code> (int): Mint ID</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">lang</span></code> (str): Language code (default: “en”)</p></li>
+</ul>
+<p><strong>Returns:</strong> <code class="docutils literal notranslate"><span class="pre">Mint</span></code></p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="collections-service">
+<h2>§ 6 Collections Service<a class="headerlink" href="#collections-service" title="Link to this heading"></a></h2>
+<p>Manage user collections (requires OAuth).</p>
+<section id="id4">
+<h3>Import &amp; Create<a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.services.collections.service</span><span class="w"> </span><span class="kn">import</span> <span class="n">CollectionsService</span>
+
+<span class="n">service</span> <span class="o">=</span> <span class="n">CollectionsService</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="list-user-collections">
+<h3>List User Collections<a class="headerlink" href="#list-user-collections" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">collections</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">get_collections</span><span class="p">(</span><span class="n">user_id</span><span class="o">=</span><span class="mi">12345</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">collection</span> <span class="ow">in</span> <span class="n">collections</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">collection</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">collection</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Items: </span><span class="si">{</span><span class="n">collection</span><span class="o">.</span><span class="n">count</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">user_id</span></code> (int): User ID</p></li>
+</ul>
+<p><strong>Returns:</strong> <code class="docutils literal notranslate"><span class="pre">list[Collection]</span></code></p>
+</section>
+<section id="get-collection-items">
+<h3>Get Collection Items<a class="headerlink" href="#get-collection-items" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">items</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">get_collected_items</span><span class="p">(</span>
+    <span class="n">user_id</span><span class="o">=</span><span class="mi">12345</span><span class="p">,</span>
+    <span class="n">category</span><span class="o">=</span><span class="s2">&quot;coin&quot;</span><span class="p">,</span>
+    <span class="n">collection_id</span><span class="o">=</span><span class="mi">67890</span>
+<span class="p">)</span>
+
+<span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">items</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Type </span><span class="si">{</span><span class="n">item</span><span class="o">.</span><span class="n">type</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Quantity: </span><span class="si">{</span><span class="n">item</span><span class="o">.</span><span class="n">quantity</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Grade: </span><span class="si">{</span><span class="n">item</span><span class="o">.</span><span class="n">grade</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">user_id</span></code> (int): User ID</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">category</span></code> (str, optional): Filter by category</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">type_id</span></code> (int, optional): Filter by type</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">collection_id</span></code> (int, optional): Filter by collection</p></li>
+</ul>
+<p><strong>Returns:</strong> <code class="docutils literal notranslate"><span class="pre">list[CollectionItem]</span></code></p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="image-search-service">
+<h2>§ 7 Image Search Service<a class="headerlink" href="#image-search-service" title="Link to this heading"></a></h2>
+<p>Search using coin images.</p>
+<section id="id5">
+<h3>Import &amp; Create<a class="headerlink" href="#id5" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.services.image_search.service</span><span class="w"> </span><span class="kn">import</span> <span class="n">ImageSearchService</span>
+
+<span class="n">service</span> <span class="o">=</span> <span class="n">ImageSearchService</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="search-by-image">
+<h3>Search by Image<a class="headerlink" href="#search-by-image" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+
+<span class="n">image_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;/path/to/coin.jpg&quot;</span><span class="p">)</span>
+
+<span class="n">results</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">search_by_image</span><span class="p">(</span>
+    <span class="n">image_path</span><span class="o">=</span><span class="n">image_path</span><span class="p">,</span>
+    <span class="n">category</span><span class="o">=</span><span class="s2">&quot;coin&quot;</span><span class="p">,</span>
+    <span class="n">max_results</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+    <span class="n">experimental</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">lang</span><span class="o">=</span><span class="s2">&quot;en&quot;</span>
+<span class="p">)</span>
+
+<span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Type </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">type_id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Confidence: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">score</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">image_path</span></code> (Path): Path to image file</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">category</span></code> (str, optional): “coin”, “banknote”, or “exonumia”</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">max_results</span></code> (int): Maximum results (default: 100, max: 100)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">experimental</span></code> (bool): Enable experimental features (default: False)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">lang</span></code> (str): Language code (default: “en”)</p></li>
+</ul>
+<p><strong>Returns:</strong> <code class="docutils literal notranslate"><span class="pre">list[ImageSearchResult]</span></code></p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="literature-service">
+<h2>§ 8 Literature Service<a class="headerlink" href="#literature-service" title="Link to this heading"></a></h2>
+<p>Get publication information.</p>
+<section id="id6">
+<h3>Import &amp; Create<a class="headerlink" href="#id6" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.services.literature.service</span><span class="w"> </span><span class="kn">import</span> <span class="n">LiteratureService</span>
+
+<span class="n">service</span> <span class="o">=</span> <span class="n">LiteratureService</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="get-publication">
+<h3>Get Publication<a class="headerlink" href="#get-publication" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pub</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">get_publication</span><span class="p">(</span><span class="s2">&quot;L123456&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Title: </span><span class="si">{</span><span class="n">pub</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Author: </span><span class="si">{</span><span class="n">pub</span><span class="o">.</span><span class="n">author</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Year: </span><span class="si">{</span><span class="n">pub</span><span class="o">.</span><span class="n">year</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Type: </span><span class="si">{</span><span class="n">pub</span><span class="o">.</span><span class="n">type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">publication_id</span></code> (str): Publication ID (e.g., “L123456”)</p></li>
+</ul>
+<p><strong>Returns:</strong> <code class="docutils literal notranslate"><span class="pre">Publication</span></code></p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="prices-service">
+<h2>§ 9 Prices Service<a class="headerlink" href="#prices-service" title="Link to this heading"></a></h2>
+<p>Get price estimates for issues.</p>
+<section id="id7">
+<h3>Import &amp; Create<a class="headerlink" href="#id7" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.services.prices.service</span><span class="w"> </span><span class="kn">import</span> <span class="n">PricesService</span>
+
+<span class="n">service</span> <span class="o">=</span> <span class="n">PricesService</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="get-price-estimates">
+<h3>Get Price Estimates<a class="headerlink" href="#get-price-estimates" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">prices</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">get_prices</span><span class="p">(</span>
+    <span class="n">type_id</span><span class="o">=</span><span class="mi">95420</span><span class="p">,</span>
+    <span class="n">issue_id</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">currency</span><span class="o">=</span><span class="s2">&quot;USD&quot;</span><span class="p">,</span>
+    <span class="n">lang</span><span class="o">=</span><span class="s2">&quot;en&quot;</span>
+<span class="p">)</span>
+
+<span class="k">for</span> <span class="n">grade</span><span class="p">,</span> <span class="n">price</span> <span class="ow">in</span> <span class="n">prices</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">grade</span><span class="si">}</span><span class="s2">: $</span><span class="si">{</span><span class="n">price</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">type_id</span></code> (int): Type ID</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">issue_id</span></code> (int): Issue ID</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">currency</span></code> (str): ISO 4217 currency code (default: “EUR”)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">lang</span></code> (str): Language code (default: “en”)</p></li>
+</ul>
+<p><strong>Returns:</strong> <code class="docutils literal notranslate"><span class="pre">dict[str,</span> <span class="pre">float]</span></code></p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="users-service">
+<h2>§ 10 Users Service<a class="headerlink" href="#users-service" title="Link to this heading"></a></h2>
+<p>Get user profile information.</p>
+<section id="id8">
+<h3>Import &amp; Create<a class="headerlink" href="#id8" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.services.users.service</span><span class="w"> </span><span class="kn">import</span> <span class="n">UsersService</span>
+
+<span class="n">service</span> <span class="o">=</span> <span class="n">UsersService</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="get-user-profile">
+<h3>Get User Profile<a class="headerlink" href="#get-user-profile" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">user</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">get_user</span><span class="p">(</span><span class="n">user_id</span><span class="o">=</span><span class="mi">12345</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="s2">&quot;en&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Username: </span><span class="si">{</span><span class="n">user</span><span class="o">.</span><span class="n">username</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Member since: </span><span class="si">{</span><span class="n">user</span><span class="o">.</span><span class="n">member_since</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Collection: </span><span class="si">{</span><span class="n">user</span><span class="o">.</span><span class="n">collection_count</span><span class="si">}</span><span class="s2"> items&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">user_id</span></code> (int): User ID</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">lang</span></code> (str): Language code (default: “en”)</p></li>
+</ul>
+<p><strong>Returns:</strong> <code class="docutils literal notranslate"><span class="pre">User</span></code></p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="async-usage">
+<h2>§ 11 Async Usage<a class="headerlink" href="#async-usage" title="Link to this heading"></a></h2>
+<p>All services support async operations with <code class="docutils literal notranslate"><span class="pre">_async</span></code> methods:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.client</span><span class="w"> </span><span class="kn">import</span> <span class="n">NumistaApiClient</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.services.types.service</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypeService</span>
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+    <span class="n">settings</span> <span class="o">=</span> <span class="n">Settings</span><span class="p">()</span>
+    
+    <span class="k">async</span> <span class="k">with</span> <span class="n">NumistaApiClient</span><span class="p">(</span><span class="n">settings</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+        <span class="n">service</span> <span class="o">=</span> <span class="n">TypeService</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
+        
+        <span class="c1"># Async get</span>
+        <span class="n">coin_type</span> <span class="o">=</span> <span class="k">await</span> <span class="n">service</span><span class="o">.</span><span class="n">get_type_async</span><span class="p">(</span><span class="mi">95420</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Title: </span><span class="si">{</span><span class="n">coin_type</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Async search with pagination</span>
+        <span class="k">async</span> <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">service</span><span class="o">.</span><span class="n">paginated_search</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="s2">&quot;dollar&quot;</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="working-with-models">
+<h2>§ 12 Working with Models<a class="headerlink" href="#working-with-models" title="Link to this heading"></a></h2>
+<p>All responses are Pydantic models with full validation.</p>
+<section id="accessing-fields">
+<h3>Accessing Fields<a class="headerlink" href="#accessing-fields" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">coin_type</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">get_type</span><span class="p">(</span><span class="mi">95420</span><span class="p">)</span>
+
+<span class="c1"># Direct access</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">coin_type</span><span class="o">.</span><span class="n">title</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">coin_type</span><span class="o">.</span><span class="n">weight</span><span class="p">)</span>
+
+<span class="c1"># Optional fields (may be None)</span>
+<span class="k">if</span> <span class="n">coin_type</span><span class="o">.</span><span class="n">obverse</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">coin_type</span><span class="o">.</span><span class="n">obverse</span><span class="o">.</span><span class="n">description</span><span class="p">)</span>
+
+<span class="c1"># Nested models</span>
+<span class="k">if</span> <span class="n">coin_type</span><span class="o">.</span><span class="n">mints</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">mint</span> <span class="ow">in</span> <span class="n">coin_type</span><span class="o">.</span><span class="n">mints</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">mint</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="model-serialization">
+<h3>Model Serialization<a class="headerlink" href="#model-serialization" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># To dict</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">coin_type</span><span class="o">.</span><span class="n">model_dump</span><span class="p">()</span>
+
+<span class="c1"># To JSON</span>
+<span class="n">json_str</span> <span class="o">=</span> <span class="n">coin_type</span><span class="o">.</span><span class="n">model_dump_json</span><span class="p">()</span>
+
+<span class="c1"># From dict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.models.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypeFull</span>
+<span class="n">coin_type</span> <span class="o">=</span> <span class="n">TypeFull</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="cache-awareness">
+<h2>§ 13 Cache Awareness<a class="headerlink" href="#cache-awareness" title="Link to this heading"></a></h2>
+<p>Check if a response was cached:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.client</span><span class="w"> </span><span class="kn">import</span> <span class="n">NumistaResponse</span>
+
+<span class="n">response</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">get_type</span><span class="p">(</span><span class="mi">95420</span><span class="p">)</span>
+
+<span class="c1"># Access via service&#39;s last response (if exposed)</span>
+<span class="c1"># Or use client directly:</span>
+<span class="n">raw_response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/types/95420&quot;</span><span class="p">)</span>
+<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">raw_response</span><span class="p">,</span> <span class="n">NumistaResponse</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">raw_response</span><span class="o">.</span><span class="n">cached</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;💾 Served from cache&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;🌐 Fresh from API&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="error-handling">
+<h2>§ 14 Error Handling<a class="headerlink" href="#error-handling" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.models.errors</span><span class="w"> </span><span class="kn">import</span> <span class="n">NumistaError</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">coin_type</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">get_type</span><span class="p">(</span><span class="mi">99999999</span><span class="p">)</span>
+<span class="k">except</span> <span class="n">NumistaError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Status code: </span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="complete-example">
+<h2>Complete Example<a class="headerlink" href="#complete-example" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.client</span><span class="w"> </span><span class="kn">import</span> <span class="n">NumistaApiClient</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">Settings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.services.types.service</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypeService</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.services.issues.service</span><span class="w"> </span><span class="kn">import</span> <span class="n">IssuesService</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.services.prices.service</span><span class="w"> </span><span class="kn">import</span> <span class="n">PricesService</span>
+
+<span class="n">settings</span> <span class="o">=</span> <span class="n">Settings</span><span class="p">()</span>
+
+<span class="k">with</span> <span class="n">NumistaApiClient</span><span class="p">(</span><span class="n">settings</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+    <span class="c1"># Search for types</span>
+    <span class="n">types_service</span> <span class="o">=</span> <span class="n">TypeService</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">types_service</span><span class="o">.</span><span class="n">search_types</span><span class="p">(</span>
+        <span class="n">query</span><span class="o">=</span><span class="s2">&quot;commemorative&quot;</span><span class="p">,</span>
+        <span class="n">issuer</span><span class="o">=</span><span class="s2">&quot;france&quot;</span><span class="p">,</span>
+        <span class="n">year</span><span class="o">=</span><span class="s2">&quot;2010-2020&quot;</span><span class="p">,</span>
+        <span class="n">count</span><span class="o">=</span><span class="mi">5</span>
+    <span class="p">)</span>
+    
+    <span class="c1"># Process each type</span>
+    <span class="k">for</span> <span class="n">coin_type</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">coin_type</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ID: </span><span class="si">{</span><span class="n">coin_type</span><span class="o">.</span><span class="n">numista_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Get full details</span>
+        <span class="n">full</span> <span class="o">=</span> <span class="n">types_service</span><span class="o">.</span><span class="n">get_type</span><span class="p">(</span><span class="n">coin_type</span><span class="o">.</span><span class="n">numista_id</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Weight: </span><span class="si">{</span><span class="n">full</span><span class="o">.</span><span class="n">weight</span><span class="si">}</span><span class="s2">g&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Composition: </span><span class="si">{</span><span class="n">full</span><span class="o">.</span><span class="n">composition</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Get issues</span>
+        <span class="n">issues_service</span> <span class="o">=</span> <span class="n">IssuesService</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
+        <span class="n">issues</span> <span class="o">=</span> <span class="n">issues_service</span><span class="o">.</span><span class="n">get_issues</span><span class="p">(</span><span class="n">coin_type</span><span class="o">.</span><span class="n">numista_id</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Issues: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">issues</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Get prices for first issue</span>
+        <span class="k">if</span> <span class="n">issues</span><span class="p">:</span>
+            <span class="n">prices_service</span> <span class="o">=</span> <span class="n">PricesService</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
+            <span class="n">prices</span> <span class="o">=</span> <span class="n">prices_service</span><span class="o">.</span><span class="n">get_prices</span><span class="p">(</span>
+                <span class="n">coin_type</span><span class="o">.</span><span class="n">numista_id</span><span class="p">,</span>
+                <span class="n">issues</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                <span class="n">currency</span><span class="o">=</span><span class="s2">&quot;EUR&quot;</span>
+            <span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Prices: </span><span class="si">{</span><span class="n">prices</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="next-steps">
+<h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="advanced_usage.html"><span class="std std-doc">Advanced Usage</span></a> - Complex scenarios</p></li>
+<li><p><a class="reference internal" href="configuration.html"><span class="std std-doc">Configuration</span></a> - Customize behavior</p></li>
+<li><p><a class="reference internal" href="api/services.html"><span class="std std-doc">API Reference</span></a> - Full API documentation</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="cli_guide.html" class="btn btn-neutral float-left" title="CLI Guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="configuration.html" class="btn btn-neutral float-right" title="Configuration" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Andy Wells.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

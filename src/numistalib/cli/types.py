@@ -9,6 +9,7 @@ from rich.table import Table
 from numistalib.cli.theme import CLISettings
 from numistalib.config import Settings
 from numistalib.services import TypeBasicService, TypeFullService
+from numistalib.models import TypeBasic
 
 # pyright: reportOptionalMemberAccess = false
 # pyright: reportUnusedFunction = false

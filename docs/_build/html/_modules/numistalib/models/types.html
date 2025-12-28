@@ -1,0 +1,1228 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>numistalib.models.types &mdash; numistalib 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=01f34227"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            numistalib
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstart.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cli_guide.html">CLI Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../python_api_guide.html">Python API Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../advanced_usage.html">Advanced Usage</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/client.html">Client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/services.html">Services</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/models.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/cli.html">CLI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Additional Information</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../architecture.html">Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing to numistalib</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../DEPLOYMENT.html">Documentation Deployment Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../README.html">numistalib Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">numistalib</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">numistalib.models.types</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for numistalib.models.types</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Numista catalogue type models.</span>
+
+<span class="sd">Pydantic models for Numista coin/banknote/exonumia types.</span>
+<span class="sd">Used for validation and data transfer between integration and service layers.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">ABC</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">date</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">cached_property</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">io</span><span class="w"> </span><span class="kn">import</span> <span class="n">BytesIO</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Annotated</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Literal</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">httpx</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">bs4</span><span class="w"> </span><span class="kn">import</span> <span class="n">BeautifulSoup</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PIL</span><span class="w"> </span><span class="kn">import</span> <span class="n">Image</span> <span class="k">as</span> <span class="n">PILImage</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">rich.repr</span><span class="w"> </span><span class="kn">import</span> <span class="n">T</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">rich.table</span><span class="w"> </span><span class="kn">import</span> <span class="n">Table</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">rich.text</span><span class="w"> </span><span class="kn">import</span> <span class="n">Text</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">AnyUrl</span><span class="p">,</span>
+    <span class="n">Field</span><span class="p">,</span>
+    <span class="n">HttpUrl</span><span class="p">,</span>
+    <span class="n">StringConstraints</span><span class="p">,</span>
+    <span class="n">computed_field</span><span class="p">,</span>
+    <span class="n">field_validator</span><span class="p">,</span>
+    <span class="n">model_validator</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pydantic_core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Url</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">textual_image.renderable</span><span class="w"> </span><span class="kn">import</span> <span class="n">Image</span> <span class="k">as</span> <span class="n">TImage</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">Currency</span><span class="p">,</span> <span class="n">Issuer</span><span class="p">,</span> <span class="n">Mint</span><span class="p">,</span> <span class="n">NumistaBaseModel</span><span class="p">,</span> <span class="n">Reference</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.models.issues</span><span class="w"> </span><span class="kn">import</span> <span class="n">IssueTerms</span>
+
+
+<div class="viewcode-block" id="Country">
+<a class="viewcode-back" href="../../../api/models.html#numistalib.models.types.Country">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Country</span><span class="p">(</span><span class="n">NumistaBaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Country information with code and name.&quot;&quot;&quot;</span>
+
+    <span class="n">code</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">255</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Country.__str__">
+<a class="viewcode-back" href="../../../api/models.html#numistalib.models.types.Country.__str__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return formatted country with code and name.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">code</span><span class="si">}</span><span class="s2">)&quot;</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="CurrencyValue">
+<a class="viewcode-back" href="../../../api/models.html#numistalib.models.types.CurrencyValue">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CurrencyValue</span><span class="p">(</span><span class="n">NumistaBaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Currency value information.&quot;&quot;&quot;</span>
+
+    <span class="n">text</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Textual representation of the value&quot;</span><span class="p">)</span>
+    <span class="n">numeric_value</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Numeric value&quot;</span><span class="p">)</span>
+    <span class="n">numerator</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Numerator for fractional values&quot;</span><span class="p">)</span>
+    <span class="n">denominator</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Denominator for fractional values&quot;</span><span class="p">)</span>
+    <span class="n">currency</span><span class="p">:</span> <span class="n">Currency</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Currency information&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="Demonetization">
+<a class="viewcode-back" href="../../../api/models.html#numistalib.models.types.Demonetization">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Demonetization</span><span class="p">(</span><span class="n">NumistaBaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Demonetization status and date information.&quot;&quot;&quot;</span>
+
+    <span class="n">is_demonetized</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Indicates if the type is demonetized&quot;</span><span class="p">)</span>
+    <span class="n">demonetization_date</span><span class="p">:</span> <span class="n">date</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Date of demonetization&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Demonetization.parse_partial_date">
+<a class="viewcode-back" href="../../../api/models.html#numistalib.models.types.Demonetization.parse_partial_date">[docs]</a>
+    <span class="nd">@field_validator</span><span class="p">(</span><span class="s2">&quot;demonetization_date&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;before&quot;</span><span class="p">)</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parse_partial_date</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">date</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle partial dates with 00 day or month and various formats.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">date</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">v</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="c1"># Skip partial dates with 00</span>
+            <span class="k">if</span> <span class="s2">&quot;00&quot;</span> <span class="ow">in</span> <span class="n">v</span> <span class="ow">or</span> <span class="n">v</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;-00&quot;</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">None</span>
+            <span class="c1"># Try multiple date formats</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
+            <span class="n">formats</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">,</span>      <span class="c1"># 1988-02-15</span>
+                <span class="s2">&quot;%Y/%m/</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">,</span>      <span class="c1"># 1988/02/15</span>
+                <span class="s2">&quot;</span><span class="si">%d</span><span class="s2">-%m-%Y&quot;</span><span class="p">,</span>      <span class="c1"># 15-02-1988</span>
+                <span class="s2">&quot;</span><span class="si">%d</span><span class="s2">/%m/%Y&quot;</span><span class="p">,</span>      <span class="c1"># 15/02/1988</span>
+                <span class="s2">&quot;%m-</span><span class="si">%d</span><span class="s2">-%Y&quot;</span><span class="p">,</span>      <span class="c1"># 02-15-1988</span>
+                <span class="s2">&quot;%m/</span><span class="si">%d</span><span class="s2">/%Y&quot;</span><span class="p">,</span>      <span class="c1"># 02/15/1988</span>
+                <span class="s2">&quot;%Y&quot;</span><span class="p">,</span>            <span class="c1"># 1988 (year only)</span>
+            <span class="p">]</span>
+            <span class="k">for</span> <span class="n">fmt</span> <span class="ow">in</span> <span class="n">formats</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">fmt</span><span class="p">)</span><span class="o">.</span><span class="n">date</span><span class="p">()</span>
+                <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                    <span class="k">continue</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Composition">
+<a class="viewcode-back" href="../../../api/models.html#numistalib.models.types.Composition">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Composition</span><span class="p">(</span><span class="n">NumistaBaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Metal composition information for coin types.&quot;&quot;&quot;</span>
+
+    <span class="n">text</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Metal composition description&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>  <span class="c1"># Allow test equality to string value</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">text</span> <span class="o">==</span> <span class="n">other</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__eq__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="Technique">
+<a class="viewcode-back" href="../../../api/models.html#numistalib.models.types.Technique">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Technique</span><span class="p">(</span><span class="n">NumistaBaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Minting technique information.&quot;&quot;&quot;</span>
+
+    <span class="n">text</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Minting technique description&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="LetteringScript">
+<a class="viewcode-back" href="../../../api/models.html#numistalib.models.types.LetteringScript">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">LetteringScript</span><span class="p">(</span><span class="n">NumistaBaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Lettering script information for coin designs.&quot;&quot;&quot;</span>
+
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Name of the lettering script&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="References">
+<a class="viewcode-back" href="../../../api/models.html#numistalib.models.types.References">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">References</span><span class="p">(</span><span class="n">NumistaBaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Collection of references for a type.&quot;&quot;&quot;</span>
+
+    <span class="n">references</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Reference</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;List of references&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="RulerGroup">
+<a class="viewcode-back" href="../../../api/models.html#numistalib.models.types.RulerGroup">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">RulerGroup</span><span class="p">(</span><span class="n">NumistaBaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Ruler group information for hierarchical ruler organization.&quot;&quot;&quot;</span>
+
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Numista ID&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;numista_id&quot;</span><span class="p">)</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Group Name&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="Ruler">
+<a class="viewcode-back" href="../../../api/models.html#numistalib.models.types.Ruler">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Ruler</span><span class="p">(</span><span class="n">NumistaBaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Maps to Numista ruler schema for detailed ruler information.&quot;&quot;&quot;</span>
+
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Numista ID&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;numista_id&quot;</span><span class="p">)</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Ruler Name&quot;</span><span class="p">)</span>
+    <span class="n">wikidata_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Wikidata ID&quot;</span><span class="p">)</span>
+    <span class="n">nomisma_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Nomisma ID&quot;</span><span class="p">)</span>
+    <span class="n">group</span><span class="p">:</span> <span class="n">RulerGroup</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Group information&quot;</span><span class="p">)</span>
+
+    <span class="nd">@computed_field</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">wikidata_url</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Url</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Computed Wikidata URL from `wikidata_id`.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Url | None</span>
+<span class="sd">            Full Wikidata URL if `wikidata_id` present, else None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">wikidata_id</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Url</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;https://www.wikidata.org/wiki/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">wikidata_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="nd">@computed_field</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">group_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extract group ID from group.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        int | None</span>
+<span class="sd">            Group ID if group present, else None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">group</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">group</span> <span class="k">else</span> <span class="kc">None</span>
+
+    <span class="nd">@computed_field</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">group_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extract group name from group.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        str | None</span>
+<span class="sd">            Group name if group present, else None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">group</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">group</span> <span class="k">else</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="Ruler.render_compact">
+<a class="viewcode-back" href="../../../api/models.html#numistalib.models.types.Ruler.render_compact">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">render_compact</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render compact ruler display.&quot;&quot;&quot;</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;[bold]</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">[/bold]&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">wikidata_id</span><span class="p">:</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[link=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">wikidata_url</span><span class="si">}</span><span class="s2">]Wikidata: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">wikidata_id</span><span class="si">}</span><span class="s2">[/link]&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">group</span><span class="p">:</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[dim]Group: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">group</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">[/dim]&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Ruler.render_table">
+<a class="viewcode-back" href="../../../api/models.html#numistalib.models.types.Ruler.render_table">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">render_table</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">items</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Ruler</span><span class="p">],</span> <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Table</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate table for ruler list with computed group fields.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        items : list[Ruler]</span>
+<span class="sd">            List of Ruler instances</span>
+<span class="sd">        title : str</span>
+<span class="sd">            Table title</span>
+<span class="sd">            </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Table</span>
+<span class="sd">            Rich table with ruler information</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">rich.table</span><span class="w"> </span><span class="kn">import</span> <span class="n">Table</span>
+
+        <span class="n">table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="n">show_header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pad_edge</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span> <span class="n">expand</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">table</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="s2">&quot;Id&quot;</span><span class="p">,</span> <span class="n">no_wrap</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">table</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="s2">&quot;Name&quot;</span><span class="p">,</span> <span class="n">no_wrap</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">table</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="s2">&quot;Wikidata Id&quot;</span><span class="p">,</span> <span class="n">no_wrap</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">table</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="s2">&quot;Nomisma Id&quot;</span><span class="p">,</span> <span class="n">no_wrap</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">table</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="s2">&quot;Group Id&quot;</span><span class="p">,</span> <span class="n">no_wrap</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">table</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="s2">&quot;Group Name&quot;</span><span class="p">,</span> <span class="n">no_wrap</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">ruler</span> <span class="ow">in</span> <span class="n">items</span><span class="p">:</span>
+            <span class="n">table</span><span class="o">.</span><span class="n">add_row</span><span class="p">(</span>
+                <span class="nb">str</span><span class="p">(</span><span class="n">ruler</span><span class="o">.</span><span class="n">id</span><span class="p">),</span>
+                <span class="n">ruler</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                <span class="n">ruler</span><span class="o">.</span><span class="n">wikidata_id</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+                <span class="n">ruler</span><span class="o">.</span><span class="n">nomisma_id</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+                <span class="nb">str</span><span class="p">(</span><span class="n">ruler</span><span class="o">.</span><span class="n">group_id</span><span class="p">)</span> <span class="k">if</span> <span class="n">ruler</span><span class="o">.</span><span class="n">group_id</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+                <span class="n">ruler</span><span class="o">.</span><span class="n">group_name</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">table</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="SideBase">
+<a class="viewcode-back" href="../../../api/models.html#numistalib.models.types.SideBase">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SideBase</span><span class="p">(</span><span class="n">NumistaBaseModel</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for obverse and reverse sides of a type.&quot;&quot;&quot;</span>
+    <span class="n">engravers</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;List of engravers&quot;</span><span class="p">)</span>
+    <span class="n">designers</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;List of designers&quot;</span><span class="p">)</span>
+    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Description of the side&quot;</span><span class="p">)</span>
+    <span class="n">lettering</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Lettering/inscription on the side&quot;</span><span class="p">)</span>
+    <span class="n">lettering_scripts</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">LetteringScript</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Lettering scripts used&quot;</span><span class="p">)</span>
+    <span class="n">picture</span><span class="p">:</span> <span class="n">AnyUrl</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Picture URL of the side&quot;</span><span class="p">)</span>
+    <span class="n">thumbnail</span><span class="p">:</span> <span class="n">AnyUrl</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Thumbnail URL of the side&quot;</span><span class="p">)</span>
+    <span class="n">picture_copyright</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Picture copyright information&quot;</span><span class="p">)</span>
+    <span class="n">picture_copyright_url</span><span class="p">:</span> <span class="n">AnyUrl</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;URL for picture copyright information&quot;</span><span class="p">)</span>
+    <span class="n">picture_license_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Picture license name&quot;</span><span class="p">)</span>
+    <span class="n">picture_license_url</span><span class="p">:</span> <span class="n">AnyUrl</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Picture license URL&quot;</span><span class="p">)</span>
+    <span class="n">lettering_translation</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Translation of the lettering/inscription&quot;</span><span class="p">)</span>
+    <span class="n">unabridged_legend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Full unabridged lettering&quot;</span><span class="p">)</span>
+
+    <span class="nd">@computed_field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Cleaned lettering as lines&quot;</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">lettering_lines</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Splits the lettering into individual lines using the embedded line break.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">lettering</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">lettering</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span> <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span>
+
+<div class="viewcode-block" id="SideBase.pillow_image">
+<a class="viewcode-back" href="../../../api/models.html#numistalib.models.types.SideBase.pillow_image">[docs]</a>
+    <span class="nd">@cached_property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pillow_image</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PILImage</span><span class="o">.</span><span class="n">Image</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Download and cache the full picture as a Pillow Image.&quot;&quot;&quot;</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">picture</span><span class="o">.</span><span class="n">encoded_string</span><span class="p">(),</span> <span class="n">follow_redirects</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">30.0</span><span class="p">)</span>
+        <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">PILImage</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">BytesIO</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="SideBase.pillow_thumbnail">
+<a class="viewcode-back" href="../../../api/models.html#numistalib.models.types.SideBase.pillow_thumbnail">[docs]</a>
+    <span class="nd">@cached_property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pillow_thumbnail</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PILImage</span><span class="o">.</span><span class="n">Image</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Download and cache the thumbnail as a Pillow Image.&quot;&quot;&quot;</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">thumbnail</span><span class="o">.</span><span class="n">encoded_string</span><span class="p">(),</span> <span class="n">follow_redirects</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">30.0</span><span class="p">)</span>
+        <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">PILImage</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">BytesIO</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="SideBase.renderable_image">
+<a class="viewcode-back" href="../../../api/models.html#numistalib.models.types.SideBase.renderable_image">[docs]</a>
+    <span class="nd">@cached_property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">renderable_image</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Ready-to-print textual_image renderable (full picture).&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pillow_image</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">TImage</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pillow_image</span><span class="p">)</span></div>
+
+            
+<div class="viewcode-block" id="SideBase.renderable_thumbnail">
+<a class="viewcode-back" href="../../../api/models.html#numistalib.models.types.SideBase.renderable_thumbnail">[docs]</a>
+    <span class="nd">@cached_property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">renderable_thumbnail</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Ready-to-print thumbnail.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pillow_thumbnail</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">TImage</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pillow_thumbnail</span><span class="p">)</span></div>
+
+
+    <span class="nd">@computed_field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Formatted copyright link for textual display&quot;</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">copyright_link</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Formatted copyright link for textual display.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;[link=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">picture_copyright_url</span><span class="si">}</span><span class="s2">]</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">picture_copyright</span><span class="si">}</span><span class="s2">[/link]&quot;</span>
+
+    <span class="nd">@computed_field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Formatted thumbnail link for textual display&quot;</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">thumbnail_link</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Formatted thumbnail link for textual display.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;[link=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">thumbnail</span><span class="si">}</span><span class="s2">]</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">thumbnail</span><span class="si">}</span><span class="s2">[/link]&quot;</span>
+
+    <span class="nd">@computed_field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Formatted picture link for textual display&quot;</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">picture_link</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Formatted picture link for textual display.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;[link=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">picture</span><span class="si">}</span><span class="s2">]</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">picture</span><span class="si">}</span><span class="s2">[/link]&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">formatted_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return formatted fields excluding redundant computed fields and formatting lists properly.&quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.models.base.base_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">format_field</span>
+
+        <span class="n">formatted</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># Define fields to exclude (redundant computed fields)</span>
+        <span class="n">exclude_fields</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;lettering_lines&quot;</span><span class="p">,</span>  <span class="c1"># Redundant with lettering</span>
+            <span class="s2">&quot;copyright_link&quot;</span><span class="p">,</span>   <span class="c1"># Redundant with picture_copyright</span>
+            <span class="s2">&quot;thumbnail_link&quot;</span><span class="p">,</span>   <span class="c1"># Redundant with thumbnail</span>
+            <span class="s2">&quot;picture_link&quot;</span><span class="p">,</span>     <span class="c1"># Redundant with picture</span>
+        <span class="p">}</span>
+
+        <span class="c1"># Process regular fields</span>
+        <span class="k">for</span> <span class="n">field_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">model_fields</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">field_name</span> <span class="ow">in</span> <span class="n">exclude_fields</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="n">value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field_name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="n">label</span> <span class="o">=</span> <span class="n">field_name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">title</span><span class="p">()</span>
+
+            <span class="c1"># Format lists specially</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">value</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="c1"># Check if it&#39;s a list of models</span>
+                <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="nb">hasattr</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="s2">&quot;__class__&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="s2">&quot;__name__&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">value</span><span class="p">):</span>
+                    <span class="c1"># List of objects - extract names</span>
+                    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">&quot;name&quot;</span><span class="p">):</span>
+                        <span class="n">formatted_value</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">value</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">formatted_value</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">value</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># Simple list</span>
+                    <span class="n">formatted_value</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">value</span><span class="p">)</span>
+                <span class="n">formatted</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">format_field</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">formatted_value</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">formatted</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">format_field</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
+
+        <span class="c1"># Process computed fields (excluding those in exclude set)</span>
+        <span class="k">for</span> <span class="n">field_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">model_computed_fields</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">field_name</span> <span class="ow">in</span> <span class="n">exclude_fields</span> <span class="ow">or</span> <span class="n">field_name</span> <span class="o">==</span> <span class="s2">&quot;formatted_fields&quot;</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="n">value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field_name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">label</span> <span class="o">=</span> <span class="n">field_name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">title</span><span class="p">()</span>
+                <span class="n">formatted</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">format_field</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">formatted</span></div>
+
+
+
+<div class="viewcode-block" id="Obverse">
+<a class="viewcode-back" href="../../../api/models.html#numistalib.models.types.Obverse">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Obverse</span><span class="p">(</span><span class="n">SideBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Obverse (front/heads) side of a coin or banknote.&quot;&quot;&quot;</span>
+
+    <span class="k">pass</span></div>
+
+
+
+<div class="viewcode-block" id="Reverse">
+<a class="viewcode-back" href="../../../api/models.html#numistalib.models.types.Reverse">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Reverse</span><span class="p">(</span><span class="n">SideBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Reverse (back/tails) side of a coin or banknote.&quot;&quot;&quot;</span>
+
+    <span class="k">pass</span></div>
+
+
+
+<div class="viewcode-block" id="Edge">
+<a class="viewcode-back" href="../../../api/models.html#numistalib.models.types.Edge">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Edge</span><span class="p">(</span><span class="n">NumistaBaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Edge specifications for a coin type.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    description : str | None</span>
+<span class="sd">        Description of the edge (e.g., &#39;Reeded&#39;, &#39;Plain&#39;)</span>
+<span class="sd">    picture : str | None</span>
+<span class="sd">        Picture URL of the edge</span>
+<span class="sd">    thumbnail : str | None</span>
+<span class="sd">        Thumbnail URL of the edge</span>
+<span class="sd">    picture_copyright : str | None</span>
+<span class="sd">        Copyright information for the picture</span>
+<span class="sd">    lettering : str | None</span>
+<span class="sd">        Lettering on the edge</span>
+<span class="sd">    lettering_scripts : list[dict[str, Any]] | None</span>
+<span class="sd">        Scripts used in edge lettering</span>
+<span class="sd">    lettering_translation : str | None</span>
+<span class="sd">        Translation of edge lettering</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Edge description (e.g., &#39;Reeded&#39;)&quot;</span><span class="p">)</span>
+    <span class="n">picture</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Edge picture URL&quot;</span><span class="p">)</span>
+    <span class="n">thumbnail</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Edge thumbnail URL&quot;</span><span class="p">)</span>
+    <span class="n">picture_copyright</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Edge picture copyright&quot;</span><span class="p">)</span>
+    <span class="n">picture_copyright_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Edge picture copyright URL&quot;</span><span class="p">)</span>
+    <span class="n">lettering</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Edge lettering text&quot;</span><span class="p">)</span>
+    <span class="n">lettering_scripts</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Scripts used in edge lettering&quot;</span><span class="p">)</span>
+    <span class="n">lettering_translation</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Translation of edge lettering&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Edge.pillow_image">
+<a class="viewcode-back" href="../../../api/models.html#numistalib.models.types.Edge.pillow_image">[docs]</a>
+    <span class="nd">@cached_property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pillow_image</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PILImage</span><span class="o">.</span><span class="n">Image</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Download and cache the full picture as a Pillow Image.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">picture</span><span class="p">:</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">picture</span><span class="p">,</span> <span class="n">follow_redirects</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">30.0</span><span class="p">)</span>
+            <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">PILImage</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">BytesIO</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="p">))</span></div>
+
+        
+<div class="viewcode-block" id="Edge.pillow_thumbnail">
+<a class="viewcode-back" href="../../../api/models.html#numistalib.models.types.Edge.pillow_thumbnail">[docs]</a>
+    <span class="nd">@cached_property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pillow_thumbnail</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PILImage</span><span class="o">.</span><span class="n">Image</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Download and cache the thumbnail as a Pillow Image.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">thumbnail</span><span class="p">:</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">thumbnail</span><span class="p">,</span> <span class="n">follow_redirects</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">30.0</span><span class="p">)</span>
+            <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">PILImage</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">BytesIO</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="Edge.renderable_image">
+<a class="viewcode-back" href="../../../api/models.html#numistalib.models.types.Edge.renderable_image">[docs]</a>
+    <span class="nd">@cached_property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">renderable_image</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Ready-to-print textual_image renderable (full picture).&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pillow_image</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">TImage</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pillow_image</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Edge.renderable_thumbnail">
+<a class="viewcode-back" href="../../../api/models.html#numistalib.models.types.Edge.renderable_thumbnail">[docs]</a>
+    <span class="nd">@cached_property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">renderable_thumbnail</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Ready-to-print thumbnail.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pillow_thumbnail</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">TImage</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pillow_thumbnail</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Watermark">
+<a class="viewcode-back" href="../../../api/models.html#numistalib.models.types.Watermark">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Watermark</span><span class="p">(</span><span class="n">SideBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Watermark specifications for banknotes.</span>
+<span class="sd">    </span>
+<span class="sd">    Extends SideBase with all standard side fields (engravers, designers,</span>
+<span class="sd">    description, lettering, picture, etc.) for watermark representation.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+
+
+<div class="viewcode-block" id="Printer">
+<a class="viewcode-back" href="../../../api/models.html#numistalib.models.types.Printer">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Printer</span><span class="p">(</span><span class="n">NumistaBaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Printer information for banknotes.</span>
+<span class="sd">    </span>
+<span class="sd">    Similar to Mint but for banknote printers.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    id : int</span>
+<span class="sd">        Unique printer ID</span>
+<span class="sd">    name : str</span>
+<span class="sd">        Printer name</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unique printer ID&quot;</span><span class="p">)</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Printer name&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="TypeBase">
+<a class="viewcode-back" href="../../../api/models.html#numistalib.models.types.TypeBase">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">TypeBase</span><span class="p">(</span><span class="n">NumistaBaseModel</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Common fields shared between basic and full type representations.&quot;&quot;&quot;</span>
+    <span class="n">numista_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">alias</span><span class="o">=</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="n">gt</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Numista ID&quot;</span><span class="p">)</span>
+    <span class="n">title</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">StringConstraints</span><span class="p">(</span><span class="n">strip_whitespace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">500</span><span class="p">)]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Type title&quot;</span>
+    <span class="p">)</span>
+
+    <span class="n">category</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;coin&quot;</span><span class="p">,</span> <span class="s2">&quot;banknote&quot;</span><span class="p">,</span> <span class="s2">&quot;exonumia&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Category: coin, banknote, exonumia&quot;</span>
+    <span class="p">)</span>
+    <span class="n">min_year</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">ge</span><span class="o">=-</span><span class="mi">9999</span><span class="p">,</span> <span class="n">le</span><span class="o">=</span><span class="mi">9999</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;First year of production&quot;</span><span class="p">)</span>  <span class="c1"># Allow BC dates</span>
+    <span class="n">max_year</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">ge</span><span class="o">=-</span><span class="mi">9999</span><span class="p">,</span> <span class="n">le</span><span class="o">=</span><span class="mi">9999</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Last year of production&quot;</span><span class="p">)</span>
+
+    <span class="nd">@computed_field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Human-readable year range&quot;</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">year_range</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get human-readable year range.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_year</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_year</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_year</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_year</span><span class="p">:</span>
+                <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">min_year</span><span class="p">)</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">min_year</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">max_year</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_year</span><span class="p">:</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">min_year</span><span class="si">}</span><span class="s2">-&quot;</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_year</span><span class="p">:</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;-</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">max_year</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">return</span> <span class="s2">&quot;Undated&quot;</span>
+
+    <span class="nd">@computed_field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Canonical Numista page URL&quot;</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">numista_url</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">HttpUrl</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get canonical Numista URL for this type.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">HttpUrl</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;https://en.numista.com/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">numista_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="TypeBase.validate_years">
+<a class="viewcode-back" href="../../../api/models.html#numistalib.models.types.TypeBase.validate_years">[docs]</a>
+    <span class="nd">@model_validator</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;after&quot;</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">validate_years</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TypeBase</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Validate that min_year does not exceed max_year.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_year</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_year</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_year</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_year</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;min_year cannot be greater than max_year&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="TypeBasic">
+<a class="viewcode-back" href="../../../api/models.html#numistalib.models.types.TypeBasic">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">TypeBasic</span><span class="p">(</span><span class="n">TypeBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Basic type information from search results.&quot;&quot;&quot;</span>
+
+    <span class="n">issuer</span><span class="p">:</span> <span class="n">Issuer</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Issuer information&quot;</span><span class="p">)</span>
+    <span class="n">country</span><span class="p">:</span> <span class="n">Country</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Country information (used in related_types)&quot;</span><span class="p">)</span>
+    <span class="n">obverse_thumbnail</span><span class="p">:</span> <span class="n">HttpUrl</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Obverse thumbnail URL&quot;</span><span class="p">)</span>
+    <span class="n">reverse_thumbnail</span><span class="p">:</span> <span class="n">HttpUrl</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Reverse thumbnail URL&quot;</span><span class="p">)</span>
+
+    <span class="nd">@model_validator</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;before&quot;</span><span class="p">)</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_map_legacy_fields</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Map legacy flat fields to structured ones and drop extras.</span>
+
+<span class="sd">        Supports tests providing `issuer_code`/`issuer_name` (legacy) by</span>
+<span class="sd">        composing an `issuer` dict, and removes the legacy keys to avoid</span>
+<span class="sd">        extra field errors.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">data</span>
+        <span class="n">code</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;issuer_code&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;issuer_name&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">code</span> <span class="ow">or</span> <span class="n">name</span><span class="p">)</span> <span class="ow">and</span> <span class="s2">&quot;issuer&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;issuer&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;code&quot;</span><span class="p">:</span> <span class="n">code</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">name</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">}</span>
+        <span class="k">return</span> <span class="n">data</span>
+
+<div class="viewcode-block" id="TypeBasic.render_compact">
+<a class="viewcode-back" href="../../../api/models.html#numistalib.models.types.TypeBasic.render_compact">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">render_compact</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render compact representation with thumbnail and formatted fields.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Any</span>
+<span class="sd">            Rich renderable (Group with thumbnail + text or just text)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">rich.console</span><span class="w"> </span><span class="kn">import</span> <span class="n">Group</span>
+
+        <span class="c1"># Use formatted_fields for consistent DRY formatting</span>
+        <span class="n">text_block</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">formatted_fields</span><span class="p">)</span>
+
+        <span class="c1"># Try to render thumbnail</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">obverse_thumbnail</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">response</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">obverse_thumbnail</span><span class="p">),</span> <span class="n">follow_redirects</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">10.0</span><span class="p">)</span>
+                <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+                <span class="n">image</span> <span class="o">=</span> <span class="n">PILImage</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">BytesIO</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="p">))</span>
+                <span class="n">thumb</span> <span class="o">=</span> <span class="n">TImage</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">Group</span><span class="p">(</span><span class="n">thumb</span><span class="p">,</span> <span class="n">text_block</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="c1"># Fallback to text only</span>
+            <span class="k">pass</span>
+
+        <span class="k">return</span> <span class="n">text_block</span></div>
+
+
+<div class="viewcode-block" id="TypeBasic.render_table">
+<a class="viewcode-back" href="../../../api/models.html#numistalib.models.types.TypeBasic.render_table">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">render_table</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">items</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="s2">&quot;TypeBasic&quot;</span><span class="p">],</span> <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Table</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render a concise table for type search results.</span>
+
+<span class="sd">        Columns include key catalogue search fields expected by the CLI:</span>
+<span class="sd">        Numista ID, Type title, Category, First year, Last year, Issuer, Country,</span>
+<span class="sd">        Obverse thumb URL, Reverse thumb URL.</span>
+<span class="sd">        Issuer is rendered as a short name (link when possible).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="n">show_header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pad_edge</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">)</span>
+        <span class="n">table</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="s2">&quot;Numista ID&quot;</span><span class="p">,</span> <span class="n">no_wrap</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">table</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="s2">&quot;Type title&quot;</span><span class="p">,</span> <span class="n">no_wrap</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">table</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="s2">&quot;Category&quot;</span><span class="p">,</span> <span class="n">no_wrap</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">table</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="s2">&quot;First year&quot;</span><span class="p">,</span> <span class="n">no_wrap</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">table</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="s2">&quot;Last year&quot;</span><span class="p">,</span> <span class="n">no_wrap</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">table</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="s2">&quot;Issuer&quot;</span><span class="p">,</span> <span class="n">no_wrap</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">table</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="s2">&quot;Country&quot;</span><span class="p">,</span> <span class="n">no_wrap</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">table</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="s2">&quot;Obverse thumb URL&quot;</span><span class="p">,</span> <span class="n">no_wrap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">overflow</span><span class="o">=</span><span class="s2">&quot;fold&quot;</span><span class="p">)</span>
+        <span class="n">table</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="s2">&quot;Reverse thumb URL&quot;</span><span class="p">,</span> <span class="n">no_wrap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">overflow</span><span class="o">=</span><span class="s2">&quot;fold&quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">items</span><span class="p">:</span>
+            <span class="c1"># Issuer display: prefer name; add link when available</span>
+            <span class="n">issuer_text</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">issuer</span><span class="p">:</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">issuer</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span>
+                <span class="c1"># Use Wikidata link if present as a safe external reference</span>
+                <span class="n">wikidata_id</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">issuer</span><span class="p">,</span> <span class="s2">&quot;wikidata_id&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">wikidata_id</span><span class="p">:</span>
+                    <span class="n">issuer_text</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;[link=https://www.wikidata.org/wiki/</span><span class="si">{</span><span class="n">wikidata_id</span><span class="si">}</span><span class="s2">]</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">[/link]&quot;</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">issuer_text</span> <span class="o">=</span> <span class="n">name</span>
+
+            <span class="k">def</span><span class="w"> </span><span class="nf">_link_cell</span><span class="p">(</span><span class="n">url</span><span class="p">:</span> <span class="n">HttpUrl</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Text</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">url</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">Text</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+                <span class="n">display</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+                <span class="n">cell</span> <span class="o">=</span> <span class="n">Text</span><span class="p">(</span><span class="n">display</span><span class="p">)</span>
+                <span class="n">cell</span><span class="o">.</span><span class="n">stylize</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;link </span><span class="si">{</span><span class="n">display</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">display</span><span class="p">))</span>
+                <span class="k">return</span> <span class="n">cell</span>
+
+            <span class="n">table</span><span class="o">.</span><span class="n">add_row</span><span class="p">(</span>
+                <span class="nb">str</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">numista_id</span><span class="p">),</span>
+                <span class="n">t</span><span class="o">.</span><span class="n">title</span><span class="p">,</span>
+                <span class="n">t</span><span class="o">.</span><span class="n">category</span><span class="p">,</span>
+                <span class="nb">str</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">min_year</span><span class="p">)</span> <span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">min_year</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+                <span class="nb">str</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">max_year</span><span class="p">)</span> <span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">max_year</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+                <span class="n">issuer_text</span><span class="p">,</span>
+                <span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">country</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="s2">&quot;country&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">country</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
+                <span class="n">_link_cell</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">obverse_thumbnail</span><span class="p">),</span>
+                <span class="n">_link_cell</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">reverse_thumbnail</span><span class="p">),</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">table</span></div>
+
+
+<div class="viewcode-block" id="TypeBasic.to_dict">
+<a class="viewcode-back" href="../../../api/models.html#numistalib.models.types.TypeBasic.to_dict">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">object</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a compact dict representation used by tests.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;numista_id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">numista_id</span><span class="p">,</span>
+            <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="p">,</span>
+            <span class="s2">&quot;category&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">category</span><span class="p">,</span>
+        <span class="p">}</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="TypeFull">
+<a class="viewcode-back" href="../../../api/models.html#numistalib.models.types.TypeFull">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">TypeFull</span><span class="p">(</span><span class="n">TypeBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Full type details including physical specifications.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="TypeFull.preprocess_data">
+<a class="viewcode-back" href="../../../api/models.html#numistalib.models.types.TypeFull.preprocess_data">[docs]</a>
+    <span class="nd">@model_validator</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;before&quot;</span><span class="p">)</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">preprocess_data</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Preprocess API data to normalize nested structures.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">data</span>
+
+        <span class="c1"># Back-compat: accept legacy issuer fields</span>
+        <span class="n">code</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;issuer_code&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;issuer_name&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">code</span> <span class="ow">or</span> <span class="n">name</span><span class="p">)</span> <span class="ow">and</span> <span class="s2">&quot;issuer&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;issuer&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;code&quot;</span><span class="p">:</span> <span class="n">code</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">name</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">}</span>
+
+        <span class="c1"># Drop thumbnails not present in full schema</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;obverse_thumbnail&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;reverse_thumbnail&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="c1"># Map diameter -&gt; size</span>
+        <span class="k">if</span> <span class="s2">&quot;diameter&quot;</span> <span class="ow">in</span> <span class="n">data</span> <span class="ow">and</span> <span class="s2">&quot;size&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">data</span><span class="p">[</span><span class="s2">&quot;size&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;diameter&quot;</span><span class="p">))</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="n">data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;diameter&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="c1"># Map value_* -&gt; value struct</span>
+        <span class="n">vt</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;value_text&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">vn</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;value_numeric&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">cn</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;currency_name&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">vt</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">vn</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">cn</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="n">value_obj</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">if</span> <span class="n">vt</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">value_obj</span><span class="p">[</span><span class="s2">&quot;text&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">vt</span>
+            <span class="k">if</span> <span class="n">vn</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">value_obj</span><span class="p">[</span><span class="s2">&quot;numeric_value&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">vn</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                    <span class="k">pass</span>
+            <span class="c1"># Currency requires many fields; skip constructing if only name present</span>
+            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value_obj</span>
+
+        <span class="c1"># Map obverse_* and reverse_* flat fields</span>
+        <span class="n">ob_desc</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;obverse_description&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">ob_let</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;obverse_lettering&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">ob_desc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">ob_let</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="n">ob</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">if</span> <span class="n">ob_desc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">ob</span><span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ob_desc</span>
+            <span class="k">if</span> <span class="n">ob_let</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">ob</span><span class="p">[</span><span class="s2">&quot;lettering&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ob_let</span>
+            <span class="c1"># Provide dummy required URLs when absent for validation convenience in tests</span>
+            <span class="n">ob</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;picture&quot;</span><span class="p">,</span> <span class="s2">&quot;https://example.com/obverse.jpg&quot;</span><span class="p">)</span>
+            <span class="n">ob</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;thumbnail&quot;</span><span class="p">,</span> <span class="s2">&quot;https://example.com/obverse_t.jpg&quot;</span><span class="p">)</span>
+            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;obverse&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ob</span>
+
+        <span class="n">rv_desc</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;reverse_description&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">rv_let</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;reverse_lettering&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">rv_desc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">rv_let</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="n">rv</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">if</span> <span class="n">rv_desc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">rv</span><span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rv_desc</span>
+            <span class="k">if</span> <span class="n">rv_let</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">rv</span><span class="p">[</span><span class="s2">&quot;lettering&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rv_let</span>
+            <span class="n">rv</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;picture&quot;</span><span class="p">,</span> <span class="s2">&quot;https://example.com/reverse.jpg&quot;</span><span class="p">)</span>
+            <span class="n">rv</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;thumbnail&quot;</span><span class="p">,</span> <span class="s2">&quot;https://example.com/reverse_t.jpg&quot;</span><span class="p">)</span>
+            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;reverse&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rv</span>
+
+        <span class="c1"># Accept simple string for composition</span>
+        <span class="n">comp</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;composition&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">comp</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;composition&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="n">comp</span><span class="p">}</span>
+
+        <span class="c1"># Ensure url present (required); synthesize if missing</span>
+        <span class="k">if</span> <span class="s2">&quot;url&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span> <span class="ow">and</span> <span class="p">(</span><span class="n">nid</span> <span class="o">:=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;numista_id&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">nid_int</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">nid</span><span class="p">)</span>
+                <span class="n">data</span><span class="p">[</span><span class="s2">&quot;url&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;https://example.com/types/</span><span class="si">{</span><span class="n">nid_int</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="n">data</span><span class="p">[</span><span class="s2">&quot;url&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;https://example.com/types/unknown&quot;</span>
+
+        <span class="c1"># Normalize references catalogue field from dict to string</span>
+        <span class="k">if</span> <span class="s2">&quot;references&quot;</span> <span class="ow">in</span> <span class="n">data</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;references&quot;</span><span class="p">],</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">ref</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;references&quot;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ref</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="s2">&quot;catalogue&quot;</span> <span class="ow">in</span> <span class="n">ref</span><span class="p">:</span>
+                    <span class="n">cat</span> <span class="o">=</span> <span class="n">ref</span><span class="p">[</span><span class="s2">&quot;catalogue&quot;</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cat</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="s2">&quot;code&quot;</span> <span class="ow">in</span> <span class="n">cat</span><span class="p">:</span>
+                        <span class="n">ref</span><span class="p">[</span><span class="s2">&quot;catalogue&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cat</span><span class="p">[</span><span class="s2">&quot;code&quot;</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">data</span></div>
+
+
+    <span class="c1"># Required fields that only exist in full version</span>
+    <span class="n">url</span><span class="p">:</span> <span class="n">HttpUrl</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Numista URL&quot;</span><span class="p">)</span>
+    <span class="n">issuer</span><span class="p">:</span> <span class="n">Issuer</span> 
+    <span class="c1"># Optional full-only fields</span>
+    <span class="n">issue_terms</span><span class="p">:</span> <span class="n">IssueTerms</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;issueTerms&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Issue Terms&quot;</span><span class="p">)</span>
+    <span class="n">issuing_entity</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;① Issuing entity&quot;</span><span class="p">)</span>
+    <span class="n">secondary_issuing_entity</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;② Issuing entity&quot;</span><span class="p">)</span>
+    <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+    <span class="n">rulers</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Ruler</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;ruler&quot;</span><span class="p">)</span>
+    <span class="n">value</span><span class="p">:</span> <span class="n">CurrencyValue</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">demonetization</span><span class="p">:</span> <span class="n">Demonetization</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">size</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;① size mm&quot;</span><span class="p">)</span>
+    <span class="n">size2</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;② size mm&quot;</span><span class="p">)</span>
+    <span class="n">thickness</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">weight</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">shape</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+    <span class="n">composition</span><span class="p">:</span> <span class="n">Composition</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">technique</span><span class="p">:</span> <span class="n">Technique</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">obverse</span><span class="p">:</span> <span class="n">Obverse</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">reverse</span><span class="p">:</span> <span class="n">Reverse</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">watermark</span><span class="p">:</span> <span class="n">Watermark</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Watermark (notes)&quot;</span><span class="p">)</span>
+    <span class="n">references</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Reference</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">mints</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Mint</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">printers</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Printer</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Printers (notes)&quot;</span><span class="p">)</span>
+    <span class="n">comments</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">tags</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">edge</span><span class="p">:</span> <span class="n">Edge</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">related_types</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">TypeBasic</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>  <span class="c1"># Note: recursive, but TypeBasic is defined</span>
+    <span class="n">orientation</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">series</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Series/set&quot;</span><span class="p">)</span>
+    <span class="n">commemorated_topic</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Topic commemorated&quot;</span><span class="p">)</span>
+
+    <span class="nd">@computed_field</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">orientation_symbol</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return symbol representation of orientation.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns ⇈ (upup arrows) for medal, ⇅ (updown arrows) for coin, or None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="n">orientation_lower</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="k">if</span> <span class="s2">&quot;medal&quot;</span> <span class="ow">in</span> <span class="n">orientation_lower</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;⇈&quot;</span>
+        <span class="k">elif</span> <span class="s2">&quot;coin&quot;</span> <span class="ow">in</span> <span class="n">orientation_lower</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;⇅&quot;</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="nd">@computed_field</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">comments_rendered</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return terminal-safe scrubbed comments.</span>
+<span class="sd">        </span>
+<span class="sd">        Comments field may contain HTML with line feeds, links, images, and formatting.</span>
+<span class="sd">        This computed field scrubs HTML artifacts for clean terminal display with Rich markup.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        str | None</span>
+<span class="sd">            Scrubbed comments ready for terminal rendering, or None if no comments</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">comments</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">comments</span>
+
+        <span class="c1"># Check if value contains HTML</span>
+        <span class="k">if</span> <span class="s2">&quot;&lt;&quot;</span> <span class="ow">in</span> <span class="n">text</span> <span class="ow">and</span> <span class="s2">&quot;&gt;&quot;</span> <span class="ow">in</span> <span class="n">text</span><span class="p">:</span>
+            <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="s2">&quot;html.parser&quot;</span><span class="p">)</span>
+
+            <span class="c1"># First pass: Replace image links with inline marker before text extraction</span>
+            <span class="c1"># Pattern: description text &lt;br/&gt; &lt;a&gt;&lt;img&gt;&lt;/a&gt; &lt;br/&gt; next description</span>
+            <span class="c1"># Strategy: Find all &lt;a&gt; tags with images and mark them before processing breaks</span>
+            <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="n">soup</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">):</span>
+                <span class="n">href</span> <span class="o">=</span> <span class="n">link</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;href&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+                <span class="n">img</span> <span class="o">=</span> <span class="n">link</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;img&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">img</span> <span class="ow">and</span> <span class="n">href</span><span class="p">:</span>
+                    <span class="c1"># Replace with inline link marker</span>
+                    <span class="n">link</span><span class="o">.</span><span class="n">replace_with</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; [link=</span><span class="si">{</span><span class="n">href</span><span class="si">}</span><span class="s2">](image)[/link]&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># Regular text link</span>
+                    <span class="n">link_text</span> <span class="o">=</span> <span class="n">link</span><span class="o">.</span><span class="n">get_text</span><span class="p">(</span><span class="n">strip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">href</span> <span class="ow">and</span> <span class="n">link_text</span><span class="p">:</span>
+                        <span class="n">link</span><span class="o">.</span><span class="n">replace_with</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; [link=</span><span class="si">{</span><span class="n">href</span><span class="si">}</span><span class="s2">]</span><span class="si">{</span><span class="n">link_text</span><span class="si">}</span><span class="s2">[/link]&quot;</span><span class="p">)</span>
+                    <span class="k">elif</span> <span class="n">link_text</span><span class="p">:</span>
+                        <span class="n">link</span><span class="o">.</span><span class="n">replace_with</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">link_text</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">link</span><span class="o">.</span><span class="n">decompose</span><span class="p">()</span>
+
+            <span class="c1"># Remove standalone images</span>
+            <span class="k">for</span> <span class="n">img</span> <span class="ow">in</span> <span class="n">soup</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s2">&quot;img&quot;</span><span class="p">):</span>
+                <span class="n">img</span><span class="o">.</span><span class="n">decompose</span><span class="p">()</span>
+
+            <span class="c1"># Convert paragraphs</span>
+            <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">soup</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s2">&quot;p&quot;</span><span class="p">):</span>
+                <span class="n">p</span><span class="o">.</span><span class="n">insert_before</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">p</span><span class="o">.</span><span class="n">insert_after</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">p</span><span class="o">.</span><span class="n">unwrap</span><span class="p">()</span>
+
+            <span class="c1"># Convert &lt;br/&gt; to newlines</span>
+            <span class="k">for</span> <span class="n">br</span> <span class="ow">in</span> <span class="n">soup</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s2">&quot;br&quot;</span><span class="p">):</span>
+                <span class="n">br</span><span class="o">.</span><span class="n">replace_with</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Get text</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">get_text</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">text</span><span class="p">:</span>
+            <span class="c1"># Clean up whitespace</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\r\n&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>  <span class="c1"># Normalize line endings</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;[ \t]+&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>  <span class="c1"># Normalize spaces</span>
+
+            <span class="c1"># Merge lines: if a line starts with whitespace + [link=, append it to previous line</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\n+\s*(\[link=)&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot; \1&quot;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+
+            <span class="c1"># Collapse excessive newlines</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\n\n\n+&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+
+            <span class="c1"># Strip each line but keep line structure</span>
+            <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)]</span>
+            <span class="c1"># Remove empty lines</span>
+            <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span> <span class="k">if</span> <span class="n">line</span><span class="p">]</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">if</span> <span class="n">text</span> <span class="k">else</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="TypeFull.render_detail">
+<a class="viewcode-back" href="../../../api/models.html#numistalib.models.types.TypeFull.render_detail">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">render_detail</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cache_indicator</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render detailed type information using theme-aware, vertical scrolling layout.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        cache_indicator : str</span>
+<span class="sd">            Cache indicator (e.g., &quot;💾&quot; for cached, &quot;🌐&quot; for fresh)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Any</span>
+<span class="sd">            Group of Rich panels for display</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">textwrap</span>
+
+        <span class="kn">from</span><span class="w"> </span><span class="nn">rich.console</span><span class="w"> </span><span class="kn">import</span> <span class="n">Group</span>
+
+        <span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.cli.theme</span><span class="w"> </span><span class="kn">import</span> <span class="n">CLISettings</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.models.mints</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mint</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.models.references</span><span class="w"> </span><span class="kn">import</span> <span class="n">Reference</span>
+
+        <span class="c1"># General panel - filter out None values</span>
+        <span class="n">general_lines</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;numista_id&quot;</span><span class="p">,</span> <span class="s2">&quot;numista_url&quot;</span><span class="p">,</span> <span class="s2">&quot;title&quot;</span><span class="p">,</span> <span class="s2">&quot;series&quot;</span><span class="p">,</span> <span class="s2">&quot;category&quot;</span><span class="p">,</span> <span class="s2">&quot;year_range&quot;</span><span class="p">]:</span>
+            <span class="n">field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">formatted_fields_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">field</span><span class="p">:</span>
+                <span class="n">general_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">demonetization</span><span class="p">:</span>
+            <span class="n">demonetized</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">demonetization</span><span class="o">.</span><span class="n">formatted_fields_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;is_demonetized&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">demonetized</span><span class="p">:</span>
+                <span class="n">general_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">demonetized</span><span class="p">)</span>
+
+        <span class="n">commemorated</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">formatted_fields_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;commemorated_topic&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">commemorated</span><span class="p">:</span>
+            <span class="n">general_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">commemorated</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tags</span><span class="p">:</span>
+            <span class="n">general_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;[header]Tags:[/header]&quot;</span><span class="p">)</span>
+            <span class="n">general_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s2">&quot;[inverse]</span><span class="si">{</span><span class="n">g</span><span class="si">}</span><span class="s2">[/inverse]&quot;</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tags</span><span class="p">]))</span>
+
+        <span class="n">general_panel</span> <span class="o">=</span> <span class="n">CLISettings</span><span class="o">.</span><span class="n">panel</span><span class="p">(</span>
+            <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">cache_indicator</span><span class="si">}</span><span class="s2"> Type Details&quot;</span><span class="p">,</span>
+            <span class="n">content</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">general_lines</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Value panel - filter out None values</span>
+        <span class="n">value_lines</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;text&quot;</span><span class="p">,</span> <span class="s2">&quot;numeric_value&quot;</span><span class="p">,</span> <span class="s2">&quot;numerator&quot;</span><span class="p">,</span> <span class="s2">&quot;denominator&quot;</span><span class="p">]:</span>
+                <span class="n">field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">formatted_fields_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">field</span><span class="p">:</span>
+                    <span class="n">value_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">currency</span><span class="p">:</span>
+                <span class="n">value_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;[header]Currency:[/header]&quot;</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;full_name&quot;</span><span class="p">,</span> <span class="s2">&quot;symbol&quot;</span><span class="p">,</span> <span class="s2">&quot;numista_id&quot;</span><span class="p">]:</span>
+                    <span class="n">field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">currency</span><span class="o">.</span><span class="n">formatted_fields_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">field</span><span class="p">:</span>
+                        <span class="n">value_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+
+        <span class="n">value_panel</span> <span class="o">=</span> <span class="n">CLISettings</span><span class="o">.</span><span class="n">panel</span><span class="p">(</span>
+            <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Value&quot;</span><span class="p">,</span>
+            <span class="n">content</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">value_lines</span><span class="p">)</span> <span class="k">if</span> <span class="n">value_lines</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Issuer panel - filter out None values</span>
+        <span class="n">issuer_lines</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;issuing_entity&quot;</span><span class="p">,</span> <span class="s2">&quot;issue_terms&quot;</span><span class="p">]:</span>
+            <span class="n">field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">formatted_fields_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">field</span><span class="p">:</span>
+                <span class="n">issuer_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">issuer</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;code&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">]:</span>
+                <span class="n">field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">issuer</span><span class="o">.</span><span class="n">formatted_fields_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">field</span><span class="p">:</span>
+                    <span class="n">issuer_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+
+        <span class="n">issuer_panel</span> <span class="o">=</span> <span class="n">CLISettings</span><span class="o">.</span><span class="n">panel</span><span class="p">(</span>
+            <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Issuer&quot;</span><span class="p">,</span>
+            <span class="n">content</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">issuer_lines</span><span class="p">)</span> <span class="k">if</span> <span class="n">issuer_lines</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+        <span class="p">)</span>
+
+        <span class="n">mints_panel</span> <span class="o">=</span> <span class="n">CLISettings</span><span class="o">.</span><span class="n">panel</span><span class="p">(</span>
+            <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Mints&quot;</span><span class="p">,</span>
+            <span class="n">content</span><span class="o">=</span><span class="n">Mint</span><span class="o">.</span><span class="n">render_table</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mints</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mints</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Physical specifications panel - filter out None values</span>
+        <span class="n">specs_lines</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;orientation&quot;</span><span class="p">,</span> <span class="s2">&quot;shape&quot;</span><span class="p">,</span> <span class="s2">&quot;size&quot;</span><span class="p">,</span> <span class="s2">&quot;thickness&quot;</span><span class="p">]:</span>
+            <span class="n">field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">formatted_fields_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">field</span><span class="p">:</span>
+                <span class="n">specs_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">composition</span><span class="p">:</span>
+            <span class="n">specs_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;[header]Composition:[/header]&quot;</span><span class="p">)</span>
+            <span class="n">comp_text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">composition</span><span class="o">.</span><span class="n">formatted_fields_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;text&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">comp_text</span><span class="p">:</span>
+                <span class="n">specs_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">comp_text</span><span class="p">)</span>
+
+        <span class="n">specs_panel</span> <span class="o">=</span> <span class="n">CLISettings</span><span class="o">.</span><span class="n">panel</span><span class="p">(</span>
+            <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Physical Specifications&quot;</span><span class="p">,</span>
+            <span class="n">content</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">specs_lines</span><span class="p">)</span> <span class="k">if</span> <span class="n">specs_lines</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+        <span class="p">)</span>
+
+        <span class="n">edge_panel</span> <span class="o">=</span> <span class="n">CLISettings</span><span class="o">.</span><span class="n">panel</span><span class="p">(</span>
+            <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Edge Specifications&quot;</span><span class="p">,</span>
+            <span class="n">content</span><span class="o">=</span><span class="n">Group</span><span class="p">(</span>
+                <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">edge</span><span class="o">.</span><span class="n">formatted_fields</span><span class="p">])</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">edge</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">edge</span><span class="o">.</span><span class="n">renderable_thumbnail</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">edge</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">edge</span><span class="o">.</span><span class="n">renderable_thumbnail</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+            <span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">edge</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+        <span class="p">)</span>
+
+        <span class="n">obverse_panel</span> <span class="o">=</span> <span class="n">CLISettings</span><span class="o">.</span><span class="n">panel</span><span class="p">(</span>
+            <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Obverse Specifications&quot;</span><span class="p">,</span>
+            <span class="n">content</span><span class="o">=</span><span class="n">Group</span><span class="p">(</span>
+                <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">obverse</span><span class="o">.</span><span class="n">formatted_fields</span><span class="p">]),</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">obverse</span><span class="o">.</span><span class="n">renderable_thumbnail</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">obverse</span><span class="o">.</span><span class="n">renderable_thumbnail</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="n">reverse_panel</span> <span class="o">=</span> <span class="n">CLISettings</span><span class="o">.</span><span class="n">panel</span><span class="p">(</span>
+            <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Reverse Specifications&quot;</span><span class="p">,</span>
+            <span class="n">content</span><span class="o">=</span><span class="n">Group</span><span class="p">(</span>
+                <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">reverse</span><span class="o">.</span><span class="n">formatted_fields</span><span class="p">]),</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">reverse</span><span class="o">.</span><span class="n">renderable_thumbnail</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">reverse</span><span class="o">.</span><span class="n">renderable_thumbnail</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="n">rulers_panel</span> <span class="o">=</span> <span class="n">CLISettings</span><span class="o">.</span><span class="n">panel</span><span class="p">(</span>
+            <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Rulers&quot;</span><span class="p">,</span>
+            <span class="n">content</span><span class="o">=</span><span class="n">Ruler</span><span class="o">.</span><span class="n">render_table</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rulers</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rulers</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+        <span class="p">)</span>
+
+        <span class="n">references_panel</span> <span class="o">=</span> <span class="n">CLISettings</span><span class="o">.</span><span class="n">panel</span><span class="p">(</span>
+            <span class="n">title</span><span class="o">=</span><span class="s2">&quot;References&quot;</span><span class="p">,</span>
+            <span class="n">content</span><span class="o">=</span><span class="n">Reference</span><span class="o">.</span><span class="n">render_table</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">references</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">references</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Related types panel - use list rendering with thumbnails</span>
+        <span class="n">related_types_panel</span> <span class="o">=</span> <span class="n">CLISettings</span><span class="o">.</span><span class="n">panel</span><span class="p">(</span>
+            <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Related Types&quot;</span><span class="p">,</span>
+            <span class="n">content</span><span class="o">=</span><span class="n">TypeBasic</span><span class="o">.</span><span class="n">render_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">related_types</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">related_types</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Comments panel - promote label to title (single field)</span>
+        <span class="c1"># Pre-wrap text to panel width to avoid mid-word breaks</span>
+        <span class="n">comments_text</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">comments_rendered</span><span class="p">:</span>
+            <span class="c1"># Wrap each line to panel width - 4 (for panel borders/padding)</span>
+            <span class="n">wrapped_lines</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">comments_rendered</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">):</span>
+                <span class="c1"># Use textwrap to break long lines at word boundaries</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">&gt;</span> <span class="p">(</span><span class="n">CLISettings</span><span class="o">.</span><span class="n">PANEL_WIDTH</span> <span class="o">-</span> <span class="mi">4</span><span class="p">):</span>
+                    <span class="n">wrapped</span> <span class="o">=</span> <span class="n">textwrap</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">CLISettings</span><span class="o">.</span><span class="n">PANEL_WIDTH</span> <span class="o">-</span> <span class="mi">4</span><span class="p">,</span> <span class="n">break_long_words</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">break_on_hyphens</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                    <span class="n">wrapped_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">wrapped</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">wrapped_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+            <span class="n">comments_text</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">wrapped_lines</span><span class="p">)</span>
+
+        <span class="n">comments_panel</span> <span class="o">=</span> <span class="n">CLISettings</span><span class="o">.</span><span class="n">panel</span><span class="p">(</span>
+            <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Comments&quot;</span><span class="p">,</span>
+            <span class="n">content</span><span class="o">=</span><span class="n">comments_text</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">general_panel</span><span class="p">,</span>
+            <span class="n">value_panel</span><span class="p">,</span>
+            <span class="n">issuer_panel</span><span class="p">,</span>
+            <span class="n">mints_panel</span><span class="p">,</span>
+            <span class="n">specs_panel</span><span class="p">,</span>
+            <span class="n">edge_panel</span><span class="p">,</span>
+            <span class="n">obverse_panel</span><span class="p">,</span>
+            <span class="n">reverse_panel</span><span class="p">,</span>
+            <span class="n">rulers_panel</span><span class="p">,</span>
+            <span class="n">references_panel</span><span class="p">,</span>
+            <span class="n">related_types_panel</span><span class="p">,</span>
+            <span class="n">comments_panel</span><span class="p">,</span>
+        <span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Andy Wells.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

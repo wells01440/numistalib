@@ -1,0 +1,509 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>numistalib.services.issues.service &mdash; numistalib 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=01f34227"></script>
+      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            numistalib
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quickstart.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../cli_guide.html">CLI Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../python_api_guide.html">Python API Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../advanced_usage.html">Advanced Usage</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/client.html">Client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/services.html">Services</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/models.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/cli.html">CLI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Additional Information</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../architecture.html">Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contributing.html">Contributing to numistalib</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../DEPLOYMENT.html">Documentation Deployment Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../README.html">numistalib Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">numistalib</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">numistalib.services.issues.service</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for numistalib.services.issues.service</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Issue service implementation.&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">AsyncGenerator</span><span class="p">,</span> <span class="n">Mapping</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">cast</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">numistalib</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.client</span><span class="w"> </span><span class="kn">import</span> <span class="n">AsyncClientProtocol</span><span class="p">,</span> <span class="n">NumistaResponse</span><span class="p">,</span> <span class="n">SyncClientProtocol</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.models.issues</span><span class="w"> </span><span class="kn">import</span> <span class="n">Issue</span><span class="p">,</span> <span class="n">Mark</span><span class="p">,</span> <span class="n">Signature</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.models.references</span><span class="w"> </span><span class="kn">import</span> <span class="n">Catalogue</span><span class="p">,</span> <span class="n">Reference</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.services.issues.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">IssueServiceBase</span>
+
+
+<div class="viewcode-block" id="IssueService">
+<a class="viewcode-back" href="../../../../api/services.html#numistalib.services.issues.service.IssueService">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">IssueService</span><span class="p">(</span><span class="n">IssueServiceBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Unified issue service supporting both sync and async clients.&quot;&quot;&quot;</span>
+
+    <span class="n">CLASS_ITEMS_KEY</span> <span class="o">=</span> <span class="s2">&quot;issues&quot;</span>
+
+<div class="viewcode-block" id="IssueService.__init__">
+<a class="viewcode-back" href="../../../../api/services.html#numistalib.services.issues.service.IssueService.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client</span><span class="p">:</span> <span class="n">SyncClientProtocol</span> <span class="o">|</span> <span class="n">AsyncClientProtocol</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize issue service.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        client : SyncClientProtocol | AsyncClientProtocol</span>
+<span class="sd">            HTTP client instance (sync or async)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">client</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="IssueService.to_models">
+<a class="viewcode-back" href="../../../../api/services.html#numistalib.services.issues.service.IssueService.to_models">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_models</span><span class="p">(</span>  <span class="c1"># noqa: PLR6301</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">items</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span> <span class="n">type_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span>  <span class="c1"># noqa: ARG002</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Issue</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert API response items to Issue models.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        items : list[Mapping[str, Any]]</span>
+<span class="sd">            Raw API response items</span>
+<span class="sd">        type_id : int | None</span>
+<span class="sd">            Numista type ID (required context)</span>
+<span class="sd">        **kwargs : Any</span>
+<span class="sd">            Additional context</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list[Issue]</span>
+<span class="sd">            Parsed issue models</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">type_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;type_id is required for issue conversion&quot;</span><span class="p">)</span>
+
+        <span class="n">issues</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Issue</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">items</span><span class="p">:</span>
+            <span class="c1"># Parse marks array</span>
+            <span class="n">marks_data</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;marks&quot;</span><span class="p">,</span> <span class="p">[])</span>
+            <span class="n">marks</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">Mark</span><span class="p">(</span>
+                    <span class="n">mark_id</span><span class="o">=</span><span class="n">mark</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">],</span>
+                    <span class="n">title</span><span class="o">=</span><span class="n">mark</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;title&quot;</span><span class="p">),</span>
+                    <span class="n">picture</span><span class="o">=</span><span class="n">mark</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;picture&quot;</span><span class="p">),</span>
+                    <span class="n">letters</span><span class="o">=</span><span class="n">mark</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;letters&quot;</span><span class="p">),</span>
+                <span class="p">)</span>
+                <span class="k">for</span> <span class="n">mark</span> <span class="ow">in</span> <span class="n">marks_data</span>
+            <span class="p">]</span>
+
+            <span class="c1"># Parse signatures array</span>
+            <span class="n">signatures_data</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;signatures&quot;</span><span class="p">,</span> <span class="p">[])</span>
+            <span class="n">signatures</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">Signature</span><span class="p">(</span>
+                    <span class="n">signer_name</span><span class="o">=</span><span class="n">sig</span><span class="p">[</span><span class="s2">&quot;signer_name&quot;</span><span class="p">],</span>
+                    <span class="n">signer_title</span><span class="o">=</span><span class="n">sig</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;signer_title&quot;</span><span class="p">),</span>
+                <span class="p">)</span>
+                <span class="k">for</span> <span class="n">sig</span> <span class="ow">in</span> <span class="n">signatures_data</span>
+            <span class="p">]</span>
+
+            <span class="c1"># Parse references array</span>
+            <span class="n">references_data</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;references&quot;</span><span class="p">,</span> <span class="p">[])</span>
+            <span class="n">references</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">Reference</span><span class="p">(</span>
+                    <span class="n">catalogue</span><span class="o">=</span><span class="n">Catalogue</span><span class="p">(</span>
+                        <span class="nb">id</span><span class="o">=</span><span class="n">ref</span><span class="p">[</span><span class="s2">&quot;catalogue&quot;</span><span class="p">][</span><span class="s2">&quot;id&quot;</span><span class="p">],</span>
+                        <span class="n">code</span><span class="o">=</span><span class="n">ref</span><span class="p">[</span><span class="s2">&quot;catalogue&quot;</span><span class="p">][</span><span class="s2">&quot;code&quot;</span><span class="p">],</span>
+                    <span class="p">),</span>
+                    <span class="n">number</span><span class="o">=</span><span class="n">ref</span><span class="p">[</span><span class="s2">&quot;number&quot;</span><span class="p">],</span>
+                    <span class="n">url</span><span class="o">=</span><span class="n">ref</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;url&quot;</span><span class="p">),</span>
+                <span class="p">)</span>
+                <span class="k">for</span> <span class="n">ref</span> <span class="ow">in</span> <span class="n">references_data</span>
+            <span class="p">]</span>
+
+            <span class="n">issues</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">Issue</span><span class="p">(</span>
+                    <span class="n">numista_id</span><span class="o">=</span><span class="n">cast</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]),</span>
+                    <span class="n">type_id</span><span class="o">=</span><span class="n">type_id</span><span class="p">,</span>
+                    <span class="n">is_dated</span><span class="o">=</span><span class="n">cast</span><span class="p">(</span><span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;is_dated&quot;</span><span class="p">))</span> <span class="ow">or</span> <span class="kc">False</span><span class="p">,</span>
+                    <span class="n">year</span><span class="o">=</span><span class="n">cast</span><span class="p">(</span><span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;year&quot;</span><span class="p">)),</span>
+                    <span class="n">gregorian_year</span><span class="o">=</span><span class="n">cast</span><span class="p">(</span><span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;gregorian_year&quot;</span><span class="p">)),</span>
+                    <span class="n">min_year</span><span class="o">=</span><span class="n">cast</span><span class="p">(</span><span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;min_year&quot;</span><span class="p">)),</span>
+                    <span class="n">max_year</span><span class="o">=</span><span class="n">cast</span><span class="p">(</span><span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;max_year&quot;</span><span class="p">)),</span>
+                    <span class="n">mint_letter</span><span class="o">=</span><span class="n">cast</span><span class="p">(</span><span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mint_letter&quot;</span><span class="p">)),</span>
+                    <span class="n">marks</span><span class="o">=</span><span class="n">marks</span><span class="p">,</span>
+                    <span class="n">signatures</span><span class="o">=</span><span class="n">signatures</span><span class="p">,</span>
+                    <span class="n">mintage</span><span class="o">=</span><span class="n">cast</span><span class="p">(</span><span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mintage&quot;</span><span class="p">)),</span>
+                    <span class="n">references</span><span class="o">=</span><span class="n">references</span><span class="p">,</span>
+                    <span class="n">comment</span><span class="o">=</span><span class="n">cast</span><span class="p">(</span><span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;comment&quot;</span><span class="p">)),</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">issues</span></div>
+
+
+<div class="viewcode-block" id="IssueService.get_issues">
+<a class="viewcode-back" href="../../../../api/services.html#numistalib.services.issues.service.IssueService.get_issues">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_issues</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">type_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">lang</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;en&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Issue</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get all issues for a specific type (single call).</span>
+
+<span class="sd">        Supports both sync and async clients via duck-typing.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        type_id : int</span>
+<span class="sd">            Numista type ID</span>
+<span class="sd">        lang : str</span>
+<span class="sd">            Language code</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list[Issue]</span>
+<span class="sd">            List of issues</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        httpx.HTTPStatusError</span>
+<span class="sd">            If API returns error</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;→ get_issues(type_id=</span><span class="si">%s</span><span class="s2">, lang=</span><span class="si">%s</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">type_id</span><span class="p">,</span> <span class="n">lang</span><span class="p">)</span>
+
+        <span class="n">params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_params</span><span class="p">(</span><span class="n">lang</span><span class="o">=</span><span class="n">lang</span><span class="p">)</span> <span class="k">if</span> <span class="n">lang</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span>
+            <span class="n">NumistaResponse</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;/types/</span><span class="si">{</span><span class="n">type_id</span><span class="si">}</span><span class="s2">/issues&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_track_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+
+        <span class="n">items</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="nb">list</span><span class="p">[</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span> <span class="n">data</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="k">else</span> <span class="n">cast</span><span class="p">(</span>
+            <span class="nb">list</span><span class="p">[</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;issues&quot;</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="p">)</span>
+        <span class="n">issues</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_models</span><span class="p">(</span><span class="n">items</span><span class="p">,</span> <span class="n">type_id</span><span class="o">=</span><span class="n">type_id</span><span class="p">)</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Retrieved </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">issues</span><span class="p">)</span><span class="si">}</span><span class="s2"> issues for type </span><span class="si">{</span><span class="n">type_id</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">cached_indicator</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">issues</span></div>
+
+
+<div class="viewcode-block" id="IssueService.add_issue">
+<a class="viewcode-back" href="../../../../api/services.html#numistalib.services.issues.service.IssueService.add_issue">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_issue</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">type_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">issue_data</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+        <span class="n">lang</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Issue</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a new issue to a type.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        type_id : int</span>
+<span class="sd">            Numista type ID</span>
+<span class="sd">        issue_data : Mapping[str, Any]</span>
+<span class="sd">            Issue data payload</span>
+<span class="sd">        lang : str | None</span>
+<span class="sd">            Language code</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Issue</span>
+<span class="sd">            Created issue</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        httpx.HTTPStatusError</span>
+<span class="sd">            If API returns error</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;→ add_issue(type_id=</span><span class="si">%s</span><span class="s2">, lang=</span><span class="si">%s</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">type_id</span><span class="p">,</span> <span class="n">lang</span><span class="p">)</span>
+
+        <span class="n">params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_params</span><span class="p">(</span><span class="n">lang</span><span class="o">=</span><span class="n">lang</span><span class="p">)</span> <span class="k">if</span> <span class="n">lang</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span>
+            <span class="n">NumistaResponse</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;/types/</span><span class="si">{</span><span class="n">type_id</span><span class="si">}</span><span class="s2">/issues&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">issue_data</span><span class="p">)</span>
+            <span class="p">),</span>
+        <span class="p">)</span>
+        <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_track_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
+
+        <span class="n">issue</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_models</span><span class="p">([</span><span class="n">data</span><span class="p">],</span> <span class="n">type_id</span><span class="o">=</span><span class="n">type_id</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Added issue </span><span class="si">{</span><span class="n">issue</span><span class="o">.</span><span class="n">numista_id</span><span class="si">}</span><span class="s2"> for type </span><span class="si">{</span><span class="n">type_id</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">cached_indicator</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">issue</span></div>
+
+
+<div class="viewcode-block" id="IssueService.get_issues_async">
+<a class="viewcode-back" href="../../../../api/services.html#numistalib.services.issues.service.IssueService.get_issues_async">[docs]</a>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_issues_async</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">type_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">lang</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;en&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Issue</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get all issues for a specific type (async).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        type_id : int</span>
+<span class="sd">            Numista type ID</span>
+<span class="sd">        lang : str</span>
+<span class="sd">            Language code</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list[Issue]</span>
+<span class="sd">            List of issues</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        httpx.HTTPStatusError</span>
+<span class="sd">            If API returns error</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;→ get_issues_async(type_id=</span><span class="si">%s</span><span class="s2">, lang=</span><span class="si">%s</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">type_id</span><span class="p">,</span> <span class="n">lang</span><span class="p">)</span>
+
+        <span class="n">params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_params</span><span class="p">(</span><span class="n">lang</span><span class="o">=</span><span class="n">lang</span><span class="p">)</span> <span class="k">if</span> <span class="n">lang</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_aget</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;/types/</span><span class="si">{</span><span class="n">type_id</span><span class="si">}</span><span class="s2">/issues&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+        <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_track_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+
+        <span class="n">items</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="nb">list</span><span class="p">[</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span> <span class="n">data</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="k">else</span> <span class="n">cast</span><span class="p">(</span>
+            <span class="nb">list</span><span class="p">[</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;issues&quot;</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="p">)</span>
+        <span class="n">issues</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_models</span><span class="p">(</span><span class="n">items</span><span class="p">,</span> <span class="n">type_id</span><span class="o">=</span><span class="n">type_id</span><span class="p">)</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Retrieved </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">issues</span><span class="p">)</span><span class="si">}</span><span class="s2"> issues for type </span><span class="si">{</span><span class="n">type_id</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">cached_indicator</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">issues</span></div>
+
+
+<div class="viewcode-block" id="IssueService.add_issue_async">
+<a class="viewcode-back" href="../../../../api/services.html#numistalib.services.issues.service.IssueService.add_issue_async">[docs]</a>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">add_issue_async</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">type_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">issue_data</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+        <span class="n">lang</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Issue</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a new issue to a type (async).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        type_id : int</span>
+<span class="sd">            Numista type ID</span>
+<span class="sd">        issue_data : Mapping[str, Any]</span>
+<span class="sd">            Issue data payload</span>
+<span class="sd">        lang : str | None</span>
+<span class="sd">            Language code</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Issue</span>
+<span class="sd">            Created issue</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        httpx.HTTPStatusError</span>
+<span class="sd">            If API returns error</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;→ add_issue_async(type_id=</span><span class="si">%s</span><span class="s2">, lang=</span><span class="si">%s</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">type_id</span><span class="p">,</span> <span class="n">lang</span><span class="p">)</span>
+
+        <span class="n">params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_params</span><span class="p">(</span><span class="n">lang</span><span class="o">=</span><span class="n">lang</span><span class="p">)</span> <span class="k">if</span> <span class="n">lang</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apost</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;/types/</span><span class="si">{</span><span class="n">type_id</span><span class="si">}</span><span class="s2">/issues&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">issue_data</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_track_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
+
+        <span class="n">issue</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_models</span><span class="p">([</span><span class="n">data</span><span class="p">],</span> <span class="n">type_id</span><span class="o">=</span><span class="n">type_id</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Added issue </span><span class="si">{</span><span class="n">issue</span><span class="o">.</span><span class="n">numista_id</span><span class="si">}</span><span class="s2"> for type </span><span class="si">{</span><span class="n">type_id</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">cached_indicator</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">issue</span></div>
+
+
+<div class="viewcode-block" id="IssueService.paginated_issues">
+<a class="viewcode-back" href="../../../../api/services.html#numistalib.services.issues.service.IssueService.paginated_issues">[docs]</a>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">paginated_issues</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">type_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">lang</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;en&quot;</span><span class="p">,</span>
+        <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AsyncGenerator</span><span class="p">[</span><span class="n">Issue</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Lazily iterate issues by following pagination links.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        type_id : int</span>
+<span class="sd">            Numista type ID</span>
+<span class="sd">        lang : str</span>
+<span class="sd">            Language code</span>
+<span class="sd">        limit : int</span>
+<span class="sd">            Results per page (max 100)</span>
+
+<span class="sd">        Yields</span>
+<span class="sd">        ------</span>
+<span class="sd">        Issue</span>
+<span class="sd">            Individual issue records</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="s2">&quot;→ paginated_issues(type_id=</span><span class="si">%s</span><span class="s2">, lang=</span><span class="si">%s</span><span class="s2">, limit=</span><span class="si">%s</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">type_id</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">limit</span>
+        <span class="p">)</span>
+
+        <span class="n">url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;/types/</span><span class="si">{</span><span class="n">type_id</span><span class="si">}</span><span class="s2">/issues?lang=</span><span class="si">{</span><span class="n">lang</span><span class="si">}</span><span class="s2">&amp;count=</span><span class="si">{</span><span class="n">limit</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">page_count</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">while</span> <span class="n">url</span><span class="p">:</span>
+            <span class="n">page_count</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Fetching issues page </span><span class="si">%s</span><span class="s2">: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">page_count</span><span class="p">,</span> <span class="n">url</span><span class="p">)</span>
+
+            <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_aget</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+            <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_track_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+
+            <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="n">items</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="nb">list</span><span class="p">[</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span> <span class="n">data</span><span class="p">)</span>
+                <span class="n">next_url</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">mapping</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">data</span><span class="p">)</span>
+                <span class="n">items</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="nb">list</span><span class="p">[</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span> <span class="n">mapping</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">CLASS_ITEMS_KEY</span><span class="p">,</span> <span class="p">[]))</span>
+                <span class="n">next_url</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">mapping</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;next_url&quot;</span><span class="p">))</span>
+
+            <span class="n">issues</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_models</span><span class="p">(</span><span class="n">items</span><span class="p">,</span> <span class="n">type_id</span><span class="o">=</span><span class="n">type_id</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">issue</span> <span class="ow">in</span> <span class="n">issues</span><span class="p">:</span>
+                <span class="k">yield</span> <span class="n">issue</span>
+
+            <span class="n">url</span> <span class="o">=</span> <span class="n">next_url</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Finished paginating through </span><span class="si">%s</span><span class="s2"> pages of issues&quot;</span><span class="p">,</span> <span class="n">page_count</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="IssueService.get_issues_paginated">
+<a class="viewcode-back" href="../../../../api/services.html#numistalib.services.issues.service.IssueService.get_issues_paginated">[docs]</a>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_issues_paginated</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">type_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">lang</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;en&quot;</span><span class="p">,</span>
+        <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AsyncGenerator</span><span class="p">[</span><span class="n">Issue</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Paginate through issues for a type (alias for paginated_issues).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        type_id : int</span>
+<span class="sd">            Numista type ID</span>
+<span class="sd">        lang : str</span>
+<span class="sd">            Language code</span>
+<span class="sd">        limit : int</span>
+<span class="sd">            Results per page (max 100)</span>
+
+<span class="sd">        Yields</span>
+<span class="sd">        ------</span>
+<span class="sd">        Issue</span>
+<span class="sd">            Individual issue records</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">async</span> <span class="k">for</span> <span class="n">issue</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">paginated_issues</span><span class="p">(</span><span class="n">type_id</span><span class="o">=</span><span class="n">type_id</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="n">lang</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">):</span>
+            <span class="k">yield</span> <span class="n">issue</span></div>
+</div>
+
+
+
+<span class="c1"># Backward compatibility exports</span>
+<span class="n">IssueServiceAsync</span> <span class="o">=</span> <span class="n">IssueService</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Andy Wells.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

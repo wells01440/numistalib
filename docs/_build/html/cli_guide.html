@@ -1,0 +1,652 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CLI Guide &mdash; numistalib 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=01f34227"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Python API Guide" href="python_api_guide.html" />
+    <link rel="prev" title="Quickstart Guide" href="quickstart.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            numistalib
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart Guide</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">CLI Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#global-options">Global Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#command-structure">Command Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#available-commands">Available Commands</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#configuration-commands">§ 1 Configuration Commands</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#list-configuration">List Configuration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#get-single-value">Get Single Value</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#types-commands">§ 2 Types Commands</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#search-types">Search Types</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#get-type-details">Get Type Details</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#catalogues-commands">§ 3 Catalogues Commands</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#list-all-catalogues">List All Catalogues</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#issuers-commands">§ 4 Issuers Commands</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#list-all-issuers">List All Issuers</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#issues-commands">§ 5 Issues Commands</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#list-type-issues">List Type Issues</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#mints-commands">§ 6 Mints Commands</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#list-all-mints">List All Mints</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#get-mint-details">Get Mint Details</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#collections-commands">§ 7 Collections Commands</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#list-collections">List Collections</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#get-collection-items">Get Collection Items</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#image-search-commands">§ 8 Image Search Commands</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#search-by-image">Search by Image</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#literature-commands">§ 9 Literature Commands</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#get-publication">Get Publication</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#prices-commands">§ 10 Prices Commands</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#get-price-estimates">Get Price Estimates</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#users-commands">§ 11 Users Commands</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#get-user-profile">Get User Profile</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#display-modes">Display Modes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#panel-mode-default">Panel Mode (Default)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#table-mode">Table Mode</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#cache-indicators">Cache Indicators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tips">Tips</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#error-handling">Error Handling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="python_api_guide.html">Python API Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced_usage.html">Advanced Usage</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api/client.html">Client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/services.html">Services</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/models.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/cli.html">CLI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Additional Information</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing to numistalib</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="DEPLOYMENT.html">Documentation Deployment Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="README.html">numistalib Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">numistalib</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">CLI Guide</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/cli_guide.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="cli-guide">
+<h1>CLI Guide<a class="headerlink" href="#cli-guide" title="Link to this heading"></a></h1>
+<p>Complete guide to using the numistalib command-line interface.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>The numistalib CLI provides access to all Numista API endpoints with a rich, user-friendly interface featuring:</p>
+<ul class="simple">
+<li><p>Color-coded output with Rich theming</p></li>
+<li><p>Table and panel display modes</p></li>
+<li><p>Cache indicators (💾/🌐)</p></li>
+<li><p>Consistent short/long option flags</p></li>
+<li><p>Helpful error messages</p></li>
+</ul>
+</section>
+<section id="global-options">
+<h2>Global Options<a class="headerlink" href="#global-options" title="Link to this heading"></a></h2>
+<p>All commands support:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>--help,<span class="w"> </span>-h<span class="w">      </span>Show<span class="w"> </span><span class="nb">command</span><span class="w"> </span><span class="nb">help</span>
+--version<span class="w">       </span>Show<span class="w"> </span>version<span class="w"> </span>information
+</pre></div>
+</div>
+</section>
+<section id="command-structure">
+<h2>Command Structure<a class="headerlink" href="#command-structure" title="Link to this heading"></a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>numistalib<span class="w"> </span>&lt;command&gt;<span class="w"> </span>&lt;subcommand&gt;<span class="w"> </span><span class="o">[</span>options<span class="o">]</span>
+</pre></div>
+</div>
+</section>
+<section id="available-commands">
+<h2>Available Commands<a class="headerlink" href="#available-commands" title="Link to this heading"></a></h2>
+<section id="configuration-commands">
+<h3>§ 1 Configuration Commands<a class="headerlink" href="#configuration-commands" title="Link to this heading"></a></h3>
+<p>Manage numistalib configuration.</p>
+<section id="list-configuration">
+<h4>List Configuration<a class="headerlink" href="#list-configuration" title="Link to this heading"></a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>numistalib<span class="w"> </span>config<span class="w"> </span>list
+</pre></div>
+</div>
+<p>Displays all current settings including API key (masked), cache directory, rate limits, etc.</p>
+</section>
+<section id="get-single-value">
+<h4>Get Single Value<a class="headerlink" href="#get-single-value" title="Link to this heading"></a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>numistalib<span class="w"> </span>config<span class="w"> </span>get<span class="w"> </span>&lt;key&gt;
+</pre></div>
+</div>
+<p>Example:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>numistalib<span class="w"> </span>config<span class="w"> </span>get<span class="w"> </span>cache_dir
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="types-commands">
+<h3>§ 2 Types Commands<a class="headerlink" href="#types-commands" title="Link to this heading"></a></h3>
+<p>Search and retrieve coin/banknote/exonumia types.</p>
+<section id="search-types">
+<h4>Search Types<a class="headerlink" href="#search-types" title="Link to this heading"></a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>numistalib<span class="w"> </span>types<span class="w"> </span>search<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
+</pre></div>
+</div>
+<p><strong>Required</strong>: At least one of <code class="docutils literal notranslate"><span class="pre">-q</span></code>, <code class="docutils literal notranslate"><span class="pre">--issuer</span></code>, <code class="docutils literal notranslate"><span class="pre">--catalogue</span></code>, <code class="docutils literal notranslate"><span class="pre">--year</span></code>, or <code class="docutils literal notranslate"><span class="pre">--date</span></code></p>
+<p><strong>Options:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">-q,</span> <span class="pre">--query</span> <span class="pre">TEXT</span></code>: Search keywords</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--issuer</span> <span class="pre">TEXT</span></code>: Issuer code (e.g., “france”, “united-states”)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--category</span> <span class="pre">TEXT</span></code>: Category filter (<code class="docutils literal notranslate"><span class="pre">coin</span></code>, <code class="docutils literal notranslate"><span class="pre">banknote</span></code>, <code class="docutils literal notranslate"><span class="pre">exonumia</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--year</span> <span class="pre">TEXT</span></code>: Year or range (e.g., “2020” or “2000-2010”)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--catalogue</span> <span class="pre">INTEGER</span></code>: Catalogue ID</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--number</span> <span class="pre">TEXT</span></code>: Catalogue number (requires <code class="docutils literal notranslate"><span class="pre">--catalogue</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--ruler</span> <span class="pre">INTEGER</span></code>: Ruler ID</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--material</span> <span class="pre">INTEGER</span></code>: Material ID</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--date</span> <span class="pre">TEXT</span></code>: Date or range</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--size</span> <span class="pre">TEXT</span></code>: Size in mm or range</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--weight</span> <span class="pre">TEXT</span></code>: Weight in grams or range</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--page</span> <span class="pre">INTEGER</span></code>: Page number (default: 1)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--count</span> <span class="pre">INTEGER</span></code>: Results per page (default: 50, max: 50)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--lang</span> <span class="pre">TEXT</span></code>: Language (<code class="docutils literal notranslate"><span class="pre">en</span></code>, <code class="docutils literal notranslate"><span class="pre">es</span></code>, <code class="docutils literal notranslate"><span class="pre">fr</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-t,</span> <span class="pre">--table</span></code>: Display results in table mode</p></li>
+</ul>
+<p><strong>Examples:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Simple search</span>
+numistalib<span class="w"> </span>types<span class="w"> </span>search<span class="w"> </span>-q<span class="w"> </span><span class="s2">&quot;dollar&quot;</span>
+
+<span class="c1"># Filter by country and year</span>
+numistalib<span class="w"> </span>types<span class="w"> </span>search<span class="w"> </span>--issuer<span class="w"> </span>france<span class="w"> </span>--year<span class="w"> </span><span class="m">2020</span>
+
+<span class="c1"># Search commemorative coins</span>
+numistalib<span class="w"> </span>types<span class="w"> </span>search<span class="w"> </span>-q<span class="w"> </span><span class="s2">&quot;commemorative&quot;</span><span class="w"> </span>--category<span class="w"> </span>coin
+
+<span class="c1"># Search by catalogue reference</span>
+numistalib<span class="w"> </span>types<span class="w"> </span>search<span class="w"> </span>--catalogue<span class="w"> </span><span class="m">5</span><span class="w"> </span>--number<span class="w"> </span><span class="s2">&quot;KM#123&quot;</span>
+
+<span class="c1"># Table mode for compact display</span>
+numistalib<span class="w"> </span>types<span class="w"> </span>search<span class="w"> </span>-q<span class="w"> </span><span class="s2">&quot;euro&quot;</span><span class="w"> </span>-t
+</pre></div>
+</div>
+</section>
+<section id="get-type-details">
+<h4>Get Type Details<a class="headerlink" href="#get-type-details" title="Link to this heading"></a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>numistalib<span class="w"> </span>types<span class="w"> </span>get<span class="w"> </span>&lt;type_id&gt;<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
+</pre></div>
+</div>
+<p><strong>Arguments:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">type_id</span></code>: Numista type ID (integer)</p></li>
+</ul>
+<p><strong>Options:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--lang</span> <span class="pre">TEXT</span></code>: Language (<code class="docutils literal notranslate"><span class="pre">en</span></code>, <code class="docutils literal notranslate"><span class="pre">es</span></code>, <code class="docutils literal notranslate"><span class="pre">fr</span></code>)</p></li>
+</ul>
+<p><strong>Example:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>numistalib<span class="w"> </span>types<span class="w"> </span>get<span class="w"> </span><span class="m">95420</span>
+numistalib<span class="w"> </span>types<span class="w"> </span>get<span class="w"> </span><span class="m">95420</span><span class="w"> </span>--lang<span class="w"> </span>fr
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="catalogues-commands">
+<h3>§ 3 Catalogues Commands<a class="headerlink" href="#catalogues-commands" title="Link to this heading"></a></h3>
+<p>List available reference catalogues.</p>
+<section id="list-all-catalogues">
+<h4>List All Catalogues<a class="headerlink" href="#list-all-catalogues" title="Link to this heading"></a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>numistalib<span class="w"> </span>catalogues<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
+</pre></div>
+</div>
+<p>Alias: <code class="docutils literal notranslate"><span class="pre">cat</span></code></p>
+<p><strong>Options:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">-t,</span> <span class="pre">--table</span></code>: Display in table mode</p></li>
+</ul>
+<p><strong>Examples:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Panel mode (default)</span>
+numistalib<span class="w"> </span>catalogues
+
+<span class="c1"># Table mode</span>
+numistalib<span class="w"> </span>catalogues<span class="w"> </span>-t
+
+<span class="c1"># Using alias</span>
+numistalib<span class="w"> </span>cat
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="issuers-commands">
+<h3>§ 4 Issuers Commands<a class="headerlink" href="#issuers-commands" title="Link to this heading"></a></h3>
+<p>List countries and entities that issue coins/banknotes.</p>
+<section id="list-all-issuers">
+<h4>List All Issuers<a class="headerlink" href="#list-all-issuers" title="Link to this heading"></a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>numistalib<span class="w"> </span>issuers<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
+</pre></div>
+</div>
+<p>Alias: <code class="docutils literal notranslate"><span class="pre">isr</span></code></p>
+<p><strong>Options:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--lang</span> <span class="pre">TEXT</span></code>: Language (<code class="docutils literal notranslate"><span class="pre">en</span></code>, <code class="docutils literal notranslate"><span class="pre">es</span></code>, <code class="docutils literal notranslate"><span class="pre">fr</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-t,</span> <span class="pre">--table</span></code>: Display in table mode</p></li>
+</ul>
+<p><strong>Examples:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># English (default)</span>
+numistalib<span class="w"> </span>issuers
+
+<span class="c1"># Spanish</span>
+numistalib<span class="w"> </span>issuers<span class="w"> </span>--lang<span class="w"> </span>es
+
+<span class="c1"># Table mode</span>
+numistalib<span class="w"> </span>issuers<span class="w"> </span>-t
+
+<span class="c1"># Using alias</span>
+numistalib<span class="w"> </span>isr
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="issues-commands">
+<h3>§ 5 Issues Commands<a class="headerlink" href="#issues-commands" title="Link to this heading"></a></h3>
+<p>Get issues for a specific type.</p>
+<section id="list-type-issues">
+<h4>List Type Issues<a class="headerlink" href="#list-type-issues" title="Link to this heading"></a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>numistalib<span class="w"> </span>issues<span class="w"> </span>&lt;type_id&gt;<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
+</pre></div>
+</div>
+<p>Alias: <code class="docutils literal notranslate"><span class="pre">isu</span></code></p>
+<p><strong>Arguments:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">type_id</span></code>: Numista type ID (integer)</p></li>
+</ul>
+<p><strong>Options:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--lang</span> <span class="pre">TEXT</span></code>: Language (<code class="docutils literal notranslate"><span class="pre">en</span></code>, <code class="docutils literal notranslate"><span class="pre">es</span></code>, <code class="docutils literal notranslate"><span class="pre">fr</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-t,</span> <span class="pre">--table</span></code>: Display in table mode</p></li>
+</ul>
+<p><strong>Examples:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get all issues for a type</span>
+numistalib<span class="w"> </span>issues<span class="w"> </span><span class="m">95420</span>
+
+<span class="c1"># French language</span>
+numistalib<span class="w"> </span>issues<span class="w"> </span><span class="m">95420</span><span class="w"> </span>--lang<span class="w"> </span>fr
+
+<span class="c1"># Table mode</span>
+numistalib<span class="w"> </span>issues<span class="w"> </span><span class="m">95420</span><span class="w"> </span>-t
+
+<span class="c1"># Using alias</span>
+numistalib<span class="w"> </span>isu<span class="w"> </span><span class="m">95420</span>
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="mints-commands">
+<h3>§ 6 Mints Commands<a class="headerlink" href="#mints-commands" title="Link to this heading"></a></h3>
+<p>Manage mint information.</p>
+<section id="list-all-mints">
+<h4>List All Mints<a class="headerlink" href="#list-all-mints" title="Link to this heading"></a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>numistalib<span class="w"> </span>mints<span class="w"> </span>list<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
+</pre></div>
+</div>
+<p><strong>Options:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--lang</span> <span class="pre">TEXT</span></code>: Language (<code class="docutils literal notranslate"><span class="pre">en</span></code>, <code class="docutils literal notranslate"><span class="pre">es</span></code>, <code class="docutils literal notranslate"><span class="pre">fr</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-t,</span> <span class="pre">--table</span></code>: Display in table mode</p></li>
+</ul>
+<p><strong>Example:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>numistalib<span class="w"> </span>mints<span class="w"> </span>list
+numistalib<span class="w"> </span>mints<span class="w"> </span>list<span class="w"> </span>--lang<span class="w"> </span>es<span class="w"> </span>-t
+</pre></div>
+</div>
+</section>
+<section id="get-mint-details">
+<h4>Get Mint Details<a class="headerlink" href="#get-mint-details" title="Link to this heading"></a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>numistalib<span class="w"> </span>mints<span class="w"> </span>get<span class="w"> </span>&lt;mint_id&gt;<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
+</pre></div>
+</div>
+<p><strong>Arguments:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">mint_id</span></code>: Mint ID (integer)</p></li>
+</ul>
+<p><strong>Options:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--lang</span> <span class="pre">TEXT</span></code>: Language (<code class="docutils literal notranslate"><span class="pre">en</span></code>, <code class="docutils literal notranslate"><span class="pre">es</span></code>, <code class="docutils literal notranslate"><span class="pre">fr</span></code>)</p></li>
+</ul>
+<p><strong>Example:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>numistalib<span class="w"> </span>mints<span class="w"> </span>get<span class="w"> </span><span class="m">42</span>
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="collections-commands">
+<h3>§ 7 Collections Commands<a class="headerlink" href="#collections-commands" title="Link to this heading"></a></h3>
+<p>Manage user collections (requires OAuth).</p>
+<section id="list-collections">
+<h4>List Collections<a class="headerlink" href="#list-collections" title="Link to this heading"></a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>numistalib<span class="w"> </span>collections<span class="w"> </span>list<span class="w"> </span>&lt;user_id&gt;
+</pre></div>
+</div>
+<p><strong>Arguments:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">user_id</span></code>: Numista user ID (integer)</p></li>
+</ul>
+<p><strong>Example:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>numistalib<span class="w"> </span>collections<span class="w"> </span>list<span class="w"> </span><span class="m">12345</span>
+</pre></div>
+</div>
+</section>
+<section id="get-collection-items">
+<h4>Get Collection Items<a class="headerlink" href="#get-collection-items" title="Link to this heading"></a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>numistalib<span class="w"> </span>collections<span class="w"> </span>items<span class="w"> </span>&lt;user_id&gt;<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
+</pre></div>
+</div>
+<p><strong>Arguments:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">user_id</span></code>: Numista user ID (integer)</p></li>
+</ul>
+<p><strong>Options:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--category</span> <span class="pre">TEXT</span></code>: Filter by category</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--type</span> <span class="pre">INTEGER</span></code>: Filter by type ID</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--collection</span> <span class="pre">INTEGER</span></code>: Filter by collection ID</p></li>
+</ul>
+<p><strong>Example:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>numistalib<span class="w"> </span>collections<span class="w"> </span>items<span class="w"> </span><span class="m">12345</span><span class="w"> </span>--category<span class="w"> </span>coin
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="image-search-commands">
+<h3>§ 8 Image Search Commands<a class="headerlink" href="#image-search-commands" title="Link to this heading"></a></h3>
+<p>Search by coin images (experimental).</p>
+<section id="search-by-image">
+<h4>Search by Image<a class="headerlink" href="#search-by-image" title="Link to this heading"></a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>numistalib<span class="w"> </span>image-search<span class="w"> </span>&lt;image_path&gt;<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
+</pre></div>
+</div>
+<p><strong>Arguments:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">image_path</span></code>: Path to image file (JPEG/PNG)</p></li>
+</ul>
+<p><strong>Options:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--category</span> <span class="pre">TEXT</span></code>: Category (<code class="docutils literal notranslate"><span class="pre">coin</span></code>, <code class="docutils literal notranslate"><span class="pre">banknote</span></code>, <code class="docutils literal notranslate"><span class="pre">exonumia</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--max-results</span> <span class="pre">INTEGER</span></code>: Maximum results (default: 100, max: 100)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--lang</span> <span class="pre">TEXT</span></code>: Language (<code class="docutils literal notranslate"><span class="pre">en</span></code>, <code class="docutils literal notranslate"><span class="pre">es</span></code>, <code class="docutils literal notranslate"><span class="pre">fr</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--experimental</span></code>: Enable experimental features (year/grade detection)</p></li>
+</ul>
+<p><strong>Example:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>numistalib<span class="w"> </span>image-search<span class="w"> </span>/path/to/coin.jpg
+numistalib<span class="w"> </span>image-search<span class="w"> </span>coin.jpg<span class="w"> </span>--category<span class="w"> </span>coin<span class="w"> </span>--max-results<span class="w"> </span><span class="m">20</span>
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="literature-commands">
+<h3>§ 9 Literature Commands<a class="headerlink" href="#literature-commands" title="Link to this heading"></a></h3>
+<p>Get publication information.</p>
+<section id="get-publication">
+<h4>Get Publication<a class="headerlink" href="#get-publication" title="Link to this heading"></a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>numistalib<span class="w"> </span>literature<span class="w"> </span>get<span class="w"> </span>&lt;publication_id&gt;<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
+</pre></div>
+</div>
+<p><strong>Arguments:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">publication_id</span></code>: Publication ID (e.g., “L123456”)</p></li>
+</ul>
+<p><strong>Example:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>numistalib<span class="w"> </span>literature<span class="w"> </span>get<span class="w"> </span>L123456
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="prices-commands">
+<h3>§ 10 Prices Commands<a class="headerlink" href="#prices-commands" title="Link to this heading"></a></h3>
+<p>Get price estimates for issues.</p>
+<section id="get-price-estimates">
+<h4>Get Price Estimates<a class="headerlink" href="#get-price-estimates" title="Link to this heading"></a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>numistalib<span class="w"> </span>prices<span class="w"> </span>get<span class="w"> </span>&lt;type_id&gt;<span class="w"> </span>&lt;issue_id&gt;<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
+</pre></div>
+</div>
+<p><strong>Arguments:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">type_id</span></code>: Type ID (integer)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">issue_id</span></code>: Issue ID (integer)</p></li>
+</ul>
+<p><strong>Options:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--currency</span> <span class="pre">TEXT</span></code>: Currency code (ISO 4217, default: EUR)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--lang</span> <span class="pre">TEXT</span></code>: Language (<code class="docutils literal notranslate"><span class="pre">en</span></code>, <code class="docutils literal notranslate"><span class="pre">es</span></code>, <code class="docutils literal notranslate"><span class="pre">fr</span></code>)</p></li>
+</ul>
+<p><strong>Example:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>numistalib<span class="w"> </span>prices<span class="w"> </span>get<span class="w"> </span><span class="m">95420</span><span class="w"> </span><span class="m">1</span><span class="w"> </span>--currency<span class="w"> </span>USD
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="users-commands">
+<h3>§ 11 Users Commands<a class="headerlink" href="#users-commands" title="Link to this heading"></a></h3>
+<p>Get user profile information.</p>
+<section id="get-user-profile">
+<h4>Get User Profile<a class="headerlink" href="#get-user-profile" title="Link to this heading"></a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>numistalib<span class="w"> </span>users<span class="w"> </span>get<span class="w"> </span>&lt;user_id&gt;<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
+</pre></div>
+</div>
+<p><strong>Arguments:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">user_id</span></code>: User ID (integer)</p></li>
+</ul>
+<p><strong>Options:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--lang</span> <span class="pre">TEXT</span></code>: Language (<code class="docutils literal notranslate"><span class="pre">en</span></code>, <code class="docutils literal notranslate"><span class="pre">es</span></code>, <code class="docutils literal notranslate"><span class="pre">fr</span></code>)</p></li>
+</ul>
+<p><strong>Example:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>numistalib<span class="w"> </span>users<span class="w"> </span>get<span class="w"> </span><span class="m">12345</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+<hr class="docutils" />
+<section id="display-modes">
+<h2>Display Modes<a class="headerlink" href="#display-modes" title="Link to this heading"></a></h2>
+<section id="panel-mode-default">
+<h3>Panel Mode (Default)<a class="headerlink" href="#panel-mode-default" title="Link to this heading"></a></h3>
+<p>Displays detailed information in Rich panels:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>numistalib<span class="w"> </span>types<span class="w"> </span>get<span class="w"> </span><span class="m">95420</span>
+</pre></div>
+</div>
+</section>
+<section id="table-mode">
+<h3>Table Mode<a class="headerlink" href="#table-mode" title="Link to this heading"></a></h3>
+<p>Displays compact information in tables:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>numistalib<span class="w"> </span>types<span class="w"> </span>search<span class="w"> </span>-q<span class="w"> </span><span class="s2">&quot;dollar&quot;</span><span class="w"> </span>-t
+</pre></div>
+</div>
+<p>Use the <code class="docutils literal notranslate"><span class="pre">-t</span></code> or <code class="docutils literal notranslate"><span class="pre">--table</span></code> flag with any list command.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="cache-indicators">
+<h2>Cache Indicators<a class="headerlink" href="#cache-indicators" title="Link to this heading"></a></h2>
+<p>Every response shows a cache indicator:</p>
+<ul class="simple">
+<li><p><strong>💾</strong> Cached: Served from local cache (fast, no API quota)</p></li>
+<li><p><strong>🌐</strong> Fresh: Fetched from API (counts against quota)</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="tips">
+<h2>Tips<a class="headerlink" href="#tips" title="Link to this heading"></a></h2>
+<ol class="arabic">
+<li><p><strong>Use short flags for quick commands:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>numistalib<span class="w"> </span>types<span class="w"> </span>search<span class="w"> </span>-q<span class="w"> </span><span class="s2">&quot;euro&quot;</span><span class="w"> </span>-t
+</pre></div>
+</div>
+</li>
+<li><p><strong>Combine filters for precise searches:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>numistalib<span class="w"> </span>types<span class="w"> </span>search<span class="w"> </span>-q<span class="w"> </span><span class="s2">&quot;commemorative&quot;</span><span class="w"> </span>--issuer<span class="w"> </span>france<span class="w"> </span>--year<span class="w"> </span><span class="s2">&quot;2010-2020&quot;</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Use aliases for frequently used commands:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>numistalib<span class="w"> </span>cat<span class="w">    </span><span class="c1"># Instead of &#39;catalogues&#39;</span>
+numistalib<span class="w"> </span>isr<span class="w">    </span><span class="c1"># Instead of &#39;issuers&#39;</span>
+numistalib<span class="w"> </span>isu<span class="w"> </span><span class="m">95420</span><span class="w">  </span><span class="c1"># Instead of &#39;issues 95420&#39;</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Check help for any command:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>numistalib<span class="w"> </span>types<span class="w"> </span>search<span class="w"> </span>--help
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<hr class="docutils" />
+<section id="error-handling">
+<h2>Error Handling<a class="headerlink" href="#error-handling" title="Link to this heading"></a></h2>
+<p>The CLI provides clear error messages:</p>
+<ul class="simple">
+<li><p><strong>Authentication errors</strong>: Check your API key in <code class="docutils literal notranslate"><span class="pre">.env</span></code></p></li>
+<li><p><strong>Rate limit errors</strong>: Wait briefly; rate limits reset automatically</p></li>
+<li><p><strong>Invalid parameters</strong>: Use <code class="docutils literal notranslate"><span class="pre">--help</span></code> to see valid options</p></li>
+<li><p><strong>Network errors</strong>: Retried automatically with exponential backoff</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="next-steps">
+<h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="python_api_guide.html"><span class="std std-doc">Python API Guide</span></a> - Use the library programmatically</p></li>
+<li><p><a class="reference internal" href="configuration.html"><span class="std std-doc">Configuration</span></a> - Customize behavior</p></li>
+<li><p><a class="reference internal" href="advanced_usage.html"><span class="std std-doc">Advanced Usage</span></a> - Complex scenarios</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="quickstart.html" class="btn btn-neutral float-left" title="Quickstart Guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="python_api_guide.html" class="btn btn-neutral float-right" title="Python API Guide" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Andy Wells.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

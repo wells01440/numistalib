@@ -1,7 +1,123 @@
+# numistalib Documentation
 
-# § 1 Numista API Endpoint Trees
+This directory contains comprehensive documentation for numistalib.
 
-Each section below mirrors the OpenAPI file (`docs/numista-swagger.yml`) and lists every path, method, and request
+## Documentation Structure
+
+### User Guides
+
+- [installation.md](installation.md) - Installation and setup
+- [quickstart.md](quickstart.md) - 5-minute getting started guide
+- [cli_guide.md](cli_guide.md) - Complete CLI command reference
+- [python_api_guide.md](python_api_guide.md) - Python API usage guide
+- [configuration.md](configuration.md) - Configuration reference
+- [advanced_usage.md](advanced_usage.md) - Advanced patterns and techniques
+
+### Reference Documentation
+
+- [architecture.md](architecture.md) - System architecture and design
+- [contributing.md](contributing.md) - Contribution guidelines
+- [changelog.md](changelog.md) - Version history
+- [license.md](license.md) - MIT License
+
+### API Reference
+
+- [API Reference](api/index.rst) - Sphinx autodoc API reference
+  - [client.rst](api/client.rst) - HTTP client
+  - [services.rst](api/services.rst) - Service layer
+  - [models.rst](api/models.rst) - Data models
+  - [cli.rst](api/cli.rst) - CLI commands
+
+### Technical Reference
+
+- [Official Numista API Docs](https://en.numista.com/api/doc/index.php) - Numista API specification
+
+## Building Documentation
+
+### Prerequisites
+
+Install documentation dependencies:
+
+```bash
+uv sync --group docs
+```
+
+### Build HTML
+
+```bash
+cd docs
+uv run sphinx-build -b html . _build/html
+```
+
+Or using Make:
+
+```bash
+cd docs
+make html
+```
+
+### View Documentation
+
+Open `docs/_build/html/index.html` in your browser.
+
+### Build Other Formats
+
+PDF:
+
+```bash
+cd docs
+make latexpdf
+```
+
+EPUB:
+
+```bash
+cd docs
+make epub
+```
+
+## ReadTheDocs
+
+This documentation is configured for ReadTheDocs deployment.
+
+### Configuration Files
+
+- [.readthedocs.yml](../.readthedocs.yml) - RTD build configuration
+- [conf.py](conf.py) - Sphinx configuration
+- [requirements.txt](requirements.txt) - Documentation dependencies
+
+### Deployment
+
+The documentation will build automatically when pushed to GitHub (once RTD webhook is configured).
+
+## Documentation Standards
+
+### Formatting
+
+- Use § numbering for sections
+- Markdown for user guides
+- reStructuredText for API reference
+- Code examples should be runnable
+- Include "Next Steps" links at guide ends
+
+### Content
+
+- Progressive complexity (basic → advanced)
+- Concrete, copy-pasteable examples
+- Clear explanations
+- Complete coverage of features
+- Cross-references between docs
+
+### Maintenance
+
+- Update changelog for releases
+- Keep API reference in sync with code
+- Test all code examples
+- Update screenshots/diagrams as needed
+
+## § 1 Numista API Endpoint Trees
+
+Each section below mirrors the OpenAPI file ([official spec](https://en.numista.com/api/doc/swagger.yaml?v=3.29.0)) and lists every path, method, and request
 parameter set per API version.
 All calls require the `Numista-API-Key` header; endpoints under “User” additionally need the
 OAuth scopes noted in the swagger comments.
@@ -128,4 +244,4 @@ legacy paths remain accessible through `/v2` (all were removed from `/v3`):
 
 Version 1 shares the same endpoint tree as version 2 (including the `/coins` and `/users/{user_id}/collected_coins`
 legacy paths above). Parameter names are identical, but some response fields remain in their original camelCase form
-(`minYear`, `maxYear`, `value`, etc.) as noted inside `docs/numista-swagger.yml`.
+(`minYear`, `maxYear`, `value`, etc.) as noted in the [official API spec](https://en.numista.com/api/doc/swagger.yaml?v=3.29.0).

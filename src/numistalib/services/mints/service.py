@@ -41,31 +41,7 @@ class MintService(MintServiceBase):
         list[Mint]
             Parsed mint models
         """
-        mints: list[Mint] = []
-        for item in items:
-            name = (
-                item.get("name")
-                or item.get("label")
-                or item.get("local_name")
-                or item.get("place")
-            )
-            if not name:
-                name = "Unknown"
-
-            country_code = item.get("country_code")
-            country = cast(Mapping[str, Any] | None, item.get("country"))
-            if country_code is None and country is not None:
-                country_code = country.get("code")
-
-            mints.append(
-                Mint(
-                    numista_id=cast(int, item["id"]),
-                    name=cast(str, name),
-                    code=cast(str | None, item.get("code")),
-                    country_code=cast(str | None, country_code),
-                )
-            )
-        return mints
+        return [Mint.model_validate(item) for item in items]
 
     def get_mints(self, lang: str = "en") -> list[Mint]:
         """Get list of all mints.

@@ -36,7 +36,7 @@ class CollectionService(CollectionServiceBase):
         items : list[Mapping[str, Any]]
             Raw API response items
         user_id : int | None
-            Associated user ID (required)
+            Associated user ID (not used, kept for interface compatibility)
         **kwargs : Any
             Additional context
 
@@ -45,32 +45,60 @@ class CollectionService(CollectionServiceBase):
         list[CollectedItem]
             Parsed collected item models
         """
-        if user_id is None:
-            raise ValueError("user_id is required for collection conversion")
+        from numistalib.models.collections import GradingDetails, Picture, TypeDetail
 
         collected_items: list[CollectedItem] = []
         for item in items:
-            type_info = cast(Mapping[str, Any], item["type"])
-            issue_info = cast(Mapping[str, Any] | None, item.get("issue"))
-            price_info = cast(Mapping[str, Any] | None, item.get("price"))
+            type_dict = cast(Mapping[str, Any], item["type"])
+            type_obj = TypeDetail(**type_dict)
+
+            issue_obj = None
+            if item.get("issue"):
+                issue_obj = cast(dict[str, object], item["issue"])
+
+            price_obj = None
+            if item.get("price"):
+                price_obj = cast(dict[str, object], item["price"])
+
+            collection_obj = None
+            if item.get("collection"):
+                collection_dict = cast(Mapping[str, Any], item["collection"])
+                collection_obj = UserCollection(**collection_dict)
+
+            pictures_obj = None
+            if item.get("pictures"):
+                pictures_list = cast(list[Mapping[str, Any]], item["pictures"])
+                pictures_obj = [Picture(**pic) for pic in pictures_list]
+
+            grading_obj = None
+            if item.get("grading_details"):
+                grading_dict = cast(Mapping[str, Any], item["grading_details"])
+                grading_obj = GradingDetails(**grading_dict)
+
+            grade_val = cast(str | None, item.get("grade"))
 
             collected_items.append(
                 CollectedItem(
-                    numista_id=cast(int, item["id"]),
-                    user_id=user_id,
-                    type_id=cast(int, type_info["id"]),
-                    issue_id=cast(int, issue_info.get("id")) if issue_info else None,
+                    id=cast(int, item["id"]),
                     quantity=cast(int, item.get("quantity", 1)),
-                    grade=cast(str | None, item.get("grade")),
+                    type=type_obj,
                     for_swap=bool(item.get("for_swap", False)),
-                    price_value=cast(float | None, price_info.get("value"))
-                    if price_info
-                    else None,
-                    price_currency=cast(str | None, price_info.get("currency"))
-                    if price_info
-                    else None,
-                    acquisition_date=cast(date | None, item.get("acquisition_date")),
+                    issue=issue_obj,
+                    grade=grade_val,  # type: ignore[arg-type]
+                    private_comment=cast(str | None, item.get("private_comment")),
+                    public_comment=cast(str | None, item.get("public_comment")),
+                    price=price_obj,
+                    collection=collection_obj,
+                    pictures=pictures_obj,
                     storage_location=cast(str | None, item.get("storage_location")),
+                    acquisition_place=cast(str | None, item.get("acquisition_place")),
+                    acquisition_date=cast(Any, item.get("acquisition_date")),  # type: ignore[arg-type]
+                    serial_number=cast(str | None, item.get("serial_number")),
+                    internal_id=cast(str | None, item.get("internal_id")),
+                    weight=cast(float | None, item.get("weight")),
+                    size=cast(float | None, item.get("size")),
+                    axis=cast(int | None, item.get("axis")),
+                    grading_details=grading_obj,
                 )
             )
         return collected_items
@@ -211,7 +239,6 @@ class CollectionService(CollectionServiceBase):
         collections = [
             UserCollection(
                 numista_id=cast(int, col["id"]),
-                user_id=user_id,
                 name=cast(str, col["name"]),
             )
             for col in collections_raw
@@ -342,7 +369,6 @@ class CollectionService(CollectionServiceBase):
         collections = [
             UserCollection(
                 numista_id=cast(int, col["id"]),
-                user_id=user_id,
                 name=cast(str, col["name"]),
             )
             for col in collections_raw
@@ -387,7 +413,7 @@ class CollectionService(CollectionServiceBase):
 
         item = self.to_models([data], user_id=user_id)[0]
 
-        logger.info(f"Added collected item {item.numista_id} {response.cached_indicator}")
+        logger.info(f"Added collected item {item.id} {response.cached_indicator}")
         return item
 
     async def add_collected_item_async(self, user_id: int, item_data: dict[str, object]) -> CollectedItem:
@@ -421,7 +447,7 @@ class CollectionService(CollectionServiceBase):
 
         item = self.to_models([data], user_id=user_id)[0]
 
-        logger.info(f"Added collected item {item.numista_id} {response.cached_indicator}")
+        logger.info(f"Added collected item {item.id} {response.cached_indicator}")
         return item
 
     def edit_collected_item(self, user_id: int, item_id: int, item_data: dict[str, object]) -> CollectedItem:

@@ -17,13 +17,8 @@ class UserCollection(NumistaBaseModel):
     Represents a named collection that groups collected items for a user.
     """
 
-    id: int = Field(..., gt=0, description="Numista collection ID")
+    id: int = Field(..., gt=0, alias="numista_id", description="Numista collection ID")
     name: str = Field(..., description="Collection name")
-
-    @computed_field(description="Collection description")
-    def collection_label(self) -> str:
-        """Label combining collection name."""
-        return f"{self.name}"
 
     def to_dict(self) -> dict[str, object]:
         """Convert collection to dictionary representation."""

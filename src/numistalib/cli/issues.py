@@ -38,6 +38,7 @@ def register_issues_commands(parent: click.Group) -> None:
 
         try:
             async def consume_issues() -> list[Issue]:
+                """Consume all issues from the paginated service."""
                 issues_list: list[Issue] = []
                 async for issue in service.get_issues_paginated(type_id=type_id, lang=lang, limit=limit):
                     issues_list.append(issue)

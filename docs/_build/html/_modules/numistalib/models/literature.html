@@ -1,0 +1,366 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>numistalib.models.literature &mdash; numistalib 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=01f34227"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            numistalib
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstart.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cli_guide.html">CLI Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../python_api_guide.html">Python API Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../advanced_usage.html">Advanced Usage</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/client.html">Client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/services.html">Services</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/models.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/cli.html">CLI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Additional Information</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../architecture.html">Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing to numistalib</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../DEPLOYMENT.html">Documentation Deployment Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../README.html">numistalib Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">numistalib</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">numistalib.models.literature</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for numistalib.models.literature</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Numista literature models.</span>
+
+<span class="sd">Pydantic models for Numista numismatic literature catalogue.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Literal</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">Field</span><span class="p">,</span> <span class="n">HttpUrl</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.models.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">NumistaBaseModel</span>
+
+
+<div class="viewcode-block" id="Contributor">
+<a class="viewcode-back" href="../../../api/models.html#numistalib.models.literature.Contributor">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Contributor</span><span class="p">(</span><span class="n">NumistaBaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Publication contributor information.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    role : Literal[&quot;author&quot;, &quot;editor&quot;, &quot;translator&quot;]</span>
+<span class="sd">        Contributor&#39;s role</span>
+<span class="sd">    name : str</span>
+<span class="sd">        Full name of the contributor</span>
+<span class="sd">    id : int | None</span>
+<span class="sd">        Unique ID of the person in Numista</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">role</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;author&quot;</span><span class="p">,</span> <span class="s2">&quot;editor&quot;</span><span class="p">,</span> <span class="s2">&quot;translator&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Contributor&#39;s role&quot;</span><span class="p">)</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Full name of the contributor&quot;</span><span class="p">)</span>
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unique ID of the person&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="Publisher">
+<a class="viewcode-back" href="../../../api/models.html#numistalib.models.literature.Publisher">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Publisher</span><span class="p">(</span><span class="n">NumistaBaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Publisher information.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    name : str</span>
+<span class="sd">        Name of the publisher</span>
+<span class="sd">    id : int | None</span>
+<span class="sd">        Unique ID of the publisher in Numista</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Name of the publisher&quot;</span><span class="p">)</span>
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unique ID of the publisher&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="PublicationPlace">
+<a class="viewcode-back" href="../../../api/models.html#numistalib.models.literature.PublicationPlace">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">PublicationPlace</span><span class="p">(</span><span class="n">NumistaBaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Publication place information.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    name : str</span>
+<span class="sd">        City and country of publication</span>
+<span class="sd">    geonames_id : str | None</span>
+<span class="sd">        GeoNames ID for location reference</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;City and country of publication&quot;</span><span class="p">)</span>
+    <span class="n">geonames_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;GeoNames ID for location reference&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="PartOf">
+<a class="viewcode-back" href="../../../api/models.html#numistalib.models.literature.PartOf">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">PartOf</span><span class="p">(</span><span class="n">NumistaBaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parent publication reference.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    type : Literal[&quot;volume_group&quot;, &quot;volume&quot;, &quot;article_group&quot;]</span>
+<span class="sd">        Type of parent publication</span>
+<span class="sd">    id : str</span>
+<span class="sd">        Unique ID of the parent publication</span>
+<span class="sd">    title : str</span>
+<span class="sd">        Title of the parent publication</span>
+<span class="sd">    volume_number : str | None</span>
+<span class="sd">        Number or specific title the volume has within its volume group</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nb">type</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;volume_group&quot;</span><span class="p">,</span> <span class="s2">&quot;volume&quot;</span><span class="p">,</span> <span class="s2">&quot;article_group&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Type of parent&quot;</span><span class="p">)</span>
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unique ID of the parent publication&quot;</span><span class="p">)</span>
+    <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Title of the parent publication&quot;</span><span class="p">)</span>
+    <span class="n">volume_number</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Number or specific title the volume has within its volume group&quot;</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="Publication">
+<a class="viewcode-back" href="../../../api/models.html#numistalib.models.literature.Publication">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Publication</span><span class="p">(</span><span class="n">NumistaBaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Bibliographic publication record.</span>
+
+<span class="sd">    Represents a volume (book), article (authored book chapter),</span>
+<span class="sd">    series of books (volume_group), or series of articles (article_group).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    id : str</span>
+<span class="sd">        Numista publication ID</span>
+<span class="sd">    type : Literal[&quot;volume&quot;, &quot;article&quot;, &quot;volume_group&quot;, &quot;article_group&quot;]</span>
+<span class="sd">        Type of publication</span>
+<span class="sd">    title : str</span>
+<span class="sd">        Publication title</span>
+<span class="sd">    url : HttpUrl | None</span>
+<span class="sd">        URL of the publication entry</span>
+<span class="sd">    translated_title : str | None</span>
+<span class="sd">        Title translated into English</span>
+<span class="sd">    volume_number : str | None</span>
+<span class="sd">        Volume number within group (volumes only)</span>
+<span class="sd">    subtitle : str | None</span>
+<span class="sd">        Subtitle (volumes only)</span>
+<span class="sd">    translated_subtitle : str | None</span>
+<span class="sd">        Subtitle translated into English (volumes only)</span>
+<span class="sd">    edition : str | None</span>
+<span class="sd">        Edition information (volumes only)</span>
+<span class="sd">    languages : list[str] | None</span>
+<span class="sd">        ISO 639 (alpha-2) language codes</span>
+<span class="sd">    year : int | None</span>
+<span class="sd">        Publication year (for volumes and articles)</span>
+<span class="sd">    page_count : int | None</span>
+<span class="sd">        Total number of pages (volumes only)</span>
+<span class="sd">    pages : str | None</span>
+<span class="sd">        Page range (articles only)</span>
+<span class="sd">    cover : Literal[&quot;softcover&quot;, &quot;hardcover&quot;, &quot;spiral&quot;, &quot;hidden_spiral&quot;] | None</span>
+<span class="sd">        Type of cover (volumes only)</span>
+<span class="sd">    isbn10 : str | None</span>
+<span class="sd">        ISBN-10 code (volumes only)</span>
+<span class="sd">    isbn13 : str | None</span>
+<span class="sd">        ISBN-13 code (volumes only)</span>
+<span class="sd">    issn : str | None</span>
+<span class="sd">        ISSN code (volume groups only)</span>
+<span class="sd">    oclc_number : str | None</span>
+<span class="sd">        OCLC catalogue number</span>
+<span class="sd">    contributors : list[Contributor] | None</span>
+<span class="sd">        List of contributors (authors, editors, translators)</span>
+<span class="sd">    publishers : list[Publisher] | None</span>
+<span class="sd">        Information about the publishers (volumes only)</span>
+<span class="sd">    publication_places : list[PublicationPlace] | None</span>
+<span class="sd">        Places where the volume was released (volumes only)</span>
+<span class="sd">    part_of : list[PartOf] | None</span>
+<span class="sd">        Parent publication(s) this belongs to</span>
+<span class="sd">    bibliographical_notice : str | None</span>
+<span class="sd">        HTML-formatted bibliographical notice</span>
+<span class="sd">    homepage_url : HttpUrl | None</span>
+<span class="sd">        URL of the website representing the publication</span>
+<span class="sd">    download_urls : list[HttpUrl] | None</span>
+<span class="sd">        URLs where the publication can be downloaded</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; pub = Publication(</span>
+<span class="sd">    ...     id=&quot;456&quot;,</span>
+<span class="sd">    ...     type=&quot;volume&quot;,</span>
+<span class="sd">    ...     title=&quot;Standard Catalog of World Coins&quot;,</span>
+<span class="sd">    ...     year=2024,</span>
+<span class="sd">    ...     isbn13=&quot;978-1234567890&quot;,</span>
+<span class="sd">    ...     contributors=[</span>
+<span class="sd">    ...         Contributor(role=&quot;author&quot;, name=&quot;George S. Cuhaj&quot;, id=123)</span>
+<span class="sd">    ...     ]</span>
+<span class="sd">    ... )</span>
+<span class="sd">    &gt;&gt;&gt; print(f&quot;{pub.title} ({pub.year})&quot;)</span>
+<span class="sd">    Standard Catalog of World Coins (2024)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Required fields</span>
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unique ID of the publication on Numista&quot;</span><span class="p">)</span>
+    <span class="nb">type</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;volume&quot;</span><span class="p">,</span> <span class="s2">&quot;article&quot;</span><span class="p">,</span> <span class="s2">&quot;volume_group&quot;</span><span class="p">,</span> <span class="s2">&quot;article_group&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="o">...</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Type of publication&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Core optional fields</span>
+    <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Publication title&quot;</span><span class="p">)</span>
+    <span class="n">url</span><span class="p">:</span> <span class="n">HttpUrl</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;URL of the publication entry&quot;</span><span class="p">)</span>
+    <span class="n">translated_title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Title translated into English&quot;</span><span class="p">)</span>
+    <span class="n">volume_number</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Volume number within group (volumes only)&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">subtitle</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Subtitle (volumes only)&quot;</span><span class="p">)</span>
+    <span class="n">translated_subtitle</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Subtitle translated into English (volumes only)&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">edition</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Edition information (volumes only)&quot;</span><span class="p">)</span>
+    <span class="n">languages</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;ISO 639 (alpha-2) language codes&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">year</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Publication year&quot;</span><span class="p">)</span>
+    <span class="n">page_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Total number of pages (volumes only)&quot;</span><span class="p">)</span>
+    <span class="n">pages</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Page range (articles only)&quot;</span><span class="p">)</span>
+    <span class="n">cover</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;softcover&quot;</span><span class="p">,</span> <span class="s2">&quot;hardcover&quot;</span><span class="p">,</span> <span class="s2">&quot;spiral&quot;</span><span class="p">,</span> <span class="s2">&quot;hidden_spiral&quot;</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Type of cover (volumes only)&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Identifiers</span>
+    <span class="n">isbn10</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;ISBN-10 code (volumes only)&quot;</span><span class="p">)</span>
+    <span class="n">isbn13</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;ISBN-13 code (volumes only)&quot;</span><span class="p">)</span>
+    <span class="n">issn</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;ISSN code (volume groups only)&quot;</span><span class="p">)</span>
+    <span class="n">oclc_number</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;OCLC catalogue number&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Nested object arrays</span>
+    <span class="n">contributors</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Contributor</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;List of contributors (authors, editors, translators)&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">publishers</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Publisher</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Publisher information (volumes only)&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">publication_places</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">PublicationPlace</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Places where the volume was released (volumes only)&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">part_of</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">PartOf</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Parent publication(s) this belongs to&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Additional metadata</span>
+    <span class="n">bibliographical_notice</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;HTML-formatted bibliographical notice&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">homepage_url</span><span class="p">:</span> <span class="n">HttpUrl</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;URL of the website representing the publication&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">download_urls</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">HttpUrl</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;URLs where the publication can be downloaded&quot;</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Andy Wells.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

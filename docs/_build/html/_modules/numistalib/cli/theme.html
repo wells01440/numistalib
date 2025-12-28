@@ -1,0 +1,455 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>numistalib.cli.theme &mdash; numistalib 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=01f34227"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            numistalib
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstart.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cli_guide.html">CLI Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../python_api_guide.html">Python API Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../advanced_usage.html">Advanced Usage</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/client.html">Client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/services.html">Services</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/models.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/cli.html">CLI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Additional Information</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../architecture.html">Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing to numistalib</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../DEPLOYMENT.html">Documentation Deployment Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../README.html">numistalib Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">numistalib</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">numistalib.cli.theme</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for numistalib.cli.theme</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Rich v14 theming and formatting utilities for numistalib CLI.</span>
+
+<span class="sd">Provides consistent theming, console access, table helpers, and panel formatting</span>
+<span class="sd">in line with AGENTS.md § 7.1 requirements.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sys</span><span class="w"> </span><span class="kn">import</span> <span class="n">version_info</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">ClassVar</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">rich</span><span class="w"> </span><span class="kn">import</span> <span class="n">box</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">rich.align</span><span class="w"> </span><span class="kn">import</span> <span class="n">AlignMethod</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">rich.console</span><span class="w"> </span><span class="kn">import</span> <span class="n">Console</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">rich.panel</span><span class="w"> </span><span class="kn">import</span> <span class="n">Panel</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">rich.table</span><span class="w"> </span><span class="kn">import</span> <span class="n">Table</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">rich.theme</span><span class="w"> </span><span class="kn">import</span> <span class="n">Theme</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">numistalib</span><span class="w"> </span><span class="kn">import</span> <span class="n">__version__</span>
+
+<span class="c1"># pyright: reportOptionalMemberAccess = false, reportUnknownMemberType = false</span>
+
+
+<div class="viewcode-block" id="CLISettings">
+<a class="viewcode-back" href="../../../api/cli.html#numistalib.cli.theme.CLISettings">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CLISettings</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Centralized CLI styling and formatting utilities.</span>
+
+<span class="sd">    Provides:</span>
+<span class="sd">    - Rich v14 theme configuration</span>
+<span class="sd">    - Console access (cached singleton)</span>
+<span class="sd">    - Table/panel helpers following § 7.1 patterns</span>
+<span class="sd">    - Field truncation constants for general UI</span>
+
+<span class="sd">    Note: Domain-specific truncation (e.g., biography length, issuer name length)</span>
+<span class="sd">    lives in individual model classes per § 5.4 distributed settings strategy.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># === Constants ===</span>
+
+    <span class="c1"># Field truncation for general CLI display (models may override)</span>
+    <span class="n">FIELD_TRUNCATE_LENGTH</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span>
+    <span class="n">FIELD_TRUNCATE_SUFFIX</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;…&quot;</span>
+
+    <span class="n">CLI_THEME</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="c1"># === Feedback / Status Messages ===</span>
+        <span class="s2">&quot;info&quot;</span><span class="p">:</span> <span class="s2">&quot;bright_cyan&quot;</span><span class="p">,</span>          <span class="c1"># General informational text</span>
+        <span class="s2">&quot;success&quot;</span><span class="p">:</span> <span class="s2">&quot;bold bright_green&quot;</span><span class="p">,</span>  <span class="c1"># Success states, confirmations</span>
+        <span class="s2">&quot;warning&quot;</span><span class="p">:</span> <span class="s2">&quot;bold bright_yellow&quot;</span><span class="p">,</span>  <span class="c1"># Warnings, deprecations</span>
+        <span class="s2">&quot;danger&quot;</span><span class="p">:</span> <span class="s2">&quot;bold bright_red&quot;</span><span class="p">,</span>    <span class="c1"># Errors, critical issues</span>
+        <span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;bright_red&quot;</span><span class="p">,</span>          <span class="c1"># Slightly softer errors (e.g., validation)</span>
+        <span class="s2">&quot;debug&quot;</span><span class="p">:</span> <span class="s2">&quot;dim magenta&quot;</span><span class="p">,</span>         <span class="c1"># Debug/log output</span>
+
+        <span class="c1"># === Headers &amp; Structural Elements ===</span>
+        <span class="s2">&quot;header&quot;</span><span class="p">:</span> <span class="s2">&quot;bold bright_blue&quot;</span><span class="p">,</span>   <span class="c1"># Section titles, field labels</span>
+        <span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;bold bright_blue&quot;</span><span class="p">,</span>    <span class="c1"># Field labels in detail views</span>
+        <span class="s2">&quot;subheader&quot;</span><span class="p">:</span> <span class="s2">&quot;bold cyan&quot;</span><span class="p">,</span>       <span class="c1"># Secondary headers</span>
+        <span class="s2">&quot;footer&quot;</span><span class="p">:</span> <span class="s2">&quot;dim white&quot;</span><span class="p">,</span>          <span class="c1"># Copyright, status lines</span>
+
+        <span class="c1"># === Data Presentation ===</span>
+        <span class="s2">&quot;key&quot;</span><span class="p">:</span> <span class="s2">&quot;bold white&quot;</span><span class="p">,</span>            <span class="c1"># Field names / keys in detail views</span>
+        <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;white&quot;</span><span class="p">,</span>               <span class="c1"># Regular values</span>
+        <span class="s2">&quot;value_highlight&quot;</span><span class="p">:</span> <span class="s2">&quot;bold bright_cyan&quot;</span><span class="p">,</span>  <span class="c1"># Important values (e.g., title, ID)</span>
+        <span class="s2">&quot;value_dim&quot;</span><span class="p">:</span> <span class="s2">&quot;dim white&quot;</span><span class="p">,</span>       <span class="c1"># Less important metadata</span>
+        <span class="s2">&quot;value_missing&quot;</span><span class="p">:</span> <span class="s2">&quot;dim italic&quot;</span><span class="p">,</span>  <span class="c1"># &quot;—&quot; or &quot;None&quot; placeholders</span>
+
+        <span class="c1"># === Tables &amp; Lists ===</span>
+        <span class="s2">&quot;table_header&quot;</span><span class="p">:</span> <span class="s2">&quot;bold bright_blue on grey15&quot;</span><span class="p">,</span>  <span class="c1"># Table column headers</span>
+        <span class="s2">&quot;row_data&quot;</span><span class="p">:</span> <span class="s2">&quot;white&quot;</span><span class="p">,</span>            <span class="c1"># Regular data rows</span>
+        <span class="s2">&quot;row_even&quot;</span><span class="p">:</span> <span class="s2">&quot;white&quot;</span><span class="p">,</span>            <span class="c1"># Even rows</span>
+        <span class="s2">&quot;row_odd&quot;</span><span class="p">:</span> <span class="s2">&quot;bright_white&quot;</span><span class="p">,</span>      <span class="c1"># Odd rows (slight contrast)</span>
+        <span class="s2">&quot;row_emphasized&quot;</span><span class="p">:</span> <span class="s2">&quot;bold bright_cyan&quot;</span><span class="p">,</span>  <span class="c1"># Highlighted rows/cells</span>
+        <span class="s2">&quot;row_metadata&quot;</span><span class="p">:</span> <span class="s2">&quot;dim white&quot;</span><span class="p">,</span>    <span class="c1"># Secondary info in tables</span>
+
+        <span class="c1"># === Tags &amp; Badges ===</span>
+        <span class="s2">&quot;tag&quot;</span><span class="p">:</span> <span class="s2">&quot;reverse black on bright_white&quot;</span><span class="p">,</span>     <span class="c1"># General tags</span>
+        <span class="s2">&quot;tag_coin&quot;</span><span class="p">:</span> <span class="s2">&quot;reverse black on bright_yellow&quot;</span><span class="p">,</span>   <span class="c1"># Category-specific if desired</span>
+        <span class="s2">&quot;tag_banknote&quot;</span><span class="p">:</span> <span class="s2">&quot;reverse black on bright_green&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;tag_exonumia&quot;</span><span class="p">:</span> <span class="s2">&quot;reverse black on bright_magenta&quot;</span><span class="p">,</span>
+
+        <span class="c1"># === Links &amp; Interactive ===</span>
+        <span class="s2">&quot;link&quot;</span><span class="p">:</span> <span class="s2">&quot;underline bright_cyan&quot;</span><span class="p">,</span>   <span class="c1"># Hyperlinks</span>
+        <span class="s2">&quot;link_hover&quot;</span><span class="p">:</span> <span class="s2">&quot;bold underline bright_cyan&quot;</span><span class="p">,</span>
+
+        <span class="c1"># === Specific Numista Semantics ===</span>
+        <span class="s2">&quot;demonetized&quot;</span><span class="p">:</span> <span class="s2">&quot;bold red&quot;</span><span class="p">,</span>         <span class="c1"># Demonetized status</span>
+        <span class="s2">&quot;current_currency&quot;</span><span class="p">:</span> <span class="s2">&quot;bold green&quot;</span><span class="p">,</span>  <span class="c1"># Still legal tender</span>
+        <span class="s2">&quot;cache_hit&quot;</span><span class="p">:</span> <span class="s2">&quot;dim green&quot;</span><span class="p">,</span>          <span class="c1"># ♻ Cached indicator</span>
+        <span class="s2">&quot;cache_miss&quot;</span><span class="p">:</span> <span class="s2">&quot;dim yellow&quot;</span><span class="p">,</span>        <span class="c1"># Fresh fetch indicator</span>
+
+        <span class="c1"># === Panel Borders (optional overrides) ===</span>
+        <span class="s2">&quot;panel_info&quot;</span><span class="p">:</span> <span class="s2">&quot;bright_cyan&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;panel_success&quot;</span><span class="p">:</span> <span class="s2">&quot;bright_green&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;panel_warning&quot;</span><span class="p">:</span> <span class="s2">&quot;bright_yellow&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;panel_danger&quot;</span><span class="p">:</span> <span class="s2">&quot;bright_red&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;panel_default&quot;</span><span class="p">:</span> <span class="s2">&quot;bright_blue&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="n">LICENSE_TEXT</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;MIT License - See LICENSE file for details&quot;</span>
+    <span class="n">PANEL_WIDTH</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">120</span>
+    <span class="n">VERSION</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">__version__</span>
+    <span class="n">PANEL_BOX_STYLE</span><span class="p">:</span> <span class="n">box</span><span class="o">.</span><span class="n">Box</span> <span class="o">=</span> <span class="n">box</span><span class="o">.</span><span class="n">ROUNDED</span>
+    <span class="n">PADDING_DIMENSIONS</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">PANEL_TITLE_ALIGN</span><span class="p">:</span> <span class="n">AlignMethod</span> <span class="o">=</span> <span class="s2">&quot;left&quot;</span>
+    <span class="n">PANEL_HIGHLIGHT</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">TABLE_BOX_STYLE</span><span class="p">:</span> <span class="n">box</span><span class="o">.</span><span class="n">Box</span> <span class="o">=</span> <span class="n">box</span><span class="o">.</span><span class="n">SIMPLE</span>
+    <span class="n">TABLE_EXPAND</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">TABLE_HIGHLIGHT</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">TABLE_SHOW_TITLE</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">TABLE_SHOW_HEADER</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="c1"># === Cached Rich Objects (lazy initialization) ===</span>
+    <span class="n">_console</span><span class="p">:</span> <span class="n">Console</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">_theme</span><span class="p">:</span> <span class="n">Theme</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1"># === Public Accessors ===</span>
+<div class="viewcode-block" id="CLISettings.theme">
+<a class="viewcode-back" href="../../../api/cli.html#numistalib.cli.theme.CLISettings.theme">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">theme</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Theme</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the configured CLI theme (cached).&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_theme</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">_theme</span> <span class="o">=</span> <span class="n">Theme</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">CLI_THEME</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_theme</span></div>
+
+
+<div class="viewcode-block" id="CLISettings.console">
+<a class="viewcode-back" href="../../../api/cli.html#numistalib.cli.theme.CLISettings.console">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">console</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Console</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a Console instance with CLI theme applied (cached singleton).&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_console</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">_console</span> <span class="o">=</span> <span class="n">Console</span><span class="p">(</span>
+                <span class="n">theme</span><span class="o">=</span><span class="bp">cls</span><span class="o">.</span><span class="n">theme</span><span class="p">(),</span>
+                <span class="n">markup</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">highlight</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">width</span><span class="o">=</span><span class="bp">cls</span><span class="o">.</span><span class="n">PANEL_WIDTH</span><span class="p">,</span>
+                <span class="n">soft_wrap</span><span class="o">=</span><span class="kc">True</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_console</span></div>
+
+
+<div class="viewcode-block" id="CLISettings.version_info">
+<a class="viewcode-back" href="../../../api/cli.html#numistalib.cli.theme.CLISettings.version_info">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">version_info</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return formatted version string.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;numistalib CLI v</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="n">VERSION</span><span class="si">}</span><span class="s2"> (Python </span><span class="si">{</span><span class="n">version_info</span><span class="o">.</span><span class="n">major</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">version_info</span><span class="o">.</span><span class="n">minor</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">version_info</span><span class="o">.</span><span class="n">micro</span><span class="si">}</span><span class="s2">)&quot;</span></div>
+
+
+    <span class="c1"># === Table Helpers ===</span>
+<div class="viewcode-block" id="CLISettings.create_table">
+<a class="viewcode-back" href="../../../api/cli.html#numistalib.cli.theme.CLISettings.create_table">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_table</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">include_cache_column</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Table</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a consistently styled table.&quot;&quot;&quot;</span>
+        <span class="n">table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span>
+            <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span>
+            <span class="n">show_header</span><span class="o">=</span><span class="bp">cls</span><span class="o">.</span><span class="n">TABLE_SHOW_HEADER</span><span class="p">,</span>
+            <span class="n">header_style</span><span class="o">=</span><span class="s2">&quot;table_header&quot;</span><span class="p">,</span>
+            <span class="n">title_justify</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">,</span>
+            <span class="n">row_styles</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;row_even&quot;</span><span class="p">,</span> <span class="s2">&quot;row_odd&quot;</span><span class="p">],</span>
+            <span class="n">expand</span><span class="o">=</span><span class="bp">cls</span><span class="o">.</span><span class="n">TABLE_EXPAND</span><span class="p">,</span>
+            <span class="n">box</span><span class="o">=</span><span class="bp">cls</span><span class="o">.</span><span class="n">TABLE_BOX_STYLE</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">include_cache_column</span><span class="p">:</span>
+            <span class="n">table</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="s2">&quot;Cache&quot;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;row_metadata&quot;</span><span class="p">,</span> <span class="n">no_wrap</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">table</span></div>
+
+
+<div class="viewcode-block" id="CLISettings.infer_columns_from_model">
+<a class="viewcode-back" href="../../../api/cli.html#numistalib.cli.theme.CLISettings.infer_columns_from_model">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">infer_columns_from_model</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">model_cls</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">],</span>
+        <span class="n">include_cache</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Infer concise column names from a Pydantic model.</span>
+
+<span class="sd">        Uses short, humanized field names instead of verbose descriptions.</span>
+<span class="sd">        This prevents overly long headers when model field descriptions</span>
+<span class="sd">        contain detailed documentation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">columns</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="n">include_cache</span><span class="p">:</span>
+            <span class="n">columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Cache&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Use model_fields for reliable ordering</span>
+        <span class="k">for</span> <span class="n">field_name</span><span class="p">,</span> <span class="n">field_info</span> <span class="ow">in</span> <span class="n">model_cls</span><span class="o">.</span><span class="n">model_fields</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="c1"># Always use short, humanized field name</span>
+            <span class="n">column_name</span> <span class="o">=</span> <span class="n">field_name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">title</span><span class="p">()</span>
+            <span class="n">columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">column_name</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">columns</span></div>
+
+
+<div class="viewcode-block" id="CLISettings.add_columns_to_table">
+<a class="viewcode-back" href="../../../api/cli.html#numistalib.cli.theme.CLISettings.add_columns_to_table">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_columns_to_table</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">table</span><span class="p">:</span> <span class="n">Table</span><span class="p">,</span>
+        <span class="n">columns</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add columns with appropriate styling based on semantic meaning.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">columns</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">column</span> <span class="o">==</span> <span class="s2">&quot;Cache&quot;</span><span class="p">:</span>
+                <span class="n">style</span> <span class="o">=</span> <span class="s2">&quot;row_metadata&quot;</span>
+                <span class="n">no_wrap</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">elif</span> <span class="n">column</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;ID&quot;</span><span class="p">,</span> <span class="s2">&quot;Id&quot;</span><span class="p">,</span> <span class="s2">&quot;Numista ID&quot;</span><span class="p">,</span> <span class="s2">&quot;Numista Id&quot;</span><span class="p">,</span> <span class="s2">&quot;Code&quot;</span><span class="p">}:</span>
+                <span class="n">style</span> <span class="o">=</span> <span class="s2">&quot;row_emphasized&quot;</span>
+                <span class="n">no_wrap</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">style</span> <span class="o">=</span> <span class="s2">&quot;row_data&quot;</span>
+                <span class="n">no_wrap</span> <span class="o">=</span> <span class="kc">False</span>
+
+            <span class="n">table</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="n">column</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">,</span> <span class="n">no_wrap</span><span class="o">=</span><span class="n">no_wrap</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CLISettings.add_model_row">
+<a class="viewcode-back" href="../../../api/cli.html#numistalib.cli.theme.CLISettings.add_model_row">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_model_row</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">table</span><span class="p">:</span> <span class="n">Table</span><span class="p">,</span>
+        <span class="n">model_instance</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">,</span>
+        <span class="n">cache_indicator</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a row from a Pydantic model instance, respecting column order.&quot;&quot;&quot;</span>
+        <span class="n">values</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># Determine if first column is cache</span>
+        <span class="n">has_cache_column</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">columns</span> <span class="ow">and</span> <span class="n">table</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">header</span> <span class="o">==</span> <span class="s2">&quot;Cache&quot;</span>
+        <span class="k">if</span> <span class="n">has_cache_column</span><span class="p">:</span>
+            <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cache_indicator</span><span class="p">)</span>
+
+        <span class="c1"># Add values in model_fields order (consistent with inferred columns)</span>
+        <span class="k">for</span> <span class="n">field_name</span> <span class="ow">in</span> <span class="nb">type</span><span class="p">(</span><span class="n">model_instance</span><span class="p">)</span><span class="o">.</span><span class="n">model_fields</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">field_name</span> <span class="ow">in</span> <span class="n">model_instance</span><span class="o">.</span><span class="n">model_fields_set</span> <span class="ow">or</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">model_instance</span><span class="p">,</span> <span class="n">field_name</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">model_instance</span><span class="p">,</span> <span class="n">field_name</span><span class="p">)</span>
+                <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+        <span class="n">table</span><span class="o">.</span><span class="n">add_row</span><span class="p">(</span><span class="o">*</span><span class="n">values</span><span class="p">)</span></div>
+
+
+    <span class="c1"># === Convenience Panel Helpers ===</span>
+    <span class="c1"># pyright</span>
+<div class="viewcode-block" id="CLISettings.panel">
+<a class="viewcode-back" href="../../../api/cli.html#numistalib.cli.theme.CLISettings.panel">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">panel</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">content</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Any</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">box</span><span class="p">:</span> <span class="n">box</span><span class="o">.</span><span class="n">Box</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">padding</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">expand</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">title_align</span><span class="p">:</span> <span class="n">AlignMethod</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Panel</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a consistently styled Panel.&quot;&quot;&quot;</span>
+        <span class="c1"># Ignore unsupported kwargs that may be intended for child renderables</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;overflow&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Panel</span><span class="p">(</span>
+            <span class="n">content</span><span class="p">,</span>
+            <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span>
+            <span class="n">box</span><span class="o">=</span><span class="n">box</span> <span class="k">if</span> <span class="n">box</span> <span class="k">else</span> <span class="bp">cls</span><span class="o">.</span><span class="n">PANEL_BOX_STYLE</span><span class="p">,</span>
+            <span class="n">width</span><span class="o">=</span><span class="n">width</span> <span class="k">if</span> <span class="n">width</span> <span class="k">else</span> <span class="bp">cls</span><span class="o">.</span><span class="n">PANEL_WIDTH</span><span class="p">,</span>
+            <span class="n">expand</span><span class="o">=</span><span class="n">expand</span> <span class="k">if</span> <span class="n">expand</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="n">padding</span><span class="o">=</span><span class="n">padding</span> <span class="k">if</span> <span class="n">padding</span> <span class="k">else</span> <span class="bp">cls</span><span class="o">.</span><span class="n">PADDING_DIMENSIONS</span><span class="p">,</span>
+            <span class="n">title_align</span><span class="o">=</span><span class="n">title_align</span> <span class="k">if</span> <span class="n">title_align</span> <span class="k">else</span> <span class="bp">cls</span><span class="o">.</span><span class="n">PANEL_TITLE_ALIGN</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CLISettings.format_detail_field">
+<a class="viewcode-back" href="../../../api/cli.html#numistalib.cli.theme.CLISettings.format_detail_field">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">format_detail_field</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">label</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Format a single detail field (wrapper around base formatting).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        label : str</span>
+<span class="sd">            Field label/key</span>
+<span class="sd">        value : Any</span>
+<span class="sd">            Field value</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        str</span>
+<span class="sd">            Formatted field string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Delegate to model&#39;s format_field pattern via simple template</span>
+        <span class="c1"># This exists for backward compatibility with CLI code expecting this method</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;[label]</span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s2">:[/label] </span><span class="si">{</span><span class="n">value</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="ow">is</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="kc">None</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;—&#39;</span><span class="si">}</span><span class="s2">&quot;</span></div>
+
+
+<div class="viewcode-block" id="CLISettings.format_detail_fields">
+<a class="viewcode-back" href="../../../api/cli.html#numistalib.cli.theme.CLISettings.format_detail_fields">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">format_detail_fields</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">field_list</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Format multiple detail fields (wrapper for consistent CLI usage).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        field_list : list[tuple[str, Any]]</span>
+<span class="sd">            List of (label, value) tuples</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        str</span>
+<span class="sd">            Newline-joined formatted fields</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Simple wrapper that delegates field formatting</span>
+        <span class="c1"># Real formatting happens in model&#39;s format_fields() method</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">field_list</span><span class="p">:</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">format_detail_field</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Andy Wells.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

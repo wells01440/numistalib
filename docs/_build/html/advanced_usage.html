@@ -1,0 +1,740 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Advanced Usage &mdash; numistalib 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=01f34227"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Client" href="api/client.html" />
+    <link rel="prev" title="Configuration" href="configuration.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            numistalib
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cli_guide.html">CLI Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="python_api_guide.html">Python API Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Advanced Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#async-operations">§ 1 Async Operations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#concurrent-requests">Concurrent Requests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#paginated-search-with-processing">Paginated Search with Processing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#batch-operations">§ 2 Batch Operations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#bulk-data-collection">Bulk Data Collection</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#custom-caching-strategies">§ 3 Custom Caching Strategies</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#per-query-cache-invalidation">Per-Query Cache Invalidation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cache-warming">Cache Warming</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#error-handling-patterns">§ 4 Error Handling Patterns</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#retry-with-custom-logic">Retry with Custom Logic</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#graceful-degradation">Graceful Degradation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#data-processing">§ 5 Data Processing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#export-to-csv">Export to CSV</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#export-to-json">Export to JSON</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#collection-management">§ 6 Collection Management</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#bulk-add-to-collection">Bulk Add to Collection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#collection-statistics">Collection Statistics</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#image-search-optimization">§ 7 Image Search Optimization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#batch-image-search">Batch Image Search</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#rate-limit-management">§ 8 Rate Limit Management</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#dynamic-rate-limiting">Dynamic Rate Limiting</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#testing-patterns">§ 9 Testing Patterns</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#mock-responses">Mock Responses</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#performance-optimization">§ 10 Performance Optimization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#connection-pooling">Connection Pooling</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#next-steps">Next Steps</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api/client.html">Client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/services.html">Services</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/models.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/cli.html">CLI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Additional Information</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing to numistalib</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="DEPLOYMENT.html">Documentation Deployment Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="README.html">numistalib Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">numistalib</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Advanced Usage</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/advanced_usage.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="advanced-usage">
+<h1>Advanced Usage<a class="headerlink" href="#advanced-usage" title="Link to this heading"></a></h1>
+<p>Advanced techniques and patterns for using numistalib.</p>
+<section id="async-operations">
+<h2>§ 1 Async Operations<a class="headerlink" href="#async-operations" title="Link to this heading"></a></h2>
+<section id="concurrent-requests">
+<h3>Concurrent Requests<a class="headerlink" href="#concurrent-requests" title="Link to this heading"></a></h3>
+<p>Make multiple requests concurrently:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.client</span><span class="w"> </span><span class="kn">import</span> <span class="n">NumistaApiClient</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">Settings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.services.types.service</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypeService</span>
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_multiple_types</span><span class="p">(</span><span class="n">type_ids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]):</span>
+    <span class="n">settings</span> <span class="o">=</span> <span class="n">Settings</span><span class="p">()</span>
+    
+    <span class="k">async</span> <span class="k">with</span> <span class="n">NumistaApiClient</span><span class="p">(</span><span class="n">settings</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+        <span class="n">service</span> <span class="o">=</span> <span class="n">TypeService</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
+        
+        <span class="c1"># Fetch all types concurrently</span>
+        <span class="n">tasks</span> <span class="o">=</span> <span class="p">[</span><span class="n">service</span><span class="o">.</span><span class="n">get_type_async</span><span class="p">(</span><span class="n">type_id</span><span class="p">)</span> <span class="k">for</span> <span class="n">type_id</span> <span class="ow">in</span> <span class="n">type_ids</span><span class="p">]</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="o">*</span><span class="n">tasks</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">results</span>
+
+<span class="c1"># Usage</span>
+<span class="n">type_ids</span> <span class="o">=</span> <span class="p">[</span><span class="mi">95420</span><span class="p">,</span> <span class="mi">95421</span><span class="p">,</span> <span class="mi">95422</span><span class="p">]</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">get_multiple_types</span><span class="p">(</span><span class="n">type_ids</span><span class="p">))</span>
+
+<span class="k">for</span> <span class="n">coin_type</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">coin_type</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">coin_type</span><span class="o">.</span><span class="n">weight</span><span class="si">}</span><span class="s2">g&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="paginated-search-with-processing">
+<h3>Paginated Search with Processing<a class="headerlink" href="#paginated-search-with-processing" title="Link to this heading"></a></h3>
+<p>Process results as they arrive:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.client</span><span class="w"> </span><span class="kn">import</span> <span class="n">NumistaApiClient</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.services.types.service</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypeService</span>
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">process_all_french_coins</span><span class="p">():</span>
+    <span class="n">settings</span> <span class="o">=</span> <span class="n">Settings</span><span class="p">()</span>
+    
+    <span class="k">async</span> <span class="k">with</span> <span class="n">NumistaApiClient</span><span class="p">(</span><span class="n">settings</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+        <span class="n">service</span> <span class="o">=</span> <span class="n">TypeService</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
+        
+        <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">async</span> <span class="k">for</span> <span class="n">coin_type</span> <span class="ow">in</span> <span class="n">service</span><span class="o">.</span><span class="n">paginated_search</span><span class="p">(</span>
+            <span class="n">issuer</span><span class="o">=</span><span class="s2">&quot;france&quot;</span><span class="p">,</span>
+            <span class="n">category</span><span class="o">=</span><span class="s2">&quot;coin&quot;</span>
+        <span class="p">):</span>
+            <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+            
+            <span class="c1"># Process each result</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2">. </span><span class="si">{</span><span class="n">coin_type</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">coin_type</span><span class="o">.</span><span class="n">min_year</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+            
+            <span class="c1"># Could also fetch details asynchronously</span>
+            <span class="c1"># details = await service.get_type_async(coin_type.numista_id)</span>
+        
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Total: </span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2"> coins&quot;</span><span class="p">)</span>
+
+<span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">process_all_french_coins</span><span class="p">())</span>
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="batch-operations">
+<h2>§ 2 Batch Operations<a class="headerlink" href="#batch-operations" title="Link to this heading"></a></h2>
+<section id="bulk-data-collection">
+<h3>Bulk Data Collection<a class="headerlink" href="#bulk-data-collection" title="Link to this heading"></a></h3>
+<p>Collect data for multiple entities:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.client</span><span class="w"> </span><span class="kn">import</span> <span class="n">NumistaApiClient</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.services.types.service</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypeService</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.services.issues.service</span><span class="w"> </span><span class="kn">import</span> <span class="n">IssuesService</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.services.prices.service</span><span class="w"> </span><span class="kn">import</span> <span class="n">PricesService</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">collect_complete_dataset</span><span class="p">(</span><span class="n">type_ids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]):</span>
+    <span class="n">settings</span> <span class="o">=</span> <span class="n">Settings</span><span class="p">()</span>
+    <span class="n">dataset</span> <span class="o">=</span> <span class="p">[]</span>
+    
+    <span class="k">with</span> <span class="n">NumistaApiClient</span><span class="p">(</span><span class="n">settings</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+        <span class="n">types_service</span> <span class="o">=</span> <span class="n">TypeService</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
+        <span class="n">issues_service</span> <span class="o">=</span> <span class="n">IssuesService</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
+        <span class="n">prices_service</span> <span class="o">=</span> <span class="n">PricesService</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
+        
+        <span class="k">for</span> <span class="n">type_id</span> <span class="ow">in</span> <span class="n">type_ids</span><span class="p">:</span>
+            <span class="c1"># Get type</span>
+            <span class="n">coin_type</span> <span class="o">=</span> <span class="n">types_service</span><span class="o">.</span><span class="n">get_type</span><span class="p">(</span><span class="n">type_id</span><span class="p">)</span>
+            
+            <span class="c1"># Get issues</span>
+            <span class="n">issues</span> <span class="o">=</span> <span class="n">issues_service</span><span class="o">.</span><span class="n">get_issues</span><span class="p">(</span><span class="n">type_id</span><span class="p">)</span>
+            
+            <span class="c1"># Get prices for each issue</span>
+            <span class="n">prices_data</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">issue</span> <span class="ow">in</span> <span class="n">issues</span><span class="p">:</span>
+                <span class="n">prices</span> <span class="o">=</span> <span class="n">prices_service</span><span class="o">.</span><span class="n">get_prices</span><span class="p">(</span>
+                    <span class="n">type_id</span><span class="p">,</span>
+                    <span class="n">issue</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                    <span class="n">currency</span><span class="o">=</span><span class="s2">&quot;USD&quot;</span>
+                <span class="p">)</span>
+                <span class="n">prices_data</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                    <span class="s2">&quot;issue_id&quot;</span><span class="p">:</span> <span class="n">issue</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                    <span class="s2">&quot;prices&quot;</span><span class="p">:</span> <span class="n">prices</span>
+                <span class="p">})</span>
+            
+            <span class="n">dataset</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">coin_type</span><span class="p">,</span>
+                <span class="s2">&quot;issues&quot;</span><span class="p">:</span> <span class="n">issues</span><span class="p">,</span>
+                <span class="s2">&quot;prices&quot;</span><span class="p">:</span> <span class="n">prices_data</span>
+            <span class="p">})</span>
+    
+    <span class="k">return</span> <span class="n">dataset</span>
+
+<span class="c1"># Collect data for specific types</span>
+<span class="n">type_ids</span> <span class="o">=</span> <span class="p">[</span><span class="mi">95420</span><span class="p">,</span> <span class="mi">95421</span><span class="p">,</span> <span class="mi">95422</span><span class="p">]</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">collect_complete_dataset</span><span class="p">(</span><span class="n">type_ids</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="custom-caching-strategies">
+<h2>§ 3 Custom Caching Strategies<a class="headerlink" href="#custom-caching-strategies" title="Link to this heading"></a></h2>
+<section id="per-query-cache-invalidation">
+<h3>Per-Query Cache Invalidation<a class="headerlink" href="#per-query-cache-invalidation" title="Link to this heading"></a></h3>
+<p>Selectively invalidate cache entries:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">Settings</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">clear_cache_for_type</span><span class="p">(</span><span class="n">type_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Clear cached data for a specific type.&quot;&quot;&quot;</span>
+    <span class="n">settings</span> <span class="o">=</span> <span class="n">Settings</span><span class="p">()</span>
+    <span class="n">cache_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">cache_dir</span><span class="p">)</span>
+    
+    <span class="c1"># Cache keys follow a pattern</span>
+    <span class="c1"># This is implementation-specific and may change</span>
+    <span class="n">pattern</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;*type*</span><span class="si">{</span><span class="n">type_id</span><span class="si">}</span><span class="s2">*&quot;</span>
+    
+    <span class="k">for</span> <span class="n">cache_file</span> <span class="ow">in</span> <span class="n">cache_dir</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">pattern</span><span class="p">):</span>
+        <span class="n">cache_file</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cleared: </span><span class="si">{</span><span class="n">cache_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Usage</span>
+<span class="n">clear_cache_for_type</span><span class="p">(</span><span class="mi">95420</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="cache-warming">
+<h3>Cache Warming<a class="headerlink" href="#cache-warming" title="Link to this heading"></a></h3>
+<p>Pre-populate cache for commonly accessed data:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.client</span><span class="w"> </span><span class="kn">import</span> <span class="n">NumistaApiClient</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.services.types.service</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypeService</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">warm_cache</span><span class="p">(</span><span class="n">type_ids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Pre-fetch and cache type data.&quot;&quot;&quot;</span>
+    <span class="n">settings</span> <span class="o">=</span> <span class="n">Settings</span><span class="p">()</span>
+    
+    <span class="k">with</span> <span class="n">NumistaApiClient</span><span class="p">(</span><span class="n">settings</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+        <span class="n">service</span> <span class="o">=</span> <span class="n">TypeService</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
+        
+        <span class="k">for</span> <span class="n">type_id</span> <span class="ow">in</span> <span class="n">type_ids</span><span class="p">:</span>
+            <span class="n">coin_type</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">get_type</span><span class="p">(</span><span class="n">type_id</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cached: </span><span class="si">{</span><span class="n">coin_type</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Warm cache for popular types</span>
+<span class="n">popular_types</span> <span class="o">=</span> <span class="p">[</span><span class="mi">95420</span><span class="p">,</span> <span class="mi">95421</span><span class="p">,</span> <span class="mi">95422</span><span class="p">,</span> <span class="mi">95423</span><span class="p">]</span>
+<span class="n">warm_cache</span><span class="p">(</span><span class="n">popular_types</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="error-handling-patterns">
+<h2>§ 4 Error Handling Patterns<a class="headerlink" href="#error-handling-patterns" title="Link to this heading"></a></h2>
+<section id="retry-with-custom-logic">
+<h3>Retry with Custom Logic<a class="headerlink" href="#retry-with-custom-logic" title="Link to this heading"></a></h3>
+<p>Implement custom retry behavior:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.client</span><span class="w"> </span><span class="kn">import</span> <span class="n">NumistaApiClient</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.models.errors</span><span class="w"> </span><span class="kn">import</span> <span class="n">NumistaError</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">get_type_with_retry</span><span class="p">(</span><span class="n">type_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">max_attempts</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get type with custom retry logic.&quot;&quot;&quot;</span>
+    <span class="n">settings</span> <span class="o">=</span> <span class="n">Settings</span><span class="p">()</span>
+    
+    <span class="k">for</span> <span class="n">attempt</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_attempts</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">NumistaApiClient</span><span class="p">(</span><span class="n">settings</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+                <span class="n">service</span> <span class="o">=</span> <span class="n">TypeService</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">service</span><span class="o">.</span><span class="n">get_type</span><span class="p">(</span><span class="n">type_id</span><span class="p">)</span>
+        
+        <span class="k">except</span> <span class="n">NumistaError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">429</span><span class="p">:</span>  <span class="c1"># Rate limit</span>
+                <span class="n">wait_time</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">**</span> <span class="n">attempt</span>  <span class="c1"># Exponential backoff</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Rate limited. Waiting </span><span class="si">{</span><span class="n">wait_time</span><span class="si">}</span><span class="s2">s...&quot;</span><span class="p">)</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">wait_time</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">e</span><span class="o">.</span><span class="n">status_code</span> <span class="o">&gt;=</span> <span class="mi">500</span><span class="p">:</span>  <span class="c1"># Server error</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Server error. Attempt </span><span class="si">{</span><span class="n">attempt</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">max_attempts</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span>  <span class="c1"># Don&#39;t retry client errors</span>
+    
+    <span class="k">raise</span> <span class="n">NumistaError</span><span class="p">(</span><span class="s2">&quot;Max retries exceeded&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="graceful-degradation">
+<h3>Graceful Degradation<a class="headerlink" href="#graceful-degradation" title="Link to this heading"></a></h3>
+<p>Handle missing data gracefully:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.client</span><span class="w"> </span><span class="kn">import</span> <span class="n">NumistaApiClient</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.services.types.service</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypeService</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.models.errors</span><span class="w"> </span><span class="kn">import</span> <span class="n">NumistaError</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">get_type_safe</span><span class="p">(</span><span class="n">type_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get type with safe fallbacks.&quot;&quot;&quot;</span>
+    <span class="n">settings</span> <span class="o">=</span> <span class="n">Settings</span><span class="p">()</span>
+    
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">NumistaApiClient</span><span class="p">(</span><span class="n">settings</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+            <span class="n">service</span> <span class="o">=</span> <span class="n">TypeService</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
+            <span class="n">coin_type</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">get_type</span><span class="p">(</span><span class="n">type_id</span><span class="p">)</span>
+            
+            <span class="k">return</span> <span class="p">{</span>
+                <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">coin_type</span><span class="o">.</span><span class="n">numista_id</span><span class="p">,</span>
+                <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="n">coin_type</span><span class="o">.</span><span class="n">title</span> <span class="ow">or</span> <span class="s2">&quot;Unknown&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;weight&quot;</span><span class="p">:</span> <span class="n">coin_type</span><span class="o">.</span><span class="n">weight</span> <span class="ow">or</span> <span class="mf">0.0</span><span class="p">,</span>
+                <span class="s2">&quot;composition&quot;</span><span class="p">:</span> <span class="n">coin_type</span><span class="o">.</span><span class="n">composition</span> <span class="ow">or</span> <span class="s2">&quot;Unknown&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;issuer&quot;</span><span class="p">:</span> <span class="n">coin_type</span><span class="o">.</span><span class="n">issuer</span> <span class="ow">or</span> <span class="s2">&quot;Unknown&quot;</span><span class="p">,</span>
+            <span class="p">}</span>
+    
+    <span class="k">except</span> <span class="n">NumistaError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error fetching type </span><span class="si">{</span><span class="n">type_id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">type_id</span><span class="p">,</span>
+            <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Error loading data&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+        <span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="data-processing">
+<h2>§ 5 Data Processing<a class="headerlink" href="#data-processing" title="Link to this heading"></a></h2>
+<section id="export-to-csv">
+<h3>Export to CSV<a class="headerlink" href="#export-to-csv" title="Link to this heading"></a></h3>
+<p>Export search results to CSV:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">csv</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.client</span><span class="w"> </span><span class="kn">import</span> <span class="n">NumistaApiClient</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.services.types.service</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypeService</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">export_search_to_csv</span><span class="p">(</span><span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Export search results to CSV.&quot;&quot;&quot;</span>
+    <span class="n">settings</span> <span class="o">=</span> <span class="n">Settings</span><span class="p">()</span>
+    
+    <span class="k">with</span> <span class="n">NumistaApiClient</span><span class="p">(</span><span class="n">settings</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+        <span class="n">service</span> <span class="o">=</span> <span class="n">TypeService</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">search_types</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+        
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_file</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">writer</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">DictWriter</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">fieldnames</span><span class="o">=</span><span class="p">[</span>
+                <span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;title&#39;</span><span class="p">,</span> <span class="s1">&#39;issuer&#39;</span><span class="p">,</span> <span class="s1">&#39;min_year&#39;</span><span class="p">,</span> <span class="s1">&#39;max_year&#39;</span><span class="p">,</span> <span class="s1">&#39;category&#39;</span>
+            <span class="p">])</span>
+            <span class="n">writer</span><span class="o">.</span><span class="n">writeheader</span><span class="p">()</span>
+            
+            <span class="k">for</span> <span class="n">coin_type</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+                <span class="n">writer</span><span class="o">.</span><span class="n">writerow</span><span class="p">({</span>
+                    <span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="n">coin_type</span><span class="o">.</span><span class="n">numista_id</span><span class="p">,</span>
+                    <span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="n">coin_type</span><span class="o">.</span><span class="n">title</span><span class="p">,</span>
+                    <span class="s1">&#39;issuer&#39;</span><span class="p">:</span> <span class="n">coin_type</span><span class="o">.</span><span class="n">issuer</span><span class="p">,</span>
+                    <span class="s1">&#39;min_year&#39;</span><span class="p">:</span> <span class="n">coin_type</span><span class="o">.</span><span class="n">min_year</span><span class="p">,</span>
+                    <span class="s1">&#39;max_year&#39;</span><span class="p">:</span> <span class="n">coin_type</span><span class="o">.</span><span class="n">max_year</span><span class="p">,</span>
+                    <span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="n">coin_type</span><span class="o">.</span><span class="n">category</span>
+                <span class="p">})</span>
+    
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exported </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">)</span><span class="si">}</span><span class="s2"> results to </span><span class="si">{</span><span class="n">output_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Usage</span>
+<span class="n">export_search_to_csv</span><span class="p">(</span><span class="s2">&quot;dollar&quot;</span><span class="p">,</span> <span class="s2">&quot;dollar_coins.csv&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="export-to-json">
+<h3>Export to JSON<a class="headerlink" href="#export-to-json" title="Link to this heading"></a></h3>
+<p>Export complete type data:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.client</span><span class="w"> </span><span class="kn">import</span> <span class="n">NumistaApiClient</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.services.types.service</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypeService</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">export_type_to_json</span><span class="p">(</span><span class="n">type_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">output_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Export complete type data to JSON.&quot;&quot;&quot;</span>
+    <span class="n">settings</span> <span class="o">=</span> <span class="n">Settings</span><span class="p">()</span>
+    
+    <span class="k">with</span> <span class="n">NumistaApiClient</span><span class="p">(</span><span class="n">settings</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+        <span class="n">service</span> <span class="o">=</span> <span class="n">TypeService</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
+        <span class="n">coin_type</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">get_type</span><span class="p">(</span><span class="n">type_id</span><span class="p">)</span>
+        
+        <span class="c1"># Convert to dict (Pydantic model)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">coin_type</span><span class="o">.</span><span class="n">model_dump</span><span class="p">()</span>
+        
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_file</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exported type </span><span class="si">{</span><span class="n">type_id</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">output_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Usage</span>
+<span class="n">export_type_to_json</span><span class="p">(</span><span class="mi">95420</span><span class="p">,</span> <span class="s2">&quot;type_95420.json&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="collection-management">
+<h2>§ 6 Collection Management<a class="headerlink" href="#collection-management" title="Link to this heading"></a></h2>
+<section id="bulk-add-to-collection">
+<h3>Bulk Add to Collection<a class="headerlink" href="#bulk-add-to-collection" title="Link to this heading"></a></h3>
+<p>Add multiple items to a collection:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.client</span><span class="w"> </span><span class="kn">import</span> <span class="n">NumistaApiClient</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.services.collections.service</span><span class="w"> </span><span class="kn">import</span> <span class="n">CollectionsService</span>
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">bulk_add_to_collection</span><span class="p">(</span>
+    <span class="n">user_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">type_ids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+    <span class="n">collection_id</span><span class="p">:</span> <span class="nb">int</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Add multiple types to a collection.&quot;&quot;&quot;</span>
+    <span class="n">settings</span> <span class="o">=</span> <span class="n">Settings</span><span class="p">()</span>
+    
+    <span class="k">async</span> <span class="k">with</span> <span class="n">NumistaApiClient</span><span class="p">(</span><span class="n">settings</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+        <span class="n">service</span> <span class="o">=</span> <span class="n">CollectionsService</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
+        
+        <span class="k">for</span> <span class="n">type_id</span> <span class="ow">in</span> <span class="n">type_ids</span><span class="p">:</span>
+            <span class="k">await</span> <span class="n">service</span><span class="o">.</span><span class="n">add_collected_item_async</span><span class="p">(</span>
+                <span class="n">user_id</span><span class="o">=</span><span class="n">user_id</span><span class="p">,</span>
+                <span class="n">type_id</span><span class="o">=</span><span class="n">type_id</span><span class="p">,</span>
+                <span class="n">collection_id</span><span class="o">=</span><span class="n">collection_id</span><span class="p">,</span>
+                <span class="n">quantity</span><span class="o">=</span><span class="mi">1</span>
+            <span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Added type </span><span class="si">{</span><span class="n">type_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Usage</span>
+<span class="n">type_ids</span> <span class="o">=</span> <span class="p">[</span><span class="mi">95420</span><span class="p">,</span> <span class="mi">95421</span><span class="p">,</span> <span class="mi">95422</span><span class="p">]</span>
+<span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">bulk_add_to_collection</span><span class="p">(</span>
+    <span class="n">user_id</span><span class="o">=</span><span class="mi">12345</span><span class="p">,</span>
+    <span class="n">type_ids</span><span class="o">=</span><span class="n">type_ids</span><span class="p">,</span>
+    <span class="n">collection_id</span><span class="o">=</span><span class="mi">67890</span>
+<span class="p">))</span>
+</pre></div>
+</div>
+</section>
+<section id="collection-statistics">
+<h3>Collection Statistics<a class="headerlink" href="#collection-statistics" title="Link to this heading"></a></h3>
+<p>Analyze your collection:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.client</span><span class="w"> </span><span class="kn">import</span> <span class="n">NumistaApiClient</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.services.collections.service</span><span class="w"> </span><span class="kn">import</span> <span class="n">CollectionsService</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">analyze_collection</span><span class="p">(</span><span class="n">user_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Analyze collection statistics.&quot;&quot;&quot;</span>
+    <span class="n">settings</span> <span class="o">=</span> <span class="n">Settings</span><span class="p">()</span>
+    
+    <span class="k">with</span> <span class="n">NumistaApiClient</span><span class="p">(</span><span class="n">settings</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+        <span class="n">service</span> <span class="o">=</span> <span class="n">CollectionsService</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
+        <span class="n">items</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">get_collected_items</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span>
+        
+        <span class="c1"># Statistics</span>
+        <span class="n">total_items</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">items</span><span class="p">)</span>
+        <span class="n">total_quantity</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">quantity</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">items</span><span class="p">)</span>
+        
+        <span class="c1"># By grade</span>
+        <span class="n">grades</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">grade</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">items</span> <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">grade</span><span class="p">)</span>
+        
+        <span class="c1"># By category</span>
+        <span class="n">categories</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">category</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">items</span> <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">category</span><span class="p">)</span>
+        
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Collection Statistics for User </span><span class="si">{</span><span class="n">user_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total unique items: </span><span class="si">{</span><span class="n">total_items</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total quantity: </span><span class="si">{</span><span class="n">total_quantity</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">By Grade:&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">grade</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">grades</span><span class="o">.</span><span class="n">most_common</span><span class="p">():</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">grade</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">By Category:&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">category</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">categories</span><span class="o">.</span><span class="n">most_common</span><span class="p">():</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">category</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Usage</span>
+<span class="n">analyze_collection</span><span class="p">(</span><span class="mi">12345</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="image-search-optimization">
+<h2>§ 7 Image Search Optimization<a class="headerlink" href="#image-search-optimization" title="Link to this heading"></a></h2>
+<section id="batch-image-search">
+<h3>Batch Image Search<a class="headerlink" href="#batch-image-search" title="Link to this heading"></a></h3>
+<p>Search multiple images:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.client</span><span class="w"> </span><span class="kn">import</span> <span class="n">NumistaApiClient</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.services.image_search.service</span><span class="w"> </span><span class="kn">import</span> <span class="n">ImageSearchService</span>
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">batch_image_search</span><span class="p">(</span><span class="n">image_paths</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Path</span><span class="p">]):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Search multiple images concurrently.&quot;&quot;&quot;</span>
+    <span class="n">settings</span> <span class="o">=</span> <span class="n">Settings</span><span class="p">()</span>
+    
+    <span class="k">async</span> <span class="k">with</span> <span class="n">NumistaApiClient</span><span class="p">(</span><span class="n">settings</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+        <span class="n">service</span> <span class="o">=</span> <span class="n">ImageSearchService</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
+        
+        <span class="n">tasks</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">service</span><span class="o">.</span><span class="n">search_by_image_async</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">image_paths</span>
+        <span class="p">]</span>
+        
+        <span class="n">results</span> <span class="o">=</span> <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="o">*</span><span class="n">tasks</span><span class="p">)</span>
+        
+        <span class="k">for</span> <span class="n">path</span><span class="p">,</span> <span class="n">matches</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">image_paths</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">path</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">match</span> <span class="ow">in</span> <span class="n">matches</span><span class="p">[:</span><span class="mi">3</span><span class="p">]:</span>  <span class="c1"># Top 3</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">match</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s2"> (score: </span><span class="si">{</span><span class="n">match</span><span class="o">.</span><span class="n">score</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+
+<span class="c1"># Usage</span>
+<span class="n">images</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;coin1.jpg&quot;</span><span class="p">),</span>
+    <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;coin2.jpg&quot;</span><span class="p">),</span>
+    <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;coin3.jpg&quot;</span><span class="p">)</span>
+<span class="p">]</span>
+<span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">batch_image_search</span><span class="p">(</span><span class="n">images</span><span class="p">))</span>
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="rate-limit-management">
+<h2>§ 8 Rate Limit Management<a class="headerlink" href="#rate-limit-management" title="Link to this heading"></a></h2>
+<section id="dynamic-rate-limiting">
+<h3>Dynamic Rate Limiting<a class="headerlink" href="#dynamic-rate-limiting" title="Link to this heading"></a></h3>
+<p>Adjust rate limits based on response headers:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.client</span><span class="w"> </span><span class="kn">import</span> <span class="n">NumistaApiClient</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">Settings</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">AdaptiveClient</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Client with adaptive rate limiting.&quot;&quot;&quot;</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">settings</span> <span class="o">=</span> <span class="n">Settings</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_limit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">rate_limit</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">search_types</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Search with adaptive rate limiting.&quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">NumistaApiClient</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+            <span class="n">service</span> <span class="o">=</span> <span class="n">TypeService</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
+            
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">results</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">search_types</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">results</span>
+            
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">if</span> <span class="s2">&quot;429&quot;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">):</span>  <span class="c1"># Rate limit error</span>
+                    <span class="c1"># Reduce rate limit</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">current_limit</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_limit</span> <span class="o">-</span> <span class="mi">5</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">settings</span> <span class="o">=</span> <span class="n">Settings</span><span class="p">(</span><span class="n">rate_limit</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">current_limit</span><span class="p">)</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Reduced rate limit to </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">current_limit</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">raise</span>
+
+<span class="c1"># Usage</span>
+<span class="n">client</span> <span class="o">=</span> <span class="n">AdaptiveClient</span><span class="p">()</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">search_types</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="s2">&quot;dollar&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="testing-patterns">
+<h2>§ 9 Testing Patterns<a class="headerlink" href="#testing-patterns" title="Link to this heading"></a></h2>
+<section id="mock-responses">
+<h3>Mock Responses<a class="headerlink" href="#mock-responses" title="Link to this heading"></a></h3>
+<p>Test code using numistalib:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">unittest.mock</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mock</span><span class="p">,</span> <span class="n">patch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.models.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypeBasic</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">test_my_function</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Test function that uses numistalib.&quot;&quot;&quot;</span>
+    
+    <span class="c1"># Create mock type</span>
+    <span class="n">mock_type</span> <span class="o">=</span> <span class="n">TypeBasic</span><span class="p">(</span>
+        <span class="n">numista_id</span><span class="o">=</span><span class="mi">95420</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Test Coin&quot;</span><span class="p">,</span>
+        <span class="n">issuer</span><span class="o">=</span><span class="s2">&quot;france&quot;</span><span class="p">,</span>
+        <span class="n">min_year</span><span class="o">=</span><span class="mi">2020</span><span class="p">,</span>
+        <span class="n">max_year</span><span class="o">=</span><span class="mi">2020</span><span class="p">,</span>
+        <span class="n">category</span><span class="o">=</span><span class="s2">&quot;coin&quot;</span>
+    <span class="p">)</span>
+    
+    <span class="c1"># Mock service</span>
+    <span class="k">with</span> <span class="n">patch</span><span class="p">(</span><span class="s1">&#39;numistalib.services.types.service.TypeService&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">MockService</span><span class="p">:</span>
+        <span class="n">mock_service</span> <span class="o">=</span> <span class="n">MockService</span><span class="o">.</span><span class="n">return_value</span>
+        <span class="n">mock_service</span><span class="o">.</span><span class="n">search_types</span><span class="o">.</span><span class="n">return_value</span> <span class="o">=</span> <span class="p">[</span><span class="n">mock_type</span><span class="p">]</span>
+        
+        <span class="c1"># Test your code</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">mock_service</span><span class="o">.</span><span class="n">search_types</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="s2">&quot;test&quot;</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+        <span class="k">assert</span> <span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">title</span> <span class="o">==</span> <span class="s2">&quot;Test Coin&quot;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="performance-optimization">
+<h2>§ 10 Performance Optimization<a class="headerlink" href="#performance-optimization" title="Link to this heading"></a></h2>
+<section id="connection-pooling">
+<h3>Connection Pooling<a class="headerlink" href="#connection-pooling" title="Link to this heading"></a></h3>
+<p>Reuse client connections:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.client</span><span class="w"> </span><span class="kn">import</span> <span class="n">NumistaApiClient</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.services.types.service</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypeService</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">CoinDatabase</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Persistent client for batch operations.&quot;&quot;&quot;</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">settings</span> <span class="o">=</span> <span class="n">Settings</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span> <span class="o">=</span> <span class="n">NumistaApiClient</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="fm">__enter__</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="fm">__exit__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">type_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="n">service</span> <span class="o">=</span> <span class="n">TypeService</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">service</span><span class="o">.</span><span class="n">get_type</span><span class="p">(</span><span class="n">type_id</span><span class="p">)</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">search</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">service</span> <span class="o">=</span> <span class="n">TypeService</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">service</span><span class="o">.</span><span class="n">search_types</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+<span class="c1"># Usage - single client for multiple operations</span>
+<span class="k">with</span> <span class="n">CoinDatabase</span><span class="p">()</span> <span class="k">as</span> <span class="n">db</span><span class="p">:</span>
+    <span class="c1"># Reuses connection</span>
+    <span class="n">results1</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="s2">&quot;dollar&quot;</span><span class="p">)</span>
+    <span class="n">results2</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="s2">&quot;euro&quot;</span><span class="p">)</span>
+    <span class="n">type1</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">get_type</span><span class="p">(</span><span class="mi">95420</span><span class="p">)</span>
+    <span class="n">type2</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">get_type</span><span class="p">(</span><span class="mi">95421</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="next-steps">
+<h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="api/services.html"><span class="std std-doc">API Reference</span></a> - Full API documentation</p></li>
+<li><p><a class="reference internal" href="contributing.html"><span class="std std-doc">Contributing</span></a> - Contribute to numistalib</p></li>
+<li><p><a class="reference internal" href="architecture.html"><span class="std std-doc">Architecture</span></a> - Understand internals</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="configuration.html" class="btn btn-neutral float-left" title="Configuration" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="api/client.html" class="btn btn-neutral float-right" title="Client" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Andy Wells.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
