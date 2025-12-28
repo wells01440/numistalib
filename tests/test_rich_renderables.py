@@ -124,7 +124,7 @@ class TestRichField:
         formatted = model.status.format_field("Status", width=20)
         assert "Status:" in formatted
         assert "Active" in formatted
-        assert len(formatted.split(":")[0]) + len(":") <= 20  # noqa: PLR2004
+        assert len(formatted.split(":")[0]) + len(":") <= 20
 
         # Test with custom fill character
         formatted_dots = model.status.format_field("Status", width=20, fill_char=".")

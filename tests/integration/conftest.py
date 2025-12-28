@@ -23,8 +23,8 @@ from numistalib.cli.mints import register_mints_commands
 from numistalib.cli.prices import register_prices_commands
 from numistalib.cli.types import register_types_commands
 from numistalib.cli.users import register_users_commands
-from numistalib.config import Settings
 from numistalib.client import close_all_clients
+from numistalib.config import Settings
 
 # Load .env file if it exists
 env_file = Path(__file__).parent.parent.parent / ".env"

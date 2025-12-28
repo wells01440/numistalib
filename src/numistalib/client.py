@@ -150,12 +150,9 @@ class NumistaClient(ABC):
         }
 
         logger.debug(f"{self.__class__.__name__} initialized")
-        try:
-            _CLIENT_REGISTRY.append(self)
-        except Exception:
-            pass
+        _CLIENT_REGISTRY.append(self)
 
-    def close(self) -> None:  # noqa: D401
+    def close(self) -> None:
         """Close underlying HTTP client if open. Subclasses may override."""
         try:
             if self._client and hasattr(self._client, "close"):
@@ -310,7 +307,7 @@ class NumistaClientSync(NumistaClient):
                 storage.close()
         finally:
             if hasattr(self, "_storage"):
-                setattr(self, "_storage", None)
+                self._storage = None  # type: ignore[misc]
 
     def get(self, url: str, **kwargs: Any) -> NumistaResponse:
         """Make a synchronous GET request.
@@ -347,10 +344,7 @@ class NumistaClientSync(NumistaClient):
             self._client = None
         storage = self.storage
         if hasattr(storage, "close"):
-            try:
-                storage.close()  # type: ignore[attr-defined]
-            except Exception:
-                pass
+            storage.close()  # type: ignore[attr-defined]
 
     def post(self, url: str, **kwargs: Any) -> NumistaResponse:
         """Make a synchronous POST request.
@@ -615,6 +609,17 @@ class NumistaClientAsync(NumistaClient):
                 await asyncio.sleep(self._jitter_delay(attempt))
         raise AssertionError("Unreachable: loop must return or raise")
 
+    async def aclose(self) -> None:
+        """Close underlying HTTP client and storage if open."""
+        try:
+            if self._client and hasattr(self._client, "aclose"):
+                await self._client.aclose()  # type: ignore[attr-defined]
+        finally:
+            self._client = None
+        storage = self.storage
+        if hasattr(storage, "close"):
+            await storage.close()  # type: ignore[attr-defined]
+
 
 class NumistaApiClient:
     """Unified client factory for both sync and async HTTP operations.
@@ -647,32 +652,26 @@ class NumistaApiClient:
         return self
 
     def __exit__(self, *args: object) -> None:
-        try:
-            if isinstance(self._client, NumistaClientSync):
-                self._client.close()
-            else:
-                # Best-effort async close in sync context
-                loop = asyncio.new_event_loop()
-                try:
-                    loop.run_until_complete(self._client.aclose())  # type: ignore[attr-defined]
-                finally:
-                    loop.close()
-        except Exception:
-            pass
+        if isinstance(self._client, NumistaClientSync):
+            self._client.close()
+        else:
+            # Best-effort async close in sync context
+            loop = asyncio.new_event_loop()
+            try:
+                loop.run_until_complete(self._client.aclose())  # type: ignore[attr-defined]
+            finally:
+                loop.close()
 
 
 def close_all_clients() -> None:
     """Close all registered clients and clear registry (tests teardown)."""
     for client in list(_CLIENT_REGISTRY):
-        try:
-            if isinstance(client, NumistaClientSync):
-                client.close()
-            else:
-                loop = asyncio.new_event_loop()
-                try:
-                    loop.run_until_complete(client.aclose())  # type: ignore[attr-defined]
-                finally:
-                    loop.close()
-        except Exception:
-            pass
+        if isinstance(client, NumistaClientSync):
+            client.close()
+        else:
+            loop = asyncio.new_event_loop()
+            try:
+                loop.run_until_complete(client.aclose())  # type: ignore[attr-defined]
+            finally:
+                loop.close()
     _CLIENT_REGISTRY.clear()
