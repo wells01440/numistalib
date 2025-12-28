@@ -18,7 +18,7 @@ class Issuer(NumistaBaseModel):
     """Issuing country or territory record from Numista.
 
     Represents a country, territory, or entity that issues coins,
-    banknotes, or exonumia. Supports recurse, hierarchical 
+    banknotes, or exonumia. Supports recurse, hierarchical
     relationships.
 
     Parameters
@@ -72,14 +72,14 @@ class Issuer(NumistaBaseModel):
     @classmethod
     def render_table(cls, items: list[Self], title: str = "") -> Table:
         """Generate table for issuer list.
-        
+
         Parameters
         ----------
         items : list[Self]
             List of Issuer instances
         title : str
             Table title
-            
+
         Returns
         -------
         Table
@@ -91,7 +91,7 @@ class Issuer(NumistaBaseModel):
         table.add_column("Level", no_wrap=True, justify="right")
         table.add_column("Parent", no_wrap=False)
         table.add_column("Wikidata", no_wrap=True)
-        
+
         for issuer in items:
             table.add_row(
                 issuer.code,
@@ -100,7 +100,7 @@ class Issuer(NumistaBaseModel):
                 issuer.parent_name or "",
                 issuer.wikidata_id or ""
             )
-        
+
         return table
 
     def to_dict(self) -> dict[str, object]:

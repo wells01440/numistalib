@@ -4,7 +4,6 @@ Tests:
 - issuers (list all issuers)
 """
 
-import pytest
 from click.testing import CliRunner
 
 

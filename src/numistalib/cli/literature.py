@@ -6,6 +6,7 @@ from numistalib.cli.theme import CLISettings
 
 # pyright: reportUnusedFunction = false
 
+
 def register_literature_commands(parent: click.Group) -> None:
     """Register literature commands with parent group.
 
@@ -22,7 +23,7 @@ def register_literature_commands(parent: click.Group) -> None:
 
     @literature.command(name="get")
     @click.argument("publication_id", type=int)
-    def literature_get(publication_id: int) -> None:
+    def literature_get(publication_id: int) -> None:  # noqa: ARG001
         """Get details about a publication.
 
         Examples:

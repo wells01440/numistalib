@@ -1,7 +1,5 @@
 """Pytest configuration and fixtures for numistalib tests."""
 
-from typing import AsyncIterator
-from typing import Iterator
 from unittest.mock import Mock
 
 import pytest
@@ -82,5 +80,3 @@ def mock_async_client_factory() -> type[NumistaApiClient]:
             return Mock()
 
     return MockAsyncNumistaApiClient
-
-

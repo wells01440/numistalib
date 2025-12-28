@@ -9,6 +9,7 @@ from numistalib.config import Settings
 
 # pyright: reportUnusedFunction = false
 
+
 def register_config_commands(parent: click.Group) -> None:
     """Register config commands with parent group.
 

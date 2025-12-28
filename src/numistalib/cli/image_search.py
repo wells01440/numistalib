@@ -6,6 +6,7 @@ from numistalib.cli.theme import CLISettings
 
 # pyright: reportUnusedFunction = false
 
+
 def register_image_search_commands(parent: click.Group) -> None:
     """Register image search commands with parent group.
 

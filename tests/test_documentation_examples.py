@@ -3,7 +3,7 @@
 Validates that code examples in README and docs execute correctly.
 """
 
-# ruff: noqa: PLR6301, PLR2004
+# ruff: noqa: PLR2004
 # mypy: disable-error-code="attr-defined,call-arg,arg-type"
 
 from unittest.mock import patch

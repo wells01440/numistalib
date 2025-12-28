@@ -5,7 +5,6 @@ Tests:
 - config list
 """
 
-import pytest
 from click.testing import CliRunner
 
 

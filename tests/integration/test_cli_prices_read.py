@@ -4,7 +4,6 @@ Tests:
 - prices (get prices for a type/issue)
 """
 
-import pytest
 from click.testing import CliRunner
 
 
