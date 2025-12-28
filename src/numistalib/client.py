@@ -659,6 +659,9 @@ class NumistaApiClient:
             loop = asyncio.new_event_loop()
             try:
                 loop.run_until_complete(self._client.aclose())  # type: ignore[attr-defined]
+            except RuntimeError:
+                # Suppress "Event loop is closed" during cleanup
+                pass
             finally:
                 loop.close()
 
@@ -672,6 +675,9 @@ def close_all_clients() -> None:
             loop = asyncio.new_event_loop()
             try:
                 loop.run_until_complete(client.aclose())  # type: ignore[attr-defined]
+            except RuntimeError:
+                # Suppress "Event loop is closed" during cleanup
+                pass
             finally:
                 loop.close()
     _CLIENT_REGISTRY.clear()
