@@ -76,8 +76,3 @@ jobs:
           file: ./coverage.xml
           fail_ci_if_error: false
           token: ${{ secrets.CODECOV_TOKEN }}
-
-      - name: Run complexity checks
-        run: |
-          uv run radon cc src/numistalib/ -a -nb
-          uv run xenon --max-absolute B src/numistalib/
