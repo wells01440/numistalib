@@ -45,6 +45,7 @@ DEFAULT_BACKOFF_BASE = 0.5  # seconds
 DEFAULT_BACKOFF_MAX = 5.0   # seconds
 
 logger = logging.getLogger(LOGGER_NAME)
+_CLIENT_REGISTRY: list["NumistaClient"] = []
 
 
 class SyncClientProtocol(Protocol):
@@ -149,6 +150,18 @@ class NumistaClient(ABC):
         }
 
         logger.debug(f"{self.__class__.__name__} initialized")
+        try:
+            _CLIENT_REGISTRY.append(self)
+        except Exception:
+            pass
+
+    def close(self) -> None:  # noqa: D401
+        """Close underlying HTTP client if open. Subclasses may override."""
+        try:
+            if self._client and hasattr(self._client, "close"):
+                self._client.close()  # type: ignore[attr-defined]
+        finally:
+            self._client = None
 
     @property
     def database_full_path(self) -> str:
@@ -273,13 +286,31 @@ class NumistaClientSync(NumistaClient):
         """
         if self._client is None:
             policy = FilterPolicy(request_filters=[CacheAllGETRequests()])
+            storage = self.storage
             self._client = SyncCacheClient(
-                storage=self.storage,
+                storage=storage,
                 headers=self.headers,
                 timeout=self.timeout,
                 policy=policy,
             )
+            # Keep a reference to storage so we can close it explicitly
+            self._storage = storage  # type: ignore[attr-defined]
         return self._client  # type: ignore
+
+    def close(self) -> None:
+        try:
+            if self._client and hasattr(self._client, "close"):
+                self._client.close()  # type: ignore[attr-defined]
+        finally:
+            self._client = None
+        # Close hishel storage connection if present
+        storage = getattr(self, "_storage", None)
+        try:
+            if storage is not None and hasattr(storage, "close"):
+                storage.close()
+        finally:
+            if hasattr(self, "_storage"):
+                setattr(self, "_storage", None)
 
     def get(self, url: str, **kwargs: Any) -> NumistaResponse:
         """Make a synchronous GET request.
@@ -307,6 +338,19 @@ class NumistaClientSync(NumistaClient):
                     raise err
                 time.sleep(self._jitter_delay(attempt))
         raise AssertionError("Unreachable: retry loop must return or raise")
+
+    async def aclose(self) -> None:
+        try:
+            if self._client and hasattr(self._client, "aclose"):
+                await self._client.aclose()  # type: ignore[attr-defined]
+        finally:
+            self._client = None
+        storage = self.storage
+        if hasattr(storage, "close"):
+            try:
+                storage.close()  # type: ignore[attr-defined]
+            except Exception:
+                pass
 
     def post(self, url: str, **kwargs: Any) -> NumistaResponse:
         """Make a synchronous POST request.
@@ -598,3 +642,37 @@ class NumistaApiClient:
     def raw_client(self) -> NumistaClientSync | NumistaClientAsync:
         """Get the underlying raw client."""
         return self._client
+
+    def __enter__(self) -> "NumistaApiClient":
+        return self
+
+    def __exit__(self, *args: object) -> None:
+        try:
+            if isinstance(self._client, NumistaClientSync):
+                self._client.close()
+            else:
+                # Best-effort async close in sync context
+                loop = asyncio.new_event_loop()
+                try:
+                    loop.run_until_complete(self._client.aclose())  # type: ignore[attr-defined]
+                finally:
+                    loop.close()
+        except Exception:
+            pass
+
+
+def close_all_clients() -> None:
+    """Close all registered clients and clear registry (tests teardown)."""
+    for client in list(_CLIENT_REGISTRY):
+        try:
+            if isinstance(client, NumistaClientSync):
+                client.close()
+            else:
+                loop = asyncio.new_event_loop()
+                try:
+                    loop.run_until_complete(client.aclose())  # type: ignore[attr-defined]
+                finally:
+                    loop.close()
+        except Exception:
+            pass
+    _CLIENT_REGISTRY.clear()
