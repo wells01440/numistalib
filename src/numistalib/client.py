@@ -307,7 +307,7 @@ class NumistaClientSync(NumistaClient):
                 storage.close()
         finally:
             if hasattr(self, "_storage"):
-                self._storage = None  # type: ignore[misc]
+                self._storage = None  # type: ignore[assignment]
 
     def get(self, url: str, **kwargs: Any) -> NumistaResponse:
         """Make a synchronous GET request.
