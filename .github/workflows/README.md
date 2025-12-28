@@ -11,7 +11,7 @@ Automated quality enforcement and release management per **AGENTS.md §9**.
 **Purpose**: Automated versioning, changelog management, and PyPI publishing.
 
 **Triggers**:
-0. Push to `master` branch (modifying `src/**`, `pyproject.toml`, or `CHANGELOG.md`)
+0. Push to `main` branch (modifying `src/**`, `pyproject.toml`, or `CHANGELOG.md`)
 
 1. Manual dispatch with version bump type selection (patch/minor/major)
 
@@ -39,7 +39,7 @@ Automated quality enforcement and release management per **AGENTS.md §9**.
 
 **Automatic Release**:
 
-- Merging to `master` with source changes triggers patch version bump
+- Merging to `main` with source changes triggers patch version bump
 - Update `CHANGELOG.md` `[Unreleased]` section before merging
 
 ### § 1.1 docstring-agent.yml (Future)
@@ -58,7 +58,7 @@ Automated quality enforcement and release management per **AGENTS.md §9**.
 1. Add trusted publisher:
    - **PyPI Project Name**: `numistalib`
    - **Owner**: `wells01440`
-   - **Repository**: `numista-lib`
+    - **Repository**: `numistalib`
    - **Workflow**: `release.yml`
    - **Environment**: (leave blank)
 
@@ -92,7 +92,7 @@ If trusted publishing unavailable:
    - Bug Z
    ```
 
-2. **Create PR** - Open pull request to `master`
+2. **Create PR** - Open pull request to `main`
 3. **Merge** - Workflow auto-triggers:
    - Bumps patch version (0.1.0 → 0.1.1)
    - Moves `[Unreleased]` → `[0.1.1] - 2025-12-28`

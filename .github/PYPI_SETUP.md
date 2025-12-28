@@ -43,9 +43,11 @@ uv run twine upload dist/numistalib-0.1.0*
    ```
    PyPI Project Name: numistalib
    Owner: wells01440
-   Repository name: numista-lib
+
+  Repository name: numistalib
    Workflow name: release.yml
    Environment name: (leave blank)
+
    ```
 
 3. Click "Add"
@@ -65,14 +67,14 @@ If trusted publishing doesn't work:
 
 0. Go to <https://pypi.org/manage/account/token/>
 1. Click "Add API token"
-2. Token name: `GitHub Actions - numista-lib`
+2. Token name: `GitHub Actions - numistalib`
 3. Scope: "Project: numistalib"
 4. Click "Add token"
 5. **Copy token immediately** (shown only once)
 
 ### § 3.1 Add to GitHub Secrets
 
-0. Go to <https://github.com/wells01440/numista-lib/settings/secrets/actions>
+0. Go to <https://github.com/wells01440/numistalib/settings/secrets/actions>
 1. Click "New repository secret"
 2. Name: `PYPI_API_TOKEN`
 3. Value: (paste token from § 3.0)
@@ -95,7 +97,7 @@ Remove the `id-token: write` permission from the top.
 
 ### § 4.0 Manual Test
 
-0. Go to <https://github.com/wells01440/numista-lib/actions/workflows/release.yml>
+0. Go to <https://github.com/wells01440/numistalib/actions/workflows/release.yml>
 1. Click "Run workflow"
 2. Branch: `main`
 3. Bump type: `patch`
@@ -110,7 +112,7 @@ Remove the `id-token: write` permission from the top.
 
 **Check GitHub Release**:
 
-- <https://github.com/wells01440/numista-lib/releases>
+- <https://github.com/wells01440/numistalib/releases>
 
 **Test Install**:
 
@@ -136,7 +138,7 @@ python -c "import numistalib; print(numistalib.__version__)"
 **Problem**: `403 Forbidden` or authentication failure.
 
 **Solution**:
-0. **Trusted publishing**: Verify exact spelling of `numistalib`, `wells01440`, `numista-lib`, `release.yml`
+0. **Trusted publishing**: Verify exact spelling of `numistalib`, `wells01440`, `numistalib`, `release.yml`
 
 1. **API token**: Regenerate token, ensure it's scoped to project, update secret
 
@@ -149,7 +151,7 @@ python -c "import numistalib; print(numistalib.__version__)"
 ```bash
 # Bump version again
 uv run bump2version patch  # 0.1.1 → 0.1.2
-git push origin master --follow-tags
+git push origin main --follow-tags
 ```
 
 ### § 5.3 Tag Exists

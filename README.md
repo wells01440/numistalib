@@ -1,6 +1,6 @@
-# Numista-lib
+# numistalib
 
-[![Documentation Status](https://readthedocs.org/projects/numistalib/badge/?version=latest)](https://numistalib.readthedocs.io/en/latest/?badge=latest)
+[![Documentation Status](https://readthedocs.org/projects/numistalib/badge/?version=latest)](https://numistalib.readthedocs.io/en/latest/?badge=latest) [![PyPI](https://img.shields.io/pypi/v/numistalib)](https://pypi.org/project/numistalib/) [![Release](https://github.com/wells01440/numistalib/actions/workflows/release.yml/badge.svg)](https://github.com/wells01440/numistalib/actions/workflows/release.yml)
 
 Python wrapper for the Numista API with caching, rate limiting, and retry logic.
 
@@ -53,42 +53,42 @@ uv pip install -e .
 ### Search for types
 
 ```bash
-numista-lib types search -q "dollar"
-numista-lib types search --issuer united-states --year 2020
+numistalib types search -q "dollar"
+numistalib types search --issuer united-states --year 2020
 ```
 
 ### Get type details
 
 ```bash
-numista-lib types get 95420
+numistalib types get 95420
 ```
 
 ### List catalogues
 
 ```bash
-numista-lib catalogues
+numistalib catalogues
 ```
 
 ### List issuers
 
 ```bash
-numista-lib issuers
-numista-lib issuers --lang es
+numistalib issuers
+numistalib issuers --lang es
 ```
 
 ### Configuration management
 
 ```bash
-numista-lib config list
-numista-lib config get cache_dir
+numistalib config list
+numistalib config get cache_dir
 ```
 
 ## Python Usage
 
 ```python
-from numista_lib.client import NumistaApiClient
-from numista_lib.config import Settings, logger
-from numista_lib.services import TypeService
+from numistalib.client import NumistaApiClient
+from numistalib.config import Settings, logger
+from numistalib.services import TypeService
 
 settings = Settings()
 
@@ -131,8 +131,8 @@ uv run pyright src/
 ### Check complexity
 
 ```bash
-uv run radon cc src/numista_lib/ -a -nb
-uv run xenon --max-absolute B src/numista_lib/
+uv run radon cc src/numistalib/ -a -nb
+uv run xenon --max-absolute B src/numistalib/
 ```
 
 ## Architecture
@@ -141,12 +141,23 @@ uv run xenon --max-absolute B src/numista_lib/
 - **client.py**: HTTP client with caching, rate limiting, retry
 - **services/**: Business logic for each API endpoint
 - **config.py**: Settings management with Pydantic BaseSettings
-- **cli.py**: Click-based command-line interface
+- **cli/**: Click-based command-line interface
 
 ## License
 
 MIT License - see [license.txt](license.txt)
 
 ## Contributing
+
+## Legal & Attribution
+
+- Unofficial: This library is an independent, community project and is not affiliated with Numista.
+- Attribution: Numista is a trademark/service of Numista. Please attribute Numista when data from their API is displayed.
+- Terms: Users of this library must comply with Numista’s published terms. Review:
+  - Conditions of use: <https://en.numista.com/conditions.php>
+  - Legal information: <https://en.numista.com/legal.php>
+  - Pricing API terms: <https://en.numista.com/api/pricing.php>
+- Data usage: Follow Numista’s guidelines for caching, rate limits, and redistribution. If Numista’s terms restrict retention or republication (especially for pricing), configure your deployments accordingly.
+- Rate limiting: This project implements conservative rate limiting by default; always respect Numista’s limits and guidance.
 
 See [AGENTS.md](AGENTS.md) for coding standards and guidelines.

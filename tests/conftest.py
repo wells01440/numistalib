@@ -1,4 +1,4 @@
-"""Pytest configuration and fixtures for numista-lib tests."""
+"""Pytest configuration and fixtures for numistalib tests."""
 
 from unittest.mock import Mock
 

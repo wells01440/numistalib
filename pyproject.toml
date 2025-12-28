@@ -21,6 +21,17 @@ dependencies = [
     "beautifulsoup4>=4.14.3",
 ]
 
+[project.urls]
+Homepage = "https://github.com/wells01440/numistalib"
+Documentation = "https://numistalib.readthedocs.io/"
+Source = "https://github.com/wells01440/numistalib"
+Issues = "https://github.com/wells01440/numistalib/issues"
+Changelog = "https://github.com/wells01440/numistalib/blob/main/CHANGELOG.md"
+NumistaAPI = "https://en.numista.com/api/doc/index.php"
+NumistaConditions = "https://en.numista.com/conditions.php"
+NumistaLegal = "https://en.numista.com/legal.php"
+NumistaPricingAPI = "https://en.numista.com/api/pricing.php"
+
 [project.scripts]
 numistalib = "numistalib.cli:main"
 

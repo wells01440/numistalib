@@ -24,8 +24,8 @@ powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/wells01440/numista-lib.git
-cd numista-lib
+git clone https://github.com/wells01440/numistalib.git
+cd numistalib
 ```
 
 1. Install dependencies:

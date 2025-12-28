@@ -18,8 +18,8 @@ Thank you for your interest in contributing! This guide will help you get starte
 1. Clone your fork:
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/numista-lib.git
-cd numista-lib
+git clone https://github.com/YOUR_USERNAME/numistalib.git
+cd numistalib
 ```
 
 1. Install dependencies:
@@ -45,7 +45,7 @@ uv run pytest tests/ -v
 
 ## § 2 Code Standards
 
-### § 2.1 Mandatory Reading
+### § 2.1 Important Reading
 
 **Read `AGENTS.md` (in repository root) completely before contributing.**
 
@@ -59,7 +59,7 @@ This file contains authoritative coding standards including:
 
 ### § 2.2 Key Rules
 
-- Use `uv` for all tooling
+- Use `uv` for tooling
 - Full type hints everywhere
 - NumPy-style docstrings for public APIs
 - Cognitive complexity ≤ 10

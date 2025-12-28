@@ -1,4 +1,4 @@
-"""Integration tests for numista-lib CLI.
+"""Integration tests for numistalib CLI.
 
 Integration tests make real API calls and require:
 - Valid NUMISTA_API_KEY environment variable

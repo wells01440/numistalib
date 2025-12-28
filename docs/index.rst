@@ -29,10 +29,21 @@ Welcome to **numistalib**, a Python wrapper for the Numista API with built-in ca
 
    architecture
    contributing
-   ../CHANGELOG
+   CHANGELOG
    license
    DEPLOYMENT
    README
+
+Legal & Attribution
+-------------------
+
+This project is an unofficial wrapper and is not affiliated with Numista. When using data from Numista, provide appropriate attribution and comply with Numista’s terms:
+
+- Conditions of use: https://en.numista.com/conditions.php
+- Legal information: https://en.numista.com/legal.php
+- Pricing API terms: https://en.numista.com/api/pricing.php
+
+Respect Numista’s rate limits and any restrictions on caching or redistribution, particularly for pricing data.
 
 Features
 --------

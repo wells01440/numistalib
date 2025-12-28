@@ -71,10 +71,16 @@ alembic/versions/*.pyc
 # Build artifacts
 *.whl
 
-# Numista-lib specific
+# numistalib specific
 .env
 .cache/
 *.hishel
 
 .serena/
 .ruff_cache/
+
+# Documentation builds
+docs/_build/
+docs/_static/
+docs/_templates/
+*.doctree

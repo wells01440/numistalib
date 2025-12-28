@@ -1,6 +1,20 @@
-"""Base service class for all Numista services.
+"""Numista API client implementations (sync/async) with caching and throttling.
 
-Provides common logging, dependency injection, and cache indicators.
+Provides common logging, dependency injection, cache indicators, rate limiting,
+and retry logic for resilient access to the Numista API.
+
+Legal & Attribution
+-------------------
+
+- Unofficial: This library is an independent, community project and is not affiliated with Numista.
+- Attribution: Numista is a trademark/service of Numista. Please attribute Numista where their data is displayed.
+- Compliance: Users must comply with Numista's published terms:
+    * Conditions of use: https://en.numista.com/conditions.php
+    * Legal information: https://en.numista.com/legal.php
+    * Pricing API terms: https://en.numista.com/api/pricing.php
+- Pricing API usage considerations: Respect any restrictions on caching, retention, and redistribution of
+    pricing responses. Prefer conservative TTLs and avoid republishing price data beyond what Numista permits.
+    Configure cache behavior (`default_ttl`, `refresh_ttl_on_access`) accordingly.
 """
 
 import asyncio

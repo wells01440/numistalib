@@ -1,8 +1,16 @@
 # numistalib Documentation
 
-This directory contains comprehensive documentation for numistalib.
+This directory contains comprehensive documentation for numistalib, production-ready and configured for ReadTheDocs deployment.
 
-## Documentation Structure
+## § 0 Build Status
+
+✅ **Clean Build - Zero Warnings**
+
+- Sphinx build: ✅ 0 warnings
+- Python package: ✅ Built successfully
+- RTD configuration: ✅ Ready
+
+## § 1 Documentation Structure
 
 ### User Guides
 
@@ -17,7 +25,7 @@ This directory contains comprehensive documentation for numistalib.
 
 - [architecture.md](architecture.md) - System architecture and design
 - [contributing.md](contributing.md) - Contribution guidelines
-- [changelog.md](changelog.md) - Version history
+- [CHANGELOG.md](CHANGELOG.md) - Version history
 - [license.md](license.md) - MIT License
 
 ### API Reference
@@ -32,7 +40,7 @@ This directory contains comprehensive documentation for numistalib.
 
 - [Official Numista API Docs](https://en.numista.com/api/doc/index.php) - Numista API specification
 
-## Building Documentation
+## § 2 Building Documentation
 
 ### Prerequisites
 
@@ -76,19 +84,51 @@ cd docs
 make epub
 ```
 
-## ReadTheDocs
-
-This documentation is configured for ReadTheDocs deployment.
+## § 3 ReadTheDocs Deployment
 
 ### Configuration Files
 
 - [.readthedocs.yml](../.readthedocs.yml) - RTD build configuration
 - [conf.py](conf.py) - Sphinx configuration
-- [requirements.txt](requirements.txt) - Documentation dependencies
+- Documentation dependencies managed via `pyproject.toml` (docs group)
 
-### Deployment
+### Project Setup
 
-The documentation will build automatically when pushed to GitHub (once RTD webhook is configured).
+0. **RTD Account**: <https://readthedocs.org/accounts/signup/>
+1. **Import Project**: Connect GitHub, select `wells01440/numistalib`
+2. **Configure**:
+   - Name: `numistalib`
+   - Language: English
+   - Programming Language: Python
+3. **Build**: Click "Build Version" (~1 minute)
+4. **Live**: <https://numistalib.readthedocs.io>
+
+### Enable Auto-Builds
+
+In RTD Admin → Integrations → Add webhook
+
+Documentation rebuilds automatically on every push to main.
+
+## § 4 What Was Fixed
+
+### Sphinx Build (19 warnings → 0)
+
+0. **docs/conf.py** - Added `source_suffix` for markdown support
+1. **docs/api/client.rst** - Removed non-existent autodoc methods, added `:no-index:`
+2. **docs/index.rst** - Fixed toctree formatting, included orphan documents
+3. **docs/api/index.rst** - Marked as orphan to suppress toctree warning
+4. **docs/contributing.md** - Fixed cross-reference to AGENTS.md
+5. **docs/CHANGELOG.md** - Created symlink to `../CHANGELOG.md`
+
+### Legal & Attribution
+
+Added Numista attribution and compliance notices:
+
+0. [../README.md](../README.md) - Legal & Attribution section with official links
+1. [index.rst](index.rst) - Visible legal notice in docs index
+2. This file - Documentation-specific legal section
+3. [../pyproject.toml](../pyproject.toml) - Project URLs including Numista terms
+4. [../src/numistalib/client.py](../src/numistalib/client.py) - Module docstring with Pricing API usage considerations
 
 ## Documentation Standards
 
@@ -114,6 +154,16 @@ The documentation will build automatically when pushed to GitHub (once RTD webho
 - Keep API reference in sync with code
 - Test all code examples
 - Update screenshots/diagrams as needed
+
+## Legal & Attribution
+
+- This project is an unofficial wrapper and is not affiliated with Numista.
+- When using data from Numista, provide appropriate attribution to Numista.
+- All usage must comply with Numista’s terms and policies:
+  - Conditions of use: <https://en.numista.com/conditions.php>
+  - Legal information: <https://en.numista.com/legal.php>
+  - Pricing API terms: <https://en.numista.com/api/pricing.php>
+- Respect Numista’s rate limits and any restrictions on caching or redistribution, particularly for pricing data.
 
 ## § 1 Numista API Endpoint Trees
 

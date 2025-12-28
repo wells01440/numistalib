@@ -8,9 +8,9 @@ Comprehensive human-oriented documentation has been created and is ready for Rea
 
 ### § 1 Configuration Files
 
-- **[.readthedocs.yml](../.readthedocs.yml)**: ReadTheDocs build configuration
+- **[.readthedocs.yml](../.readthedocs.yml)**: ReadTheDocs build configuration (uses `uv sync --group docs`)
 - **[docs/conf.py](conf.py)**: Sphinx documentation configuration
-- **[docs/requirements.txt](requirements.txt)**: Documentation build dependencies
+- **Documentation dependencies**: Managed via `pyproject.toml` `[dependency-groups.docs]`
 - **[docs/Makefile](Makefile)**: Build automation
 - **[pyproject.toml](../pyproject.toml)**: Added `docs` dependency group
 
@@ -34,7 +34,7 @@ Comprehensive human-oriented documentation has been created and is ready for Rea
 
 ### § 4 Additional Documentation
 
-- **[changelog.md](changelog.md)** - Version history (Keep a Changelog format)
+- **[CHANGELOG.md](CHANGELOG.md)** - Version history (Keep a Changelog format)
 - **[license.md](license.md)** - MIT License
 - **[index.rst](index.rst)** - Main documentation index
 - **[README.md](README.md)** - Documentation overview
@@ -109,14 +109,14 @@ open _build/html/index.html  # macOS
 1. **Import Project**
    - Click "Import a Project"
    - Connect GitHub account
-   - Select `wells01440/numista-lib` repository
+   - Select `wells01440/numistalib` repository
 
 2. **Configure Project**
    - Name: `numistalib`
    - Language: English
    - Programming Language: Python
    - Repository URL: Auto-detected
-   - Default branch: `master`
+   - Default branch: `main`
 
 3. **Advanced Settings**
    - Documentation type: Sphinx
