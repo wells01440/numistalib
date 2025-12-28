@@ -1,7 +1,9 @@
 numistalib Documentation
 ========================
 
-Welcome to **numistalib**, a Python wrapper for the Numista API with built-in caching, rate limiting, and retry logic.
+Welcome to **numistalib**, a Python caching API wrapper for the Numista numismatic database with RFC 9111-compliant HTTP caching, intelligent rate limiting, and resilient retry logic.
+
+Includes an optional command-line interface with rich terminal output and sixel image support.
 
 .. toctree::
    :maxdepth: 2
@@ -9,8 +11,8 @@ Welcome to **numistalib**, a Python wrapper for the Numista API with built-in ca
 
    installation
    quickstart
-   cli_guide
    python_api_guide
+   cli_guide
    configuration
    advanced_usage
 
@@ -29,7 +31,7 @@ Welcome to **numistalib**, a Python wrapper for the Numista API with built-in ca
 
    architecture
    contributing
-   CHANGELOG
+   CHANGELOG.md
    license
    DEPLOYMENT
    README
@@ -44,17 +46,39 @@ This project is an unofficial wrapper and is not affiliated with Numista. When u
 - Pricing API terms: https://en.numista.com/api/pricing.php
 
 Respect Numista’s rate limits and any restrictions on caching or redistribution, particularly for pricing data.
+Built With
+----------
+
+This project leverages the following excellent open-source libraries:
+
+* `httpx <https://www.python-httpx.org/>`_ - Modern HTTP client with sync/async support
+* `hishel <https://hishel.com/>`_ - RFC 9111-compliant HTTP caching
+* `pydantic <https://docs.pydantic.dev/>`_ - Data validation and settings management
+* `pyrate-limiter <https://github.com/vutran1710/PyrateLimiter>`_ - Sophisticated rate limiting
+* `tenacity <https://tenacity.readthedocs.io/>`_ - Retry logic with exponential backoff
+* `click <https://click.palletsprojects.com/>`_ - CLI framework
+* `rich <https://rich.readthedocs.io/>`_ - Terminal UI and formatting
+* `textual-image <https://github.com/InValidFire/textual-image>`_ - Sixel protocol image display
 
 Features
 --------
 
-* **Complete API Coverage**: Access all Numista API endpoints
+Core API Features
+~~~~~~~~~~~~~~~~~
+
 * **HTTP Caching**: RFC 9111-compliant persistent caching with hishel (7-day TTL)
 * **Rate Limiting**: Configurable throttling (45 requests/minute default)
 * **Retry Logic**: Exponential backoff with jitter for resilient requests
-* **Rich CLI**: Beautiful command-line interface with tables and colors
+* **Complete API Coverage**: Access all Numista API endpoints
 * **Type Safety**: Full Pydantic models with strict validation
 * **Sync/Async Support**: Both synchronous and asynchronous client implementations
+
+Optional CLI Features
+~~~~~~~~~~~~~~~~~~~~~~
+
+* **Rich Terminal UI**: Beautiful command-line interface with tables and colors
+* **Sixel Image Display**: View coin images directly in compatible terminals (Kitty, WezTerm, iTerm2, mlterm, foot, yaft)
+* **Table/Panel Modes**: Flexible output formats for different use cases
 
 Quick Example
 -------------

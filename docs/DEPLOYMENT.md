@@ -34,7 +34,7 @@ Comprehensive human-oriented documentation has been created and is ready for Rea
 
 ### § 4 Additional Documentation
 
-- **[CHANGELOG.md](CHANGELOG.md)** - Version history (Keep a Changelog format)
+- **[CHANGELOG](CHANGELOG)** - Version history (Keep a Changelog format)
 - **[license.md](license.md)** - MIT License
 - **[index.rst](index.rst)** - Main documentation index
 - **[README.md](README.md)** - Documentation overview
