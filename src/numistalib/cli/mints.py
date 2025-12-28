@@ -40,7 +40,7 @@ def register_mints_commands(parent: click.Group) -> None:
                 CLISettings.console().print("[warning]No mints found[/warning]")
                 return
 
-            output = model_cls.render_table(results, "Mints")
+            output = model_cls.render_table(results, "Mints")  # type: ignore[union-attr]
             CLISettings.console().print(output)
             CLISettings.console().print(f"\n[success]Found {len(results)} mints[/success]")
 

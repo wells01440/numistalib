@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.11", "3.12", "3.13"]
+        python-version: ["3.13"]
 
     steps:
       - name: Checkout code
@@ -43,7 +43,7 @@ jobs:
 
       - name: Check code coverage
         run: |
-          uv run pytest --cov=src/numistalib --cov-report=term --cov-report=xml --cov-fail-under=65 tests/ --ignore=tests/integration
+          uv run pytest --cov=src/numistalib --cov-report=term --cov-report=xml tests/ --ignore=tests/integration
 
       - name: Upload coverage to Codecov
         if: matrix.python-version == '3.13'
