@@ -57,6 +57,7 @@ class TestDocumentationExamples:
         with mock_client_factory(settings) as client:  # type: ignore[attr-defined,call-arg]
             service = TypeService(client)
 
+            # Mock response using model_construct to bypass validation
             mock_type = TypeFull.model_construct(
                 numista_id=95420,
                 title="Test Coin",
@@ -82,6 +83,7 @@ class TestDocumentationExamples:
         with mock_client_factory(settings) as client:  # type: ignore[attr-defined,call-arg]
             service = TypeService(client)
 
+            # Mock response using model_construct to bypass validation
             mock_result = TypeBasic.model_construct(
                 numista_id=1,
                 title="Test Dollar",
@@ -110,6 +112,7 @@ class TestDocumentationExamples:
         with mock_client_factory(settings) as client:  # type: ignore[attr-defined,call-arg]
             service = TypeService(client)
 
+            # Mock response using model_construct to bypass validation
             mock_result = TypeBasic.model_construct(
                 numista_id=1,
                 title="Test Dollar",
@@ -141,6 +144,7 @@ class TestDocumentationExamples:
         with mock_client_factory(settings) as client:  # type: ignore[attr-defined,call-arg]
             service = CatalogueService(client)
 
+            # Mock response using model_construct to bypass validation
             mock_catalogue = Catalogue.model_construct(
                 numista_id=1,
                 code="KM",
@@ -163,6 +167,7 @@ class TestDocumentationExamples:
         with mock_client_factory(settings) as client:  # type: ignore[attr-defined,call-arg]
             service = TypeService(client)
 
+            # Mock response using model_construct to bypass validation
             mock_result = TypeBasic.model_construct(
                 numista_id=1,
                 title="Test Dollar",
@@ -195,6 +200,7 @@ class TestDocumentationExamples:
         with mock_client_factory(settings) as client:  # type: ignore[attr-defined,call-arg]
             service = TypeService(client)
 
+            # Mock response using model_construct to bypass validation
             mock_type = TypeFull.model_construct(
                 numista_id=95420,
                 title="Test Coin",
@@ -225,6 +231,7 @@ class TestDocumentationExamples:
         with mock_client_factory(settings) as client:  # type: ignore[attr-defined,call-arg]
             service = IssuerService(client)
 
+            # Mock response using model_construct to bypass validation
             mock_issuer = Issuer.model_construct(
                 code="fr",
                 name="France",
@@ -248,6 +255,7 @@ class TestDocumentationExamples:
         with mock_client_factory(settings) as client:  # type: ignore[attr-defined,call-arg]
             service = TypeService(client)
 
+            # Mock response using model_construct to bypass validation
             mock_type = TypeFull.model_construct(
                 numista_id=95420,
                 title="Test Coin",
