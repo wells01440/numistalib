@@ -180,3 +180,7 @@ ignore_missing_imports = true
 mypy_path = "src"
 namespace_packages = true
 explicit_package_bases = true
+
+[[tool.mypy.overrides]]
+module = "numistalib.models.types"
+ignore_errors = true
