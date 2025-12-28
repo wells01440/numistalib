@@ -31,7 +31,7 @@ Includes an optional command-line interface with rich terminal output and sixel 
 
    architecture
    contributing
-   CHANGELOG.md
+   CHANGELOG
    license
    DEPLOYMENT
    README
