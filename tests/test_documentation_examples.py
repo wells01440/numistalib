@@ -4,8 +4,9 @@ Validates that code examples in README and docs execute correctly.
 """
 
 # ruff: noqa: PLR6301, PLR2004
-# mypy: disable-error-code="attr-defined,call-arg,arg-type"
 
+from contextlib import AbstractContextManager
+from typing import Callable
 from unittest.mock import patch
 
 from numistalib.client import NumistaApiClient
@@ -21,11 +22,11 @@ from numistalib.services.types.service import SearchParams, TypeService
 class TestDocumentationExamples:
     """Tests for key documentation examples."""
 
-    def test_readme_basic_usage(self, mock_client_factory: type[NumistaApiClient]) -> None:
+    def test_readme_basic_usage(self, mock_client_factory: Callable[[Settings], AbstractContextManager[NumistaApiClient]]) -> None:
         """Test README.md basic Python API example (lines ~95-110)."""
         settings = Settings(api_key="test_key")
 
-        with mock_client_factory(settings) as client:  # type: ignore[attr-defined,call-arg]
+        with mock_client_factory(settings) as client:
             service = TypeService(client)
 
             # Mock response using model_construct to bypass validation
@@ -50,11 +51,11 @@ class TestDocumentationExamples:
                     assert coin_type.numista_id
                     assert coin_type.title
 
-    def test_readme_get_details(self, mock_client_factory: type[NumistaApiClient]) -> None:
+    def test_readme_get_details(self, mock_client_factory: Callable[[Settings], AbstractContextManager[NumistaApiClient]]) -> None:
         """Test README.md get type details example (lines ~113-118)."""
         settings = Settings(api_key="test_key")
 
-        with mock_client_factory(settings) as client:  # type: ignore[attr-defined,call-arg]
+        with mock_client_factory(settings) as client:
             service = TypeService(client)
 
             mock_type = TypeFull.model_construct(
@@ -75,11 +76,11 @@ class TestDocumentationExamples:
                 assert full_type.weight == 5.0
                 assert full_type.composition == "copper-nickel"
 
-    def test_index_rst_python_example(self, mock_client_factory: type[NumistaApiClient]) -> None:
+    def test_index_rst_python_example(self, mock_client_factory: Callable[[Settings], AbstractContextManager[NumistaApiClient]]) -> None:
         """Test docs/index.rst Python API example (lines ~103-118)."""
         settings = Settings(api_key="test_key")
 
-        with mock_client_factory(settings) as client:  # type: ignore[attr-defined,call-arg]
+        with mock_client_factory(settings) as client:
             service = TypeService(client)
 
             mock_result = TypeBasic.model_construct(
@@ -103,11 +104,11 @@ class TestDocumentationExamples:
                     output = f"{coin_type.numista_id}: {coin_type.title}"
                     assert output == "1: Test Dollar"
 
-    def test_quickstart_search(self, mock_client_factory: type[NumistaApiClient]) -> None:
+    def test_quickstart_search(self, mock_client_factory: Callable[[Settings], AbstractContextManager[NumistaApiClient]]) -> None:
         """Test docs/quickstart.md basic search (lines ~89-100)."""
         settings = Settings(api_key="test_key")
 
-        with mock_client_factory(settings) as client:  # type: ignore[attr-defined,call-arg]
+        with mock_client_factory(settings) as client:
             service = TypeService(client)
 
             mock_result = TypeBasic.model_construct(
@@ -134,11 +135,11 @@ class TestDocumentationExamples:
                     assert coin_type.min_year
                     assert coin_type.max_year
 
-    def test_quickstart_catalogues(self, mock_client_factory: type[NumistaApiClient]) -> None:
+    def test_quickstart_catalogues(self, mock_client_factory: Callable[[Settings], AbstractContextManager[NumistaApiClient]]) -> None:
         """Test docs/quickstart.md catalogues example (lines ~144-155)."""
         settings = Settings(api_key="test_key")
 
-        with mock_client_factory(settings) as client:  # type: ignore[attr-defined,call-arg]
+        with mock_client_factory(settings) as client:
             service = CatalogueService(client)
 
             mock_catalogue = Catalogue.model_construct(
@@ -156,11 +157,11 @@ class TestDocumentationExamples:
                     assert cat.title  # API returns 'title' field
                     assert cat.author
 
-    def test_python_api_guide_search(self, mock_client_factory: type[NumistaApiClient]) -> None:
+    def test_python_api_guide_search(self, mock_client_factory: Callable[[Settings], AbstractContextManager[NumistaApiClient]]) -> None:
         """Test docs/python_api_guide.md search example (lines ~42-53)."""
         settings = Settings(api_key="test_key")
 
-        with mock_client_factory(settings) as client:  # type: ignore[attr-defined,call-arg]
+        with mock_client_factory(settings) as client:
             service = TypeService(client)
 
             mock_result = TypeBasic.model_construct(
@@ -188,11 +189,11 @@ class TestDocumentationExamples:
                     assert coin_type.min_year
                     assert coin_type.max_year
 
-    def test_python_api_guide_get_details(self, mock_client_factory: type[NumistaApiClient]) -> None:
+    def test_python_api_guide_get_details(self, mock_client_factory: Callable[[Settings], AbstractContextManager[NumistaApiClient]]) -> None:
         """Test docs/python_api_guide.md get details example (lines ~79-89)."""
         settings = Settings(api_key="test_key")
 
-        with mock_client_factory(settings) as client:  # type: ignore[attr-defined,call-arg]
+        with mock_client_factory(settings) as client:
             service = TypeService(client)
 
             mock_type = TypeFull.model_construct(
@@ -218,11 +219,11 @@ class TestDocumentationExamples:
                 assert full_type.size == 25.0
                 assert full_type.composition
 
-    def test_issuers_example(self, mock_client_factory: type[NumistaApiClient]) -> None:
+    def test_issuers_example(self, mock_client_factory: Callable[[Settings], AbstractContextManager[NumistaApiClient]]) -> None:
         """Test docs/python_api_guide.md issuers example (lines ~145-155)."""
         settings = Settings(api_key="test_key")
 
-        with mock_client_factory(settings) as client:  # type: ignore[attr-defined,call-arg]
+        with mock_client_factory(settings) as client:
             service = IssuerService(client)
 
             mock_issuer = Issuer.model_construct(
@@ -241,11 +242,11 @@ class TestDocumentationExamples:
                     if issuer.wikidata_id:
                         assert isinstance(issuer.wikidata_id, str)
 
-    def test_model_serialization(self, mock_client_factory: type[NumistaApiClient]) -> None:
+    def test_model_serialization(self, mock_client_factory: Callable[[Settings], AbstractContextManager[NumistaApiClient]]) -> None:
         """Test docs/python_api_guide.md model serialization (lines ~530-542)."""
         settings = Settings(api_key="test_key")
 
-        with mock_client_factory(settings) as client:  # type: ignore[attr-defined,call-arg]
+        with mock_client_factory(settings) as client:
             service = TypeService(client)
 
             mock_type = TypeFull.model_construct(

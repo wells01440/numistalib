@@ -1,6 +1,7 @@
 """Pytest configuration and fixtures for numistalib tests."""
 
-from typing import AsyncIterator
+from contextlib import AbstractAsyncContextManager, AbstractContextManager
+from typing import AsyncIterator, Callable
 from typing import Iterator
 from unittest.mock import Mock
 
@@ -23,7 +24,7 @@ def mock_client() -> Mock:
 
 
 @pytest.fixture
-def mock_client_factory() -> type[NumistaApiClient]:
+def mock_client_factory() -> Callable[[Settings], AbstractContextManager[NumistaApiClient]]:
     """Provide a factory for creating mock sync clients."""
 
     class MockNumistaApiClient(NumistaApiClient):
@@ -54,7 +55,7 @@ def mock_client_factory() -> type[NumistaApiClient]:
 
 
 @pytest.fixture
-def mock_async_client_factory() -> type[NumistaApiClient]:
+def mock_async_client_factory() -> Callable[[Settings], AbstractAsyncContextManager[NumistaApiClient]]:
     """Provide a factory for creating mock async clients."""
 
     class MockAsyncNumistaApiClient(NumistaApiClient):
