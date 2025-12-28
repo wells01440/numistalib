@@ -77,9 +77,35 @@ class TypeBasicService(TypeBasicServiceBase):
         super().__init__(client)
 
     def to_models(self, items: list[Mapping[str, Any]], **kwargs: Any) -> list[TypeBasic]:  # noqa: PLR6301, ARG002
+        """Convert raw type data to TypeBasic models.
+
+        Parameters
+        ----------
+        items : list[Mapping[str, Any]]
+            Raw type data from API
+        **kwargs : Any
+            Unused context parameters
+
+        Returns
+        -------
+        list[TypeBasic]
+            Validated TypeBasic models
+        """
         return [TypeBasic.model_validate(item) for item in items]
 
     def search_types(self, params: SearchParams) -> list[TypeBasic]:
+        """Search the type catalogue with the given parameters.
+
+        Parameters
+        ----------
+        params : SearchParams
+            Search parameters (query, issuer, year, category, page)
+
+        Returns
+        -------
+        list[TypeBasic]
+            List of matching basic type models
+        """
         logger.debug(
             "→ search_types(query=%s, issuer=%s, year=%s, category=%s, page=%s)",
             params.query,
@@ -109,6 +135,18 @@ class TypeBasicService(TypeBasicServiceBase):
         return types_list
 
     async def search_types_async(self, params: SearchParams) -> list[TypeBasic]:
+        """Search the type catalogue asynchronously with the given parameters.
+
+        Parameters
+        ----------
+        params : SearchParams
+            Search parameters (query, issuer, year, category, page)
+
+        Returns
+        -------
+        list[TypeBasic]
+            List of matching basic type models
+        """
         logger.debug(
             "→ search_types_async(query=%s, issuer=%s, year=%s, category=%s, page=%s)",
             params.query,
@@ -136,6 +174,18 @@ class TypeBasicService(TypeBasicServiceBase):
         return types_list
 
     async def paginated_search(self, params: SearchParams) -> AsyncGenerator[TypeBasic]:
+        """Search the type catalogue and yield results lazily across paginated responses.
+
+        Parameters
+        ----------
+        params : SearchParams
+            Search parameters (query, issuer, year, category)
+
+        Yields
+        ------
+        TypeBasic
+            Individual type models from paginated responses
+        """
         logger.debug(
             "→ paginated_search(query=%s, issuer=%s, year=%s, category=%s)",
             params.query,
@@ -183,6 +233,28 @@ class TypeBasicService(TypeBasicServiceBase):
         limit: int = 50,
         lang: str = "en",
     ) -> AsyncGenerator[TypeBasic]:
+        """Search the type catalogue and yield results lazily.
+
+        Parameters
+        ----------
+        query : str | None
+            Full-text search query
+        issuer : str | None
+            Issuer code to filter by
+        year : int | None
+            Year to filter by
+        category : str | None
+            Category to filter by (coin, banknote, exonumia)
+        limit : int
+            Maximum results per page (default 50)
+        lang : str
+            Language code (default 'en')
+
+        Yields
+        ------
+        TypeBasic
+            Individual type models
+        """
         params = SearchParams(
             query=query,
             issuer=issuer,
@@ -202,9 +274,37 @@ class TypeFullService(TypeFullServiceBase):
         super().__init__(client)
 
     def to_models(self, items: list[Mapping[str, Any]], **kwargs: Any) -> list[TypeFull]:  # noqa: PLR6301, ARG002
+        """Convert raw type data to TypeFull models.
+
+        Parameters
+        ----------
+        items : list[Mapping[str, Any]]
+            Raw type data from API
+        **kwargs : Any
+            Unused context parameters
+
+        Returns
+        -------
+        list[TypeFull]
+            Validated TypeFull models
+        """
         return [TypeFull.model_validate(item) for item in items]
 
     def get_type(self, type_id: int, *, lang: str | None = None) -> TypeFull:
+        """Get detailed information for a single type by ID.
+
+        Parameters
+        ----------
+        type_id : int
+            The Numista type ID
+        lang : str | None
+            Optional language code
+
+        Returns
+        -------
+        TypeFull
+            Detailed type information
+        """
         logger.debug("→ get_type(type_id=%s, lang=%s)", type_id, lang)
 
         params = self._build_params(lang=lang) if lang else None
@@ -219,6 +319,20 @@ class TypeFullService(TypeFullServiceBase):
         return type_full
 
     async def get_type_async(self, type_id: int, *, lang: str | None = None) -> TypeFull:
+        """Get detailed information for a single type asynchronously.
+
+        Parameters
+        ----------
+        type_id : int
+            The Numista type ID
+        lang : str | None
+            Optional language code
+
+        Returns
+        -------
+        TypeFull
+            Detailed type information
+        """
         logger.debug("→ get_type_async(type_id=%s, lang=%s)", type_id, lang)
 
         params = self._build_params(lang=lang) if lang else None
@@ -233,6 +347,20 @@ class TypeFullService(TypeFullServiceBase):
         return type_full
 
     def add_type(self, type_data: dict[str, object], lang: str | None = None) -> TypeFull:
+        """Create a new type in the catalogue.
+
+        Parameters
+        ----------
+        type_data : dict[str, object]
+            Type data to create
+        lang : str | None
+            Optional language code
+
+        Returns
+        -------
+        TypeFull
+            The created type with assigned ID
+        """
         logger.debug("→ add_type(lang=%s)", lang)
 
         params = self._build_params(lang=lang) if lang else None
@@ -243,10 +371,24 @@ class TypeFullService(TypeFullServiceBase):
 
         type_obj = TypeFull.model_validate(data)
 
-        logger.info(f"Added type {type_obj.id} {response.cached_indicator}")
+        logger.info(f"Added type {type_obj.numista_id} {response.cached_indicator}")
         return type_obj
 
     async def add_type_async(self, type_data: dict[str, object], lang: str | None = None) -> TypeFull:
+        """Create a new type in the catalogue asynchronously.
+
+        Parameters
+        ----------
+        type_data : dict[str, object]
+            Type data to create
+        lang : str | None
+            Optional language code
+
+        Returns
+        -------
+        TypeFull
+            The created type with assigned ID
+        """
         logger.debug("→ add_type_async(lang=%s)", lang)
 
         params = self._build_params(lang=lang) if lang else None
@@ -257,7 +399,7 @@ class TypeFullService(TypeFullServiceBase):
 
         type_obj = TypeFull.model_validate(data)
 
-        logger.info(f"Added type {type_obj.id} {response.cached_indicator}")
+        logger.info(f"Added type {type_obj.numista_id} {response.cached_indicator}")
         return type_obj
 
 

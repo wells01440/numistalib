@@ -29,7 +29,7 @@ Welcome to **numistalib**, a Python wrapper for the Numista API with built-in ca
 
    architecture
    contributing
-   changelog
+   ../CHANGELOG
    license
    DEPLOYMENT
    README

@@ -37,6 +37,7 @@ def register_issuers_commands(parent: click.Group) -> None:
             issuers_list: list[Issuer] = []
 
             async def consume_issuers() -> list[Issuer]:
+                """Consume all issuers from the paginated service."""
                 async for issuer in service.get_issuers_paginated(lang=lang, limit=limit):
                     issuers_list.append(issuer)
                 return issuers_list

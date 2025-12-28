@@ -161,7 +161,7 @@ Closes #42
 
 ### § 4.1 New Service
 
-0. **Check Swagger spec** in `docs/numista-swagger.yml`
+0. **Check Swagger spec** at [official API docs](https://en.numista.com/api/doc/swagger.yaml?v=3.29.0)
 
 1. **Create models** in `models/<entity>.py`:
 

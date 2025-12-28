@@ -39,22 +39,7 @@ class LiteratureService(LiteratureServiceBase):
         list[Publication]
             Parsed publication models
         """
-        publications: list[Publication] = []
-        for item in items:
-            publications.append(
-                Publication(
-                    numista_id=cast(int, item["id"]),
-                    publication_type=cast(str, item.get("type", "unknown")),
-                    title=cast(str, item["title"]),
-                    authors=cast(list[str] | None, item.get("authors")),
-                    year=cast(int | None, item.get("year")),
-                    publisher=cast(str | None, item.get("publisher")),
-                    isbn=cast(str | None, item.get("isbn")),
-                    pages=cast(str | None, item.get("pages")),
-                    url=cast(str | None, item.get("url")),
-                )
-            )
-        return publications
+        return [Publication.model_validate(item) for item in items]
 
     def get_publication(self, publication_id: int) -> Publication:
         """Get publication details by ID.

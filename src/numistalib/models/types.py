@@ -16,6 +16,7 @@ from typing import Annotated, Any, Literal
 import httpx
 from bs4 import BeautifulSoup
 from PIL import Image as PILImage
+from rich.repr import T
 from rich.table import Table
 from rich.text import Text
 from pydantic import (
@@ -35,6 +36,8 @@ from numistalib.models.issues import IssueTerms
 
 
 class Country(NumistaBaseModel):
+    """Country information with code and name."""
+
     code: str = Field(max_length=50)
     name: str = Field(max_length=255)
 
@@ -54,6 +57,8 @@ class CurrencyValue(NumistaBaseModel):
 
 
 class Demonetization(NumistaBaseModel):
+    """Demonetization status and date information."""
+
     is_demonetized: bool = Field(description="Indicates if the type is demonetized")
     demonetization_date: date | None = Field(None, description="Date of demonetization")
 
@@ -90,6 +95,8 @@ class Demonetization(NumistaBaseModel):
 
 
 class Composition(NumistaBaseModel):
+    """Metal composition information for coin types."""
+
     text: str = Field(description="Metal composition description")
 
     def __eq__(self, other: object) -> bool:  # Allow test equality to string value
@@ -99,18 +106,25 @@ class Composition(NumistaBaseModel):
 
 
 class Technique(NumistaBaseModel):
+    """Minting technique information."""
+
     text: str = Field(description="Minting technique description")
 
 
 class LetteringScript(NumistaBaseModel):
+    """Lettering script information for coin designs."""
+
     name: str = Field(description="Name of the lettering script")
 
 
 class References(NumistaBaseModel):
+    """Collection of references for a type."""
+
     references: list[Reference] = Field(description="List of references")
 
 
 class RulerGroup(NumistaBaseModel):
+    """Ruler group information for hierarchical ruler organization."""
 
     id: int = Field(..., description="Numista ID", alias="numista_id")
     name: str = Field(..., description="Group Name")
@@ -251,20 +265,14 @@ class SideBase(NumistaBaseModel, ABC):
     @cached_property
     def renderable_image(self) -> Any | None:
         """Ready-to-print textual_image renderable (full picture)."""
-        try:
-            img = TImage(self.pillow_image)
-            return img
-        except ImportError:
-            return None
-
+        if self.pillow_image:
+            return TImage(self.pillow_image)
+            
     @cached_property
     def renderable_thumbnail(self) -> Any | None:
         """Ready-to-print thumbnail."""
-        try:
-            img = TImage(self.pillow_thumbnail)
-            return img
-        except ImportError:
-            return None
+        if self.pillow_thumbnail:
+            return TImage(self.pillow_thumbnail)
 
     @computed_field(description="Formatted copyright link for textual display")
     def copyright_link(self) -> str:
@@ -339,10 +347,14 @@ class SideBase(NumistaBaseModel, ABC):
 
 
 class Obverse(SideBase):
+    """Obverse (front/heads) side of a coin or banknote."""
+
     pass
 
 
 class Reverse(SideBase):
+    """Reverse (back/tails) side of a coin or banknote."""
+
     pass
 
 
@@ -377,44 +389,32 @@ class Edge(NumistaBaseModel):
     lettering_translation: str | None = Field(None, description="Translation of edge lettering")
 
     @cached_property
-    def pillow_image(self) -> PILImage.Image:
+    def pillow_image(self) -> PILImage.Image | None:
         """Download and cache the full picture as a Pillow Image."""
-        if not self.picture:
-            return None
-        response = httpx.get(self.picture, follow_redirects=True, timeout=30.0)
-        response.raise_for_status()
-        return PILImage.open(BytesIO(response.content))
-
+        if self.picture:
+            response = httpx.get(self.picture, follow_redirects=True, timeout=30.0)
+            response.raise_for_status()
+            return PILImage.open(BytesIO(response.content))
+        
     @cached_property
-    def pillow_thumbnail(self) -> PILImage.Image:
+    def pillow_thumbnail(self) -> PILImage.Image | None:
         """Download and cache the thumbnail as a Pillow Image."""
-        if not self.thumbnail:
-            return None
-        response = httpx.get(self.thumbnail, follow_redirects=True, timeout=30.0)
-        response.raise_for_status()
-        return PILImage.open(BytesIO(response.content))
+        if self.thumbnail:
+            response = httpx.get(self.thumbnail, follow_redirects=True, timeout=30.0)
+            response.raise_for_status()
+            return PILImage.open(BytesIO(response.content))
 
     @cached_property
     def renderable_image(self) -> Any | None:
         """Ready-to-print textual_image renderable (full picture)."""
-        try:
-            if self.pillow_image:
-                img = TImage(self.pillow_image)
-                return img
-        except (ImportError, TypeError):
-            return None
-        return None
+        if self.pillow_image:
+            return TImage(self.pillow_image)
 
     @cached_property
     def renderable_thumbnail(self) -> Any | None:
         """Ready-to-print thumbnail."""
-        try:
-            if self.pillow_thumbnail:
-                img = TImage(self.pillow_thumbnail)
-                return img
-        except (ImportError, TypeError):
-            return None
-        return None
+        if self.pillow_thumbnail:
+            return TImage(self.pillow_thumbnail)
 
 
 class Watermark(SideBase):
@@ -438,7 +438,6 @@ class Printer(NumistaBaseModel):
     name : str
         Printer name
     """
-
     id: int = Field(..., description="Unique printer ID")
     name: str = Field(..., description="Printer name")
 
@@ -458,6 +457,7 @@ class TypeBase(NumistaBaseModel, ABC):
 
     @computed_field(description="Human-readable year range")
     def year_range(self) -> str:
+        """Get human-readable year range."""
         if self.min_year and self.max_year:
             if self.min_year == self.max_year:
                 return str(self.min_year)
@@ -470,10 +470,12 @@ class TypeBase(NumistaBaseModel, ABC):
 
     @computed_field(description="Canonical Numista page URL")
     def numista_url(self) -> HttpUrl:
+        """Get canonical Numista URL for this type."""
         return HttpUrl(f"https://en.numista.com/{self.numista_id}")
 
     @model_validator(mode="after")
     def validate_years(self) -> TypeBase:
+        """Validate that min_year does not exceed max_year."""
         if self.min_year is not None and self.max_year is not None:
             if self.min_year > self.max_year:
                 raise ValueError("min_year cannot be greater than max_year")

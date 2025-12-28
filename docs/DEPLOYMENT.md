@@ -172,7 +172,7 @@ docs/
 ├── Reference
 │   ├── changelog.md
 │   ├── license.md
-│   └── numista-swagger.yml
+│   └── (removed - use official spec from https://en.numista.com/api/doc/swagger.yaml)
 │
 └── API Reference (RST)
     └── api/

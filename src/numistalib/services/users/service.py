@@ -40,17 +40,7 @@ class UserService(UserServiceBase):
         list[User]
             List with single User model
         """
-        users: list[User] = []
-        for item in items:
-            users.append(
-                User(
-                    numista_id=cast(int, item["id"]),
-                    username=cast(str, item["username"]),
-                    country_code=cast(str | None, item.get("country_code")),
-                    member_since=cast(str | None, item.get("member_since")),
-                )
-            )
-        return users
+        return [User.model_validate(item) for item in items]
 
     def get_user(self, user_id: int) -> User:
         """Get details about a specific user.
@@ -167,19 +157,7 @@ class UserService(UserServiceBase):
         data = cast(Mapping[str, Any], response.json())
 
         items_list = [
-            CollectedItem(
-                numista_id=item["id"],
-                user_id=user_id,
-                type_id=item["type"]["id"],
-                issue_id=item.get("issue", {}).get("id"),
-                quantity=item.get("quantity", 1),
-                grade=item.get("grade"),
-                for_swap=item.get("for_swap", False),
-                price_value=item.get("price", {}).get("value"),
-                price_currency=item.get("price", {}).get("currency"),
-                acquisition_date=item.get("acquisition_date"),
-                storage_location=item.get("storage_location"),
-            )
+            CollectedItem.model_validate(item)
             for item in data.get("collected_items", [])
         ]
 
@@ -298,19 +276,7 @@ class UserService(UserServiceBase):
         data = cast(Mapping[str, Any], response.json())
 
         items_list = [
-            CollectedItem(
-                numista_id=item["id"],
-                user_id=user_id,
-                type_id=item["type"]["id"],
-                issue_id=item.get("issue", {}).get("id"),
-                quantity=item.get("quantity", 1),
-                grade=item.get("grade"),
-                for_swap=item.get("for_swap", False),
-                price_value=item.get("price", {}).get("value"),
-                price_currency=item.get("price", {}).get("currency"),
-                acquisition_date=item.get("acquisition_date"),
-                storage_location=item.get("storage_location"),
-            )
+            CollectedItem.model_validate(item)
             for item in data.get("collected_items", [])
         ]
 

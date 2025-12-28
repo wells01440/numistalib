@@ -30,7 +30,7 @@ This directory contains comprehensive documentation for numistalib.
 
 ### Technical Reference
 
-- [numista-swagger.yml](numista-swagger.yml) - Numista API specification
+- [Official Numista API Docs](https://en.numista.com/api/doc/index.php) - Numista API specification
 
 ## Building Documentation
 
@@ -117,7 +117,7 @@ The documentation will build automatically when pushed to GitHub (once RTD webho
 
 ## § 1 Numista API Endpoint Trees
 
-Each section below mirrors the OpenAPI file (`docs/numista-swagger.yml`) and lists every path, method, and request
+Each section below mirrors the OpenAPI file ([official spec](https://en.numista.com/api/doc/swagger.yaml?v=3.29.0)) and lists every path, method, and request
 parameter set per API version.
 All calls require the `Numista-API-Key` header; endpoints under “User” additionally need the
 OAuth scopes noted in the swagger comments.
@@ -244,4 +244,4 @@ legacy paths remain accessible through `/v2` (all were removed from `/v3`):
 
 Version 1 shares the same endpoint tree as version 2 (including the `/coins` and `/users/{user_id}/collected_coins`
 legacy paths above). Parameter names are identical, but some response fields remain in their original camelCase form
-(`minYear`, `maxYear`, `value`, etc.) as noted inside `docs/numista-swagger.yml`.
+(`minYear`, `maxYear`, `value`, etc.) as noted in the [official API spec](https://en.numista.com/api/doc/swagger.yaml?v=3.29.0).

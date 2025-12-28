@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-Numista API (Swagger v3 [docs/numista-swagger.yml](docs/numista-swagger.yml)) Python wrapper with sync/async support, persistent HTTP caching (hishel SQLite 7d TTL), rate limiting (45/min), retry (exp backoff+jitter).
+Numista API (Swagger v3 [official docs](https://en.numista.com/api/doc/index.php)) Python wrapper with sync/async support, persistent HTTP caching (hishel SQLite 7d TTL), rate limiting (45/min), retry (exp backoff+jitter).
 
 ## Core Architecture
 
