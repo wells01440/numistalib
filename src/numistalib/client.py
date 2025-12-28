@@ -336,16 +336,6 @@ class NumistaClientSync(NumistaClient):
                 time.sleep(self._jitter_delay(attempt))
         raise AssertionError("Unreachable: retry loop must return or raise")
 
-    async def aclose(self) -> None:
-        try:
-            if self._client and hasattr(self._client, "aclose"):
-                await self._client.aclose()  # type: ignore[attr-defined]
-        finally:
-            self._client = None
-        storage = self.storage
-        if hasattr(storage, "close"):
-            storage.close()  # type: ignore[attr-defined]
-
     def post(self, url: str, **kwargs: Any) -> NumistaResponse:
         """Make a synchronous POST request.
 
