@@ -125,6 +125,26 @@ numistalib types get 95420
 numistalib types get 95420 --lang fr
 ```
 
+**Output Examples:**
+
+The command displays detailed specifications organized into sections:
+
+![Physical Specifications](_static/cli_type_physical_specifications.png)
+
+*Physical characteristics including dimensions, weight, composition, and shape.*
+
+![Obverse Specifications](_static/cli_type_obverse_specifications.png)
+
+*Obverse (front) design description and lettering.*
+
+![Reverse Specifications](_static/cli_type_reverse_specifications.png)
+
+*Reverse (back) design description and lettering.*
+
+![Edge Specifications](_static/cli_type_edge_specifications.png)
+
+*Edge type and inscription details.*
+
 ---
 
 ### § 3 Catalogues Commands
