@@ -11,7 +11,7 @@ Automated quality enforcement and release management per **AGENTS.md §9**.
 **Purpose**: Automated versioning, changelog management, and PyPI publishing.
 
 **Triggers**:
-0. Push to `main` branch (modifying `src/**`, `pyproject.toml`, or `CHANGELOG.md`)
+0. Push to `main` branch (modifying `src/**`, `pyproject.toml`, or `CHANGELOG`)
 
 1. Manual dispatch with version bump type selection (patch/minor/major)
 
@@ -27,7 +27,7 @@ Automated quality enforcement and release management per **AGENTS.md §9**.
 **Configuration**:
 
 - `.bumpversion.cfg` - Version bump rules
-- `CHANGELOG.md` - Keep a Changelog format
+- `CHANGELOG` - Keep a Changelog format
 - PyPI trusted publishing (no API tokens needed)
 
 **Manual Release**:
@@ -40,7 +40,7 @@ Automated quality enforcement and release management per **AGENTS.md §9**.
 **Automatic Release**:
 
 - Merging to `main` with source changes triggers patch version bump
-- Update `CHANGELOG.md` `[Unreleased]` section before merging
+- Update `CHANGELOG` `[Unreleased]` section before merging
 
 ### § 1.1 docstring-agent.yml (Future)
 
@@ -77,7 +77,7 @@ If trusted publishing unavailable:
 ### § 3.0 Standard Release Process
 
 0. **Develop** - Make changes in feature branch
-1. **Update CHANGELOG.md** - Add changes under `[Unreleased]` section:
+1. **Update CHANGELOG** - Add changes under `[Unreleased]` section:
 
    ```markdown
    ## [Unreleased]
@@ -117,7 +117,7 @@ For minor/major releases:
 
 0. Create hotfix branch from `main`
 1. Make urgent fix
-2. Update `CHANGELOG.md` under `[Unreleased]` → `### Fixed`
+2. Update `CHANGELOG` under `[Unreleased]` → `### Fixed`
 3. Merge to `main`
 4. Auto-publishes patch version
 
@@ -194,11 +194,11 @@ Follow [Keep a Changelog](https://keepachangelog.com/en/1.0.0/):
 
 ### § 5.1 Update Before Merge
 
-**Always** update `CHANGELOG.md` before merging to `main`:
+**Always** update `CHANGELOG` before merging to `main`:
 
 ```bash
-# Edit CHANGELOG.md
-vim CHANGELOG.md
+# Edit CHANGELOG
+vim CHANGELOG
 
 # Add under [Unreleased] section
 # Example:
@@ -261,7 +261,7 @@ git push origin :refs/tags/v0.1.0
 
 ### § 7.2 Changelog Format Error
 
-**Check**: `CHANGELOG.md` follows Keep a Changelog format:
+**Check**: `CHANGELOG` follows Keep a Changelog format:
 
 - `## [Unreleased]` section exists
 - Date format: `YYYY-MM-DD`

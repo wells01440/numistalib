@@ -4,10 +4,6 @@ on:
   push:
     branches:
       - main
-    paths:
-      - "src/**"
-      - "pyproject.toml"
-      - "CHANGELOG.md"
   workflow_dispatch:
     inputs:
       bump_type:
@@ -46,6 +42,16 @@ jobs:
         run: |
           uv sync
           uv pip install bump2version
+
+      - name: Run tests before release
+        run: |
+          uv run ruff check src/ tests/
+          uv run mypy src/
+          uv run pyright src/
+          uv run pytest tests/ --ignore=tests/integration -v
+          uv run pytest --cov=src/numistalib --cov-fail-under=65 tests/ --ignore=tests/integration
+          uv run radon cc src/numistalib/ -a -nb
+          uv run xenon --max-absolute B src/numistalib/
 
       - name: Configure git
         run: |

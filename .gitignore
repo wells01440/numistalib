@@ -64,6 +64,7 @@ test_captures/
 *.jpg
 *.png
 !docs/images/*.png
+!docs/_static/*.png
 
 # Alembic
 alembic/versions/*.pyc
@@ -79,8 +80,10 @@ alembic/versions/*.pyc
 .serena/
 .ruff_cache/
 
-# Documentation builds
+# Documentation builds (generated files only)
 docs/_build/
-docs/_static/
-docs/_templates/
 *.doctree
+# Keep static assets like screenshots
+!docs/_static/*.png
+!docs/_static/*.jpg
+!docs/_static/*.svg

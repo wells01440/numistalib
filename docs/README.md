@@ -25,7 +25,7 @@ This directory contains comprehensive documentation for numistalib, production-r
 
 - [architecture.md](architecture.md) - System architecture and design
 - [contributing.md](contributing.md) - Contribution guidelines
-- [CHANGELOG.md](CHANGELOG.md) - Version history
+- [CHANGELOG](CHANGELOG) - Version history
 - [license.md](license.md) - MIT License
 
 ### API Reference
@@ -118,13 +118,13 @@ Documentation rebuilds automatically on every push to main.
 2. **docs/index.rst** - Fixed toctree formatting, included orphan documents
 3. **docs/api/index.rst** - Marked as orphan to suppress toctree warning
 4. **docs/contributing.md** - Fixed cross-reference to AGENTS.md
-5. **docs/CHANGELOG.md** - Created symlink to `../CHANGELOG.md`
+5. **docs/CHANGELOG.md** - Created symlink to `../CHANGELOG`
 
 ### Legal & Attribution
 
 Added Numista attribution and compliance notices:
 
-0. [../README.md](../README.md) - Legal & Attribution section with official links
+0. Main README.md - Legal & Attribution section with official links
 1. [index.rst](index.rst) - Visible legal notice in docs index
 2. This file - Documentation-specific legal section
 3. [../pyproject.toml](../pyproject.toml) - Project URLs including Numista terms

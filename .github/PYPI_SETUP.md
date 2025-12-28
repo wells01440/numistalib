@@ -172,10 +172,10 @@ git push origin :refs/tags/v0.1.1
 
 Before first release to PyPI:
 
-- [ ] PyPI account created with 2FA enabled
-- [ ] Project name `numistalib` registered (manual first upload or pending publisher)
+- [x] PyPI account created with 2FA enabled
+- [x] Project name `numistalib` registered (manual first upload or pending publisher)
 - [ ] Trusted publishing configured at PyPI
-- [ ] `CHANGELOG.md` updated with release notes
+- [x] `CHANGELOG` updated with release notes
 - [ ] All tests passing locally: `uv run pytest`
 - [ ] Build successful: `uv build`
 - [ ] README.md has PyPI badge ready:
@@ -192,7 +192,7 @@ Before first release to PyPI:
 **After one-time setup**, normal workflow is:
 
 0. Develop feature
-1. Update `CHANGELOG.md` under `[Unreleased]`
+1. Update `CHANGELOG` under `[Unreleased]`
 2. Open PR to `main`
 3. Merge → **automatic release**
 4. Check <https://pypi.org/project/numistalib/>
