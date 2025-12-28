@@ -13,20 +13,6 @@ NumistaApiClient
    :undoc-members:
    :show-inheritance:
 
-   .. automethod:: __init__
-   .. automethod:: __enter__
-   .. automethod:: __exit__
-   .. automethod:: get
-   .. automethod:: post
-   .. automethod:: patch
-   .. automethod:: put
-   .. automethod:: delete
-   .. automethod:: get_async
-   .. automethod:: post_async
-   .. automethod:: patch_async
-   .. automethod:: put_async
-   .. automethod:: delete_async
-
 NumistaResponse
 ---------------
 
@@ -34,6 +20,7 @@ NumistaResponse
    :members:
    :undoc-members:
    :show-inheritance:
+   :no-index:
 
    Response wrapper that exposes cache status.
 

@@ -41,6 +41,7 @@ Central HTTP abstraction providing:
 - Cache strategy: 7-day TTL, persistent SQLite storage
 
 **Design Principles:**
+
 - Single responsibility: HTTP concerns only
 - Stateful: Manages connection pool, cache, rate limiter
 - Injectable: Services receive client instance
@@ -51,6 +52,7 @@ Central HTTP abstraction providing:
 One service per Swagger tag, implementing business logic.
 
 **Structure:**
+
 ```
 services/
 ├── base/
@@ -81,6 +83,7 @@ services/
 - `EntityService`: For single-entity endpoints like `/types/{id}`
 
 **Design Principles:**
+
 - One service per API tag
 - Stateless except injected client/logger
 - No I/O beyond client calls
@@ -93,6 +96,7 @@ services/
 Pydantic models validating API payloads immediately upon receipt.
 
 **Structure:**
+
 ```
 models/
 ├── base/
@@ -112,12 +116,14 @@ models/
 - `Issuer`: Country/entity issuing coins
 
 **Features:**
+
 - Strict validation
 - Optional field handling
 - Rich rendering methods (`as_table()`, `format_fields()`)
 - Serialization (`model_dump()`, `model_dump_json()`)
 
 **Design Principles:**
+
 - Models own presentation logic
 - One file per entity domain
 - Inherit from `BaseModel`
@@ -129,6 +135,7 @@ models/
 Rich command-line interface with consistent UX.
 
 **Structure:**
+
 ```
 cli/
 ├── main.py          # Entry point, command registration
@@ -148,6 +155,7 @@ cli/
 - Short/long option flags (`-q`/`--query`)
 
 **Design Principles:**
+
 - CLI contains all user interaction
 - Services provide data only
 - No prompts without flags
@@ -160,6 +168,7 @@ cli/
 Pydantic Settings for environment-based configuration.
 
 **Features:**
+
 - `.env` file loading
 - Environment variable overrides
 - Validation
@@ -167,6 +176,7 @@ Pydantic Settings for environment-based configuration.
 - Defaults
 
 **Settings:**
+
 - API key (required)
 - Base URL
 - Cache directory & TTL
@@ -240,12 +250,14 @@ User Code
 ### § 4.2 Cache Key
 
 Based on:
+
 - Full URL (including query parameters)
 - Request headers (API key hashed)
 
 ### § 4.3 Cache Indicators
 
 Every `NumistaResponse` exposes:
+
 - `cached` (bool): True if served from cache
 - `cached_indicator` (str): "💾" if cached, "🌐" if fresh
 
@@ -391,6 +403,7 @@ with NumistaApiClient(settings) as client:
 ### § 9.3 Usage
 
 Sync:
+
 ```python
 with NumistaApiClient(settings) as client:
     service = TypeService(client)
@@ -398,6 +411,7 @@ with NumistaApiClient(settings) as client:
 ```
 
 Async:
+
 ```python
 async with NumistaApiClient(settings) as client:
     service = TypeService(client)
@@ -415,6 +429,7 @@ Models own their presentation logic.
 ### § 10.2 Methods
 
 Each model implements:
+
 - `as_table(items, title)`: Class method returning Rich Table
 - `format_fields(fields)`: Class method formatting field values
 

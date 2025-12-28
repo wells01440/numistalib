@@ -22,20 +22,20 @@ git clone https://github.com/YOUR_USERNAME/numista-lib.git
 cd numista-lib
 ```
 
-2. Install dependencies:
+1. Install dependencies:
 
 ```bash
 uv sync
 ```
 
-3. Create `.env` file:
+1. Create `.env` file:
 
 ```bash
 cp .env.example .env
 # Add your API key to .env
 ```
 
-4. Verify installation:
+1. Verify installation:
 
 ```bash
 uv run pytest tests/ -v
@@ -47,9 +47,10 @@ uv run pytest tests/ -v
 
 ### § 2.1 Mandatory Reading
 
-**Read [AGENTS.md](../AGENTS.md) completely before contributing.**
+**Read `AGENTS.md` (in repository root) completely before contributing.**
 
 This file contains authoritative coding standards including:
+
 - Naming conventions
 - Type hints requirements
 - Complexity limits
@@ -93,7 +94,7 @@ uv run pytest tests/ -v
 
 ### § 3.1 Branch Strategy
 
-0. Create a feature branch:
+1. Create a feature branch:
 
 ```bash
 git checkout -b feature/your-feature-name
@@ -111,13 +112,13 @@ git commit -m "Add search by catalogue reference
 - Update CLI with --catalogue flag"
 ```
 
-3. Push to your fork:
+1. Push to your fork:
 
 ```bash
 git push origin feature/your-feature-name
 ```
 
-4. Create a pull request
+1. Create a pull request
 
 ### § 3.2 Commit Messages
 
@@ -132,6 +133,7 @@ Follow this format:
 ```
 
 **Types:**
+
 - `feat`: New feature
 - `fix`: Bug fix
 - `docs`: Documentation only
@@ -173,7 +175,7 @@ class YourModel(BaseModel):
     name: str
 ```
 
-2. **Create service ABC** in `services/<tag>/base.py`:
+1. **Create service ABC** in `services/<tag>/base.py`:
 
 ```python
 from abc import ABC, abstractmethod
@@ -188,7 +190,7 @@ class YourServiceBase(BaseService, ABC):
         pass
 ```
 
-3. **Implement service** in `services/<tag>/service.py`:
+1. **Implement service** in `services/<tag>/service.py`:
 
 ```python
 from numistalib.services.<tag>.base import YourServiceBase
@@ -207,7 +209,7 @@ class YourService(YourServiceBase):
         return [YourModel(**item) for item in items]
 ```
 
-4. **Create CLI** in `cli/<tag>.py`:
+1. **Create CLI** in `cli/<tag>.py`:
 
 ```python
 import click
@@ -226,7 +228,7 @@ def register_your_commands(cli: click.Group) -> None:
         pass
 ```
 
-5. **Register in main** in `cli/main.py`:
+1. **Register in main** in `cli/main.py`:
 
 ```python
 from numistalib.cli.<tag> import register_your_commands
@@ -237,7 +239,7 @@ def main():
     # ...
 ```
 
-6. **Add tests** in `tests/integration/test_cli_<tag>_read.py`:
+1. **Add tests** in `tests/integration/test_cli_<tag>_read.py`:
 
 ```python
 def test_your_command(runner):
@@ -408,7 +410,7 @@ Add entry to `docs/changelog.md`:
 
 ### § 7.1 Before Submitting
 
-0. **Run all checks:**
+1. **Run all checks:**
 
 ```bash
 uv run ruff check --fix src/
@@ -470,6 +472,7 @@ Closes #XX
 ### § 8.1 For Reviewers
 
 Check:
+
 - AGENTS.md compliance
 - Test coverage
 - Documentation completeness
@@ -480,6 +483,7 @@ Check:
 ### § 8.2 For Contributors
 
 Expect feedback on:
+
 - Code clarity
 - Architecture fit
 - Performance implications

@@ -31,6 +31,8 @@ Welcome to **numistalib**, a Python wrapper for the Numista API with built-in ca
    contributing
    changelog
    license
+   DEPLOYMENT
+   README
 
 Features
 --------

@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>§ 1 Numista API Endpoint Trees &mdash; numistalib 0.1.0 documentation</title>
+  <title>numistalib Documentation &mdash; numistalib 0.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
 
@@ -18,7 +18,8 @@
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" /> 
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Documentation Deployment Guide" href="DEPLOYMENT.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -57,11 +58,44 @@
 <li class="toctree-l1"><a class="reference internal" href="api/cli.html">CLI</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Additional Information</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing to numistalib</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
 <li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="DEPLOYMENT.html">Documentation Deployment Guide</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">numistalib Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#documentation-structure">Documentation Structure</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#user-guides">User Guides</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reference-documentation">Reference Documentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#api-reference">API Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#technical-reference">Technical Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#building-documentation">Building Documentation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#build-html">Build HTML</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#view-documentation">View Documentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#build-other-formats">Build Other Formats</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#readthedocs">ReadTheDocs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#configuration-files">Configuration Files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#deployment">Deployment</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#documentation-standards">Documentation Standards</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#formatting">Formatting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#content">Content</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#maintenance">Maintenance</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#numista-api-endpoint-trees">§ 1 Numista API Endpoint Trees</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#version-3-https-api-numista-com-v3">§ 1.1 Version 3 (<code class="docutils literal notranslate"><span class="pre">https://api.numista.com/v3</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#version-2-https-api-numista-com-v2">§ 1.2 Version 2 (<code class="docutils literal notranslate"><span class="pre">https://api.numista.com/v2</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#version-1-https-api-numista-com-v1">§ 1.3 Version 1 (<code class="docutils literal notranslate"><span class="pre">https://api.numista.com/v1</span></code>)</a></li>
+</ul>
+</li>
 </ul>
 
         </div>
@@ -78,7 +112,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">§ 1 Numista API Endpoint Trees</li>
+      <li class="breadcrumb-item active">numistalib Documentation</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/README.md.txt" rel="nofollow"> View page source</a>
       </li>
@@ -88,12 +122,145 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="numista-api-endpoint-trees">
-<h1>§ 1 Numista API Endpoint Trees<a class="headerlink" href="#numista-api-endpoint-trees" title="Link to this heading"></a></h1>
+  <section id="numistalib-documentation">
+<h1>numistalib Documentation<a class="headerlink" href="#numistalib-documentation" title="Link to this heading"></a></h1>
+<p>This directory contains comprehensive documentation for numistalib.</p>
+<section id="documentation-structure">
+<h2>Documentation Structure<a class="headerlink" href="#documentation-structure" title="Link to this heading"></a></h2>
+<section id="user-guides">
+<h3>User Guides<a class="headerlink" href="#user-guides" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><a class="reference internal" href="installation.html"><span class="std std-doc">installation.md</span></a> - Installation and setup</p></li>
+<li><p><a class="reference internal" href="quickstart.html"><span class="std std-doc">quickstart.md</span></a> - 5-minute getting started guide</p></li>
+<li><p><a class="reference internal" href="cli_guide.html"><span class="std std-doc">cli_guide.md</span></a> - Complete CLI command reference</p></li>
+<li><p><a class="reference internal" href="python_api_guide.html"><span class="std std-doc">python_api_guide.md</span></a> - Python API usage guide</p></li>
+<li><p><a class="reference internal" href="configuration.html"><span class="std std-doc">configuration.md</span></a> - Configuration reference</p></li>
+<li><p><a class="reference internal" href="advanced_usage.html"><span class="std std-doc">advanced_usage.md</span></a> - Advanced patterns and techniques</p></li>
+</ul>
+</section>
+<section id="reference-documentation">
+<h3>Reference Documentation<a class="headerlink" href="#reference-documentation" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><a class="reference internal" href="architecture.html"><span class="std std-doc">architecture.md</span></a> - System architecture and design</p></li>
+<li><p><a class="reference internal" href="contributing.html"><span class="std std-doc">contributing.md</span></a> - Contribution guidelines</p></li>
+<li><p><a class="reference internal" href="changelog.html"><span class="std std-doc">changelog.md</span></a> - Version history</p></li>
+<li><p><a class="reference internal" href="license.html"><span class="std std-doc">license.md</span></a> - MIT License</p></li>
+</ul>
+</section>
+<section id="api-reference">
+<h3>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><a class="reference internal" href="api/index.html"><span class="std std-doc">API Reference</span></a> - Sphinx autodoc API reference</p>
+<ul>
+<li><p><a class="reference internal" href="api/client.html"><span class="std std-doc">client.rst</span></a> - HTTP client</p></li>
+<li><p><a class="reference internal" href="api/services.html"><span class="std std-doc">services.rst</span></a> - Service layer</p></li>
+<li><p><a class="reference internal" href="api/models.html"><span class="std std-doc">models.rst</span></a> - Data models</p></li>
+<li><p><a class="reference internal" href="api/cli.html"><span class="std std-doc">cli.rst</span></a> - CLI commands</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="technical-reference">
+<h3>Technical Reference<a class="headerlink" href="#technical-reference" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><a class="reference download internal" download="" href="_downloads/688ea7a688c6ee348af1be3806f8c6bf/numista-swagger.yml"><span class="xref download myst">numista-swagger.yml</span></a> - Numista API specification</p></li>
+</ul>
+</section>
+</section>
+<section id="building-documentation">
+<h2>Building Documentation<a class="headerlink" href="#building-documentation" title="Link to this heading"></a></h2>
+<section id="prerequisites">
+<h3>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading"></a></h3>
+<p>Install documentation dependencies:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>uv<span class="w"> </span>sync<span class="w"> </span>--group<span class="w"> </span>docs
+</pre></div>
+</div>
+</section>
+<section id="build-html">
+<h3>Build HTML<a class="headerlink" href="#build-html" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>docs
+uv<span class="w"> </span>run<span class="w"> </span>sphinx-build<span class="w"> </span>-b<span class="w"> </span>html<span class="w"> </span>.<span class="w"> </span>_build/html
+</pre></div>
+</div>
+<p>Or using Make:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>docs
+make<span class="w"> </span>html
+</pre></div>
+</div>
+</section>
+<section id="view-documentation">
+<h3>View Documentation<a class="headerlink" href="#view-documentation" title="Link to this heading"></a></h3>
+<p>Open <code class="docutils literal notranslate"><span class="pre">docs/_build/html/index.html</span></code> in your browser.</p>
+</section>
+<section id="build-other-formats">
+<h3>Build Other Formats<a class="headerlink" href="#build-other-formats" title="Link to this heading"></a></h3>
+<p>PDF:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>docs
+make<span class="w"> </span>latexpdf
+</pre></div>
+</div>
+<p>EPUB:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>docs
+make<span class="w"> </span>epub
+</pre></div>
+</div>
+</section>
+</section>
+<section id="readthedocs">
+<h2>ReadTheDocs<a class="headerlink" href="#readthedocs" title="Link to this heading"></a></h2>
+<p>This documentation is configured for ReadTheDocs deployment.</p>
+<section id="configuration-files">
+<h3>Configuration Files<a class="headerlink" href="#configuration-files" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><a class="reference download internal" download="" href="_downloads/aee468cb7d875987a5744d72aca8b0e4/.readthedocs.yml"><span class="xref download myst">.readthedocs.yml</span></a> - RTD build configuration</p></li>
+<li><p><a class="reference download internal" download="" href="_downloads/fb0d0d7ff27f33697ba3b787ec894677/conf.py"><span class="xref download myst">conf.py</span></a> - Sphinx configuration</p></li>
+<li><p><a class="reference download internal" download="" href="_downloads/b4ef698db8ca845e5845c4618278f29a/requirements.txt"><span class="xref download myst">requirements.txt</span></a> - Documentation dependencies</p></li>
+</ul>
+</section>
+<section id="deployment">
+<h3>Deployment<a class="headerlink" href="#deployment" title="Link to this heading"></a></h3>
+<p>The documentation will build automatically when pushed to GitHub (once RTD webhook is configured).</p>
+</section>
+</section>
+<section id="documentation-standards">
+<h2>Documentation Standards<a class="headerlink" href="#documentation-standards" title="Link to this heading"></a></h2>
+<section id="formatting">
+<h3>Formatting<a class="headerlink" href="#formatting" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Use § numbering for sections</p></li>
+<li><p>Markdown for user guides</p></li>
+<li><p>reStructuredText for API reference</p></li>
+<li><p>Code examples should be runnable</p></li>
+<li><p>Include “Next Steps” links at guide ends</p></li>
+</ul>
+</section>
+<section id="content">
+<h3>Content<a class="headerlink" href="#content" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Progressive complexity (basic → advanced)</p></li>
+<li><p>Concrete, copy-pasteable examples</p></li>
+<li><p>Clear explanations</p></li>
+<li><p>Complete coverage of features</p></li>
+<li><p>Cross-references between docs</p></li>
+</ul>
+</section>
+<section id="maintenance">
+<h3>Maintenance<a class="headerlink" href="#maintenance" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Update changelog for releases</p></li>
+<li><p>Keep API reference in sync with code</p></li>
+<li><p>Test all code examples</p></li>
+<li><p>Update screenshots/diagrams as needed</p></li>
+</ul>
+</section>
+</section>
+<section id="numista-api-endpoint-trees">
+<h2>§ 1 Numista API Endpoint Trees<a class="headerlink" href="#numista-api-endpoint-trees" title="Link to this heading"></a></h2>
 <p>Each section below mirrors the OpenAPI file (<code class="docutils literal notranslate"><span class="pre">docs/numista-swagger.yml</span></code>) and lists every path, method, and request
 parameter set per API version.
 All calls require the <code class="docutils literal notranslate"><span class="pre">Numista-API-Key</span></code> header; endpoints under “User” additionally need the
 OAuth scopes noted in the swagger comments.</p>
+</section>
 <section id="version-3-https-api-numista-com-v3">
 <h2>§ 1.1 Version 3 (<code class="docutils literal notranslate"><span class="pre">https://api.numista.com/v3</span></code>)<a class="headerlink" href="#version-3-https-api-numista-com-v3" title="Link to this heading"></a></h2>
 <ul class="simple">
@@ -361,7 +528,9 @@ legacy paths above). Parameter names are identical, but some response fields rem
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="DEPLOYMENT.html" class="btn btn-neutral float-left" title="Documentation Deployment Guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
 
   <hr/>
 

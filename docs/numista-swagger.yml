@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: '3.29.0'
+  version: "3.29.0"
   title: Numista API Documentation
   description:
     Numista provides a REST API to access the numismatic catalogue and collection data programmatically.
@@ -19,7 +19,7 @@ tags:
     description: |
       The API is available at `https://api.numista.com/v3`. For example, the data about the 1 thaler coin from the 
       Free imperial city of Mühlhausen (N# 95420) can be retrieved at `https://api.numista.com/v3/types/95420`
-      
+
       ```bash
       curl -X GET "https://api.numista.com/v3/types/95420" \
       -H "Numista-API-Key: YOUR_API_KEY"
@@ -32,18 +32,18 @@ tags:
     description: |
       ## API key
       All requests to the Numista API should include your API key in a HTTP header named "Numista-API-Key".
-      
+
       `Numista-API-Key: YOUR_API_KEY`
-      
+
       ## User authentication
       Some endpoints allow access to the personal data of a Numista user. In order to use these endpoints, you need to 
       get authorization from the user via the OAuth 2.0 protocol (see below) to get a temporary access token.
       The OAuth access token should be provided as a bearer token in the HTTP header named "Authorization"
-      
+
       `Authorization: Bearer YOUR_ACCESS_TOKEN`
-      
+
       Two types of OAuth authentication are available: authorization code and client credentials.
-      
+
       ### Authorization code
       The first step consists in redirecting the user to the page  `https://{language}.numista.com/api/oauth_authorize.php?response_type=code&client_id={client_id}&redirect_uri={redirect_uri}&scope={scope}&state={state}`
 
@@ -91,7 +91,7 @@ tags:
     description: "These endpoints are deprecated. Do not use them for a new application."
 
 security:
-  - ApiKeyAuth: [ ]
+  - ApiKeyAuth: []
 
 paths:
   /types:
@@ -108,7 +108,7 @@ paths:
           required: false
           schema:
             type: string
-            enum: [ en, es, fr ]
+            enum: [en, es, fr]
             default: en
         - name: category
           in: query
@@ -116,7 +116,7 @@ paths:
           required: false
           schema:
             type: string
-            enum: [ coin, banknote, exonumia ]
+            enum: [coin, banknote, exonumia]
         - name: q
           in: query
           description: Search query
@@ -193,7 +193,7 @@ paths:
             default: 50
             maximum: 50
       responses:
-        '200':
+        "200":
           description: Search results
           content:
             application/json:
@@ -224,9 +224,9 @@ paths:
                         category:
                           description: Category
                           type: string
-                          enum: [ coin, banknote, exonumia ]
+                          enum: [coin, banknote, exonumia]
                         issuer:
-                          $ref: '#/components/schemas/issuer'
+                          $ref: "#/components/schemas/issuer"
                         min_year:
                           description: First year the type was produced (in the Gregorian calendar). This property was spelled "minYear" in the API v1.
                           type: integer
@@ -240,7 +240,7 @@ paths:
                           description: URL to a thumbnail of the picture of the reverse
                           type: string
                 example:
-                  count: '2'
+                  count: "2"
                   types:
                     - id: 420
                       title: 5 Cents - Victoria
@@ -263,24 +263,24 @@ paths:
                       obverse_thumbnail: https://en.numista.com/catalogue/photos/canada/1021-180.jpg
                       reverse_thumbnail: https://en.numista.com/catalogue/photos/canada/1022-180.jpg
 
-        '400':
+        "400":
           description: Invalid value for a parameter or missing value for a mandatory parameter
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-        '401':
+                $ref: "#/components/schemas/error"
+        "401":
           description: Invalid or missing API key
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-        '429':
+                $ref: "#/components/schemas/error"
+        "429":
           description: You sent too many simultaneous requests or you reached the limit of your monthly quota.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
+                $ref: "#/components/schemas/error"
     post:
       summary: Add a type to the catalogue
       description: This endpoint allows to add a coin to the catalogue. It requires a specific permission associated to your API key. After adding a coin, you are required to add at least one issue with `POST /coins/{coin_id}/issues`
@@ -294,7 +294,7 @@ paths:
           required: false
           schema:
             type: string
-            enum: [ en, es, fr ]
+            enum: [en, es, fr]
             default: en
       requestBody:
         description: Data related to the coin to add to the catalogue
@@ -302,7 +302,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/type_update'
+              $ref: "#/components/schemas/type_update"
             example:
               title:
                 - language: en
@@ -343,7 +343,7 @@ paths:
               orientation: medal
               demonetization:
                 is_demonetized: true
-                demonetization_date: '2020-11-01'
+                demonetization_date: "2020-11-01"
               calendar:
                 code: gregorien
               obverse:
@@ -357,7 +357,7 @@ paths:
                 lettering_translation:
                   - language: en
                     label: Letters
-                picture: 'https://www.ecb.europa.eu/euro/coins/common/shared/img/fr/France_1cent.jpg'
+                picture: "https://www.ecb.europa.eu/euro/coins/common/shared/img/fr/France_1cent.jpg"
                 picture_copyright: ECB
                 picture_copyright_type: site_autorise
               reverse:
@@ -370,7 +370,7 @@ paths:
                 lettering_translation:
                   - language: en
                     label: Blablaba
-                picture: 'https://www.ecb.europa.eu/euro/coins/common/shared/img/common_1cent_800.jpg'
+                picture: "https://www.ecb.europa.eu/euro/coins/common/shared/img/common_1cent_800.jpg"
                 picture_copyright: ECB
                 picture_copyright_type: site_autorise
               edge:
@@ -381,7 +381,7 @@ paths:
                 lettering_translation:
                   - language: en
                     label: Edge
-                picture: 'https://fr.numista.com/catalogue/photos/france/8643-original.jpg'
+                picture: "https://fr.numista.com/catalogue/photos/france/8643-original.jpg"
                 picture_copyright: Numista
                 picture_copyright_type: site_autorise
               mints:
@@ -389,9 +389,9 @@ paths:
                   letter: A
               comments:
                 - language: en
-                  label: 'This is a [b]comment[/b].'
+                  label: "This is a [b]comment[/b]."
                 - language: fr
-                  label: 'Ceci est un [b]commentaire[/b].'
+                  label: "Ceci est un [b]commentaire[/b]."
               related_coins:
                 - id: 1
               tags:
@@ -400,32 +400,32 @@ paths:
               references:
                 - catalogue:
                     id: 3
-                  number: '100'
+                  number: "100"
       responses:
-        '201':
+        "201":
           description: The coin has been added to the catalogue.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/coin'
-        '400':
+                $ref: "#/components/schemas/coin"
+        "400":
           description: Invalid value for a parameter or missing value for a mandatory parameter
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-        '401':
+                $ref: "#/components/schemas/error"
+        "401":
           description: Invalid or missing API key, or insufficient permission
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-        '429':
+                $ref: "#/components/schemas/error"
+        "429":
           description: You sent too many simultaneous requests or you reached the limit of your monthly quota.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
+                $ref: "#/components/schemas/error"
 
   /types/{type_id}:
     get:
@@ -447,15 +447,15 @@ paths:
           required: false
           schema:
             type: string
-            enum: [ en, es, fr ]
+            enum: [en, es, fr]
             default: en
       responses:
-        '200':
+        "200":
           description: The type has been found. Details are present in body.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/type'
+                $ref: "#/components/schemas/type"
               example:
                 id: 420
                 url: https://en.numista.com/catalogue/pieces420.html
@@ -543,11 +543,11 @@ paths:
                   - catalogue:
                       id: 3
                       code: KM
-                    number: '2'
+                    number: "2"
                   - catalogue:
                       id: 24
                       code: Schön
-                    number: '2'
+                    number: "2"
                 weight: 1.167
                 size: 15.494
                 thickness: 0.7
@@ -555,35 +555,35 @@ paths:
                 edge:
                   description: Reeded
                 mints:
-                  - id: '17'
+                  - id: "17"
                     name: Royal Mint (Tower Hill)
-                  - id: '18'
+                  - id: "18"
                     name: Heaton and Sons / The Mint Birmingham Limited
 
-        '400':
+        "400":
           description: Invalid value for a parameter or missing value for a mandatory parameter
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-        '401':
+                $ref: "#/components/schemas/error"
+        "401":
           description: Invalid or missing API key
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-        '404':
+                $ref: "#/components/schemas/error"
+        "404":
           description: The coin with given ID was not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-        '429':
+                $ref: "#/components/schemas/error"
+        "429":
           description: You sent too many simultaneous requests or you reached the limit of your monthly quota.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
+                $ref: "#/components/schemas/error"
 
   /types/{type_id}/issues:
     get:
@@ -605,17 +605,17 @@ paths:
           required: false
           schema:
             type: string
-            enum: [ en, es, fr ]
+            enum: [en, es, fr]
             default: en
       responses:
-        '200':
+        "200":
           description: The type has been found. Details about the issues are present in body.
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/issue'
+                  $ref: "#/components/schemas/issue"
               example:
                 - id: 51757
                   is_dated: true
@@ -627,7 +627,7 @@ paths:
                     - catalogue:
                         id: 3
                         code: KM
-                      number: '360.1'
+                      number: "360.1"
                   comment: Rio de Janeiro
                 - id: 51759
                   is_dated: true
@@ -639,7 +639,7 @@ paths:
                     - catalogue:
                         id: 3
                         code: KM
-                      number: '360.1'
+                      number: "360.1"
                   comment: Rio de Janeiro
                 - id: 51758
                   is_dated: true
@@ -650,7 +650,7 @@ paths:
                     - catalogue:
                         id: 3
                         code: KM
-                      number: '360.1'
+                      number: "360.1"
                   comment: Rio de Janeiro, BRSA
                 - id: 51767
                   is_dated: true
@@ -662,7 +662,7 @@ paths:
                     - catalogue:
                         id: 3
                         code: KM
-                      number: '360.2'
+                      number: "360.2"
                   comment: Bahia
                 - id: 51760
                   is_dated: true
@@ -674,32 +674,32 @@ paths:
                     - catalogue:
                         id: 3
                         code: KM
-                      number: '360.1'
+                      number: "360.1"
                   comment: Rio de Janeiro
-        '400':
+        "400":
           description: Invalid value for a parameter or missing value for a mandatory parameter
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-        '401':
+                $ref: "#/components/schemas/error"
+        "401":
           description: Invalid or missing API key
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-        '404':
+                $ref: "#/components/schemas/error"
+        "404":
           description: The coin with given ID was not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-        '429':
+                $ref: "#/components/schemas/error"
+        "429":
           description: You sent too many simultaneous requests or you reached the limit of your monthly quota.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
+                $ref: "#/components/schemas/error"
     post:
       summary: Add an issue
       description: This endpoint allows to add coin issues to the catalogue. It requires a specific permission associated to your API key.
@@ -719,7 +719,7 @@ paths:
           required: false
           schema:
             type: string
-            enum: [ en, es, fr ]
+            enum: [en, es, fr]
             default: en
       requestBody:
         description: Data related to the coin issue to add to the catalogue
@@ -727,7 +727,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/issue_update'
+              $ref: "#/components/schemas/issue_update"
             example:
               is_dated: false
               min_year: -220
@@ -740,30 +740,30 @@ paths:
                 - language: fr
                   label: Commentaire en françaiss
       responses:
-        '201':
+        "201":
           description: The coin issue has been added to the catalogue.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/issue'
-        '400':
+                $ref: "#/components/schemas/issue"
+        "400":
           description: Invalid value for a parameter or missing value for a mandatory parameter
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-        '401':
+                $ref: "#/components/schemas/error"
+        "401":
           description: Invalid or missing API key, or insufficient permission
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-        '429':
+                $ref: "#/components/schemas/error"
+        "429":
           description: You sent too many simultaneous requests or you reached the limit of your monthly quota.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
+                $ref: "#/components/schemas/error"
 
   /types/{type_id}/issues/{issue_id}/prices:
     get:
@@ -798,10 +798,10 @@ paths:
           required: false
           schema:
             type: string
-            enum: [ en, es, fr ]
+            enum: [en, es, fr]
             default: en
       responses:
-        '200':
+        "200":
           description: The issue has been found. Prices are present in the body.
           content:
             application/json:
@@ -826,7 +826,7 @@ paths:
                         grade:
                           description: Grade of the coin ("g", "vg", "f", "vf", "xf", "au" or "unc")
                           type: string
-                          enum: [ g, vg, f, vf, xf, au, unc ]
+                          enum: [g, vg, f, vf, xf, au, unc]
                         price:
                           description: Estimate of the price determined by Numista
                           type: number
@@ -839,30 +839,30 @@ paths:
                     price: 220
                   - gradde: xf
                     price: 380
-        '400':
+        "400":
           description: Invalid value for a parameter or missing value for a mandatory parameter
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-        '401':
+                $ref: "#/components/schemas/error"
+        "401":
           description: Invalid or missing API key
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-        '404':
+                $ref: "#/components/schemas/error"
+        "404":
           description: The issue with given ID was not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-        '429':
+                $ref: "#/components/schemas/error"
+        "429":
           description: You sent too many simultaneous requests or you reached the limit of your monthly quota.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
+                $ref: "#/components/schemas/error"
 
   /coins:
     get:
@@ -879,7 +879,7 @@ paths:
           required: false
           schema:
             type: string
-            enum: [ en, es, fr ]
+            enum: [en, es, fr]
             default: en
         - name: q
           in: query
@@ -908,7 +908,7 @@ paths:
             type: integer
             default: 50
       responses:
-        '200':
+        "200":
           description: List of matching coins
           content:
             application/json:
@@ -937,7 +937,7 @@ paths:
                           description: Title of the coin
                           type: string
                         issuer:
-                          $ref: '#/components/schemas/issuer'
+                          $ref: "#/components/schemas/issuer"
                         min_year:
                           description: First year the coin was minted (in the Gregorian calendar). This property was spelled "minYear" in the API v1.
                           type: integer
@@ -945,7 +945,7 @@ paths:
                           description: Last year the coin was minted (in the Gregorian calendar). This property was spelled "maxYear" in the API v1.
                           type: integer
                 example:
-                  count: '2'
+                  count: "2"
                   coins:
                     - id: 420
                       title: 5 Cents - Victoria
@@ -962,24 +962,24 @@ paths:
                       min_year: 1902
                       max_year: 1902
 
-        '400':
+        "400":
           description: Invalid value for a parameter or missing value for a mandatory parameter
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-        '401':
+                $ref: "#/components/schemas/error"
+        "401":
           description: Invalid or missing API key
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-        '429':
+                $ref: "#/components/schemas/error"
+        "429":
           description: You sent too many simultaneous requests or you reached the limit of your monthly quota.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
+                $ref: "#/components/schemas/error"
     post:
       deprecated: true
       summary: Add a coin to the catalogue
@@ -994,7 +994,7 @@ paths:
           required: false
           schema:
             type: string
-            enum: [ en, es, fr ]
+            enum: [en, es, fr]
             default: en
       requestBody:
         description: Data related to the coin to add to the catalogue
@@ -1002,7 +1002,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/coin_update'
+              $ref: "#/components/schemas/coin_update"
             example:
               title:
                 - language: en
@@ -1042,7 +1042,7 @@ paths:
               orientation: medal
               demonetization:
                 is_demonetized: true
-                demonetization_date: '2020-11-01'
+                demonetization_date: "2020-11-01"
               calendar:
                 code: gregorien
               obverse:
@@ -1056,7 +1056,7 @@ paths:
                 lettering_translation:
                   - language: en
                     label: Letters
-                picture: 'https://www.ecb.europa.eu/euro/coins/common/shared/img/fr/France_1cent.jpg'
+                picture: "https://www.ecb.europa.eu/euro/coins/common/shared/img/fr/France_1cent.jpg"
                 picture_copyright: ECB
                 picture_copyright_type: site_autorise
               reverse:
@@ -1069,7 +1069,7 @@ paths:
                 lettering_translation:
                   - language: en
                     label: Blablaba
-                picture: 'https://www.ecb.europa.eu/euro/coins/common/shared/img/common_1cent_800.jpg'
+                picture: "https://www.ecb.europa.eu/euro/coins/common/shared/img/common_1cent_800.jpg"
                 picture_copyright: ECB
                 picture_copyright_type: site_autorise
               edge:
@@ -1080,7 +1080,7 @@ paths:
                 lettering_translation:
                   - language: en
                     label: Edge
-                picture: 'https://fr.numista.com/catalogue/photos/france/8643-original.jpg'
+                picture: "https://fr.numista.com/catalogue/photos/france/8643-original.jpg"
                 picture_copyright: Numista
                 picture_copyright_type: site_autorise
               mints:
@@ -1088,9 +1088,9 @@ paths:
                   letter: A
               comments:
                 - language: en
-                  label: 'This is a [b]comment[/b].'
+                  label: "This is a [b]comment[/b]."
                 - language: fr
-                  label: 'Ceci est un [b]commentaire[/b].'
+                  label: "Ceci est un [b]commentaire[/b]."
               related_coins:
                 - id: 1
               tags:
@@ -1099,32 +1099,32 @@ paths:
               references:
                 - catalogue:
                     id: 3
-                  number: '100'
+                  number: "100"
       responses:
-        '201':
+        "201":
           description: The coin has been added to the catalogue.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/coin'
-        '400':
+                $ref: "#/components/schemas/coin"
+        "400":
           description: Invalid value for a parameter or missing value for a mandatory parameter
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-        '401':
+                $ref: "#/components/schemas/error"
+        "401":
           description: Invalid or missing API key, or insufficient permission
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-        '429':
+                $ref: "#/components/schemas/error"
+        "429":
           description: You sent too many simultaneous requests or you reached the limit of your monthly quota.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
+                $ref: "#/components/schemas/error"
 
   /coins/{coin_id}:
     get:
@@ -1147,19 +1147,19 @@ paths:
           required: false
           schema:
             type: string
-            enum: [ en, es, fr ]
+            enum: [en, es, fr]
             default: en
       responses:
-        '200':
+        "200":
           description: The coin has been found. Details are present in body.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/coin'
+                $ref: "#/components/schemas/coin"
 
               example:
                 id: 420
-                url: 'https://en.numista.com/catalogue/pieces420.html'
+                url: "https://en.numista.com/catalogue/pieces420.html"
                 title: 5 Cents - Victoria
                 issuer:
                   code: canada
@@ -1191,54 +1191,54 @@ paths:
                     - Leonard Charles Wyon
                   description: 'The portrait in left profile of Victoria is surrounded with the inscriptions "CANADA" and "VICTORIA DEI GRATIA REGINA" (Victoria, Queen by the grace of God)'
                   lettering: "VICTORIA DEI GRATIA REGINA.\r\nCANADA"
-                  picture: 'https://en.numista.com/catalogue/photos/canada/1009-original.jpg'
-                  thumbnail: 'https://en.numista.com/catalogue/photos/canada/1009-135.jpg'
+                  picture: "https://en.numista.com/catalogue/photos/canada/1009-original.jpg"
+                  thumbnail: "https://en.numista.com/catalogue/photos/canada/1009-135.jpg"
                   picture_copyright: Heritage Auctions
-                  picture_copyright_url: 'https://www.ha.com'
+                  picture_copyright_url: "https://www.ha.com"
                 reverse:
                   engravers:
                     - Leonard Charles Wyon
                   description: The face value is surrounded with two maple boughs and the crown of Queen Victoria
                   lettering: "5\r\nCENTS\r\n1858"
-                  picture: 'https://en.numista.com/catalogue/photos/canada/1010-original.jpg'
-                  thumbnail: 'https://en.numista.com/catalogue/photos/canada/1010-135.jpg'
+                  picture: "https://en.numista.com/catalogue/photos/canada/1010-original.jpg"
+                  thumbnail: "https://en.numista.com/catalogue/photos/canada/1010-135.jpg"
                   picture_copyright: Heritage Auctions
-                  picture_copyright_url: 'https://www.ha.com'
+                  picture_copyright_url: "https://www.ha.com"
                 edge:
                   description: Reeded
                 references:
                   - catalogue:
                       id: 3
                       code: KM
-                    number: '2'
+                    number: "2"
                   - catalogue:
                       id: 24
                       code: Schön
-                    number: '2'
-        '400':
+                    number: "2"
+        "400":
           description: Invalid value for a parameter or missing value for a mandatory parameter
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-        '401':
+                $ref: "#/components/schemas/error"
+        "401":
           description: Invalid or missing API key
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-        '404':
+                $ref: "#/components/schemas/error"
+        "404":
           description: The coin with given ID was not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-        '429':
+                $ref: "#/components/schemas/error"
+        "429":
           description: You sent too many simultaneous requests or you reached the limit of your monthly quota.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
+                $ref: "#/components/schemas/error"
 
   /coins/{coin_id}/issues:
     get:
@@ -1261,17 +1261,17 @@ paths:
           required: false
           schema:
             type: string
-            enum: [ en, es, fr ]
+            enum: [en, es, fr]
             default: en
       responses:
-        '200':
+        "200":
           description: The coin has been found. Details about mintage are present in body.
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/issue'
+                  $ref: "#/components/schemas/issue"
               example:
                 - id: 51757
                   is_dated: true
@@ -1279,51 +1279,51 @@ paths:
                   gregorian_year: 1823
                   mint_letter: R
                   mintage: 1700000
-                  comment: 'KM#360.1 (Rio de Janeiro)'
+                  comment: "KM#360.1 (Rio de Janeiro)"
                 - id: 51758
                   is_dated: true
                   year: 1824
                   gregorian_year: 1824
                   mint_letter: R
-                  comment: 'KM#360.1 (Rio de Janeiro, BRSA)'
+                  comment: "KM#360.1 (Rio de Janeiro, BRSA)"
                 - id: 51759
                   is_dated: true
                   year: 1824
                   gregorian_year: 1824
                   mint_letter: R
                   mintage: 4955564
-                  comment: 'KM#360.1 (Rio de Janeiro)'
+                  comment: "KM#360.1 (Rio de Janeiro)"
                 - id: 51767
                   is_dated: true
                   year: 1825
                   gregorian_year: 1825
                   mint_letter: B
                   mintage: 581808
-                  comment: 'KM#360.2 (Bahia)'
-        '400':
+                  comment: "KM#360.2 (Bahia)"
+        "400":
           description: Invalid value for a parameter or missing value for a mandatory parameter
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-        '401':
+                $ref: "#/components/schemas/error"
+        "401":
           description: Invalid or missing API key
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-        '404':
+                $ref: "#/components/schemas/error"
+        "404":
           description: The coin with given ID was not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-        '429':
+                $ref: "#/components/schemas/error"
+        "429":
           description: You sent too many simultaneous requests or you reached the limit of your monthly quota.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
+                $ref: "#/components/schemas/error"
     post:
       deprecated: true
       summary: Add a coin issue
@@ -1344,7 +1344,7 @@ paths:
           required: false
           schema:
             type: string
-            enum: [ en, es, fr ]
+            enum: [en, es, fr]
             default: en
       requestBody:
         description: Data related to the coin issue to add to the catalogue
@@ -1352,7 +1352,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/issue_update'
+              $ref: "#/components/schemas/issue_update"
             example:
               is_dated: false
               min_year: -220
@@ -1365,30 +1365,30 @@ paths:
                 - language: fr
                   label: Commentaire en françaiss
       responses:
-        '201':
+        "201":
           description: The coin issue has been added to the catalogue.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/issue'
-        '400':
+                $ref: "#/components/schemas/issue"
+        "400":
           description: Invalid value for a parameter or missing value for a mandatory parameter
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-        '401':
+                $ref: "#/components/schemas/error"
+        "401":
           description: Invalid or missing API key, or insufficient permission
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-        '429':
+                $ref: "#/components/schemas/error"
+        "429":
           description: You sent too many simultaneous requests or you reached the limit of your monthly quota.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
+                $ref: "#/components/schemas/error"
   /coins/{coin_id}/issues/{issue_id}/prices:
     get:
       deprecated: true
@@ -1423,10 +1423,10 @@ paths:
           required: false
           schema:
             type: string
-            enum: [ en, es, fr ]
+            enum: [en, es, fr]
             default: en
       responses:
-        '200':
+        "200":
           description: The issue has been found. Prices are present in the body.
           content:
             application/json:
@@ -1451,7 +1451,7 @@ paths:
                         grade:
                           description: Grade of the coin ("g", "vg", "f", "vf", "xf", "au" or "unc")
                           type: string
-                          enum: [ g, vg, f, vf, xf, au, unc ]
+                          enum: [g, vg, f, vf, xf, au, unc]
                         price:
                           description: Estimate of the price determined by Numista
                           type: number
@@ -1464,30 +1464,30 @@ paths:
                     price: 220
                   - grade: xf
                     price: 380
-        '400':
+        "400":
           description: Invalid value for a parameter or missing value for a mandatory parameter
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-        '401':
+                $ref: "#/components/schemas/error"
+        "401":
           description: Invalid or missing API key
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-        '404':
+                $ref: "#/components/schemas/error"
+        "404":
           description: The issue with given ID was not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-        '429':
+                $ref: "#/components/schemas/error"
+        "429":
           description: You sent too many simultaneous requests or you reached the limit of your monthly quota.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
+                $ref: "#/components/schemas/error"
 
   /issuers:
     get:
@@ -1503,10 +1503,10 @@ paths:
           required: false
           schema:
             type: string
-            enum: [ en, es, fr ]
+            enum: [en, es, fr]
             default: en
       responses:
-        '200':
+        "200":
           description: The list of issuers could be retrieved
           content:
             application/json:
@@ -1541,7 +1541,7 @@ paths:
                           description: Identifier of the issuer at Wikidata, starting with a "Q"
                           type: string
                         parent:
-                          $ref: '#/components/schemas/issuer'
+                          $ref: "#/components/schemas/issuer"
                         level:
                           description: Level of the issuer in the tree of issuers (from 1 to 5)
                           type: integer
@@ -1574,24 +1574,24 @@ paths:
                       code: albania_section
                       name: Albania
                     level: 2
-        '400':
+        "400":
           description: Invalid value for a parameter or missing value for a mandatory parameter
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-        '401':
+                $ref: "#/components/schemas/error"
+        "401":
           description: Invalid or missing API key
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-        '429':
+                $ref: "#/components/schemas/error"
+        "429":
           description: You sent too many simultaneous requests or you reached the limit of your monthly quota.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
+                $ref: "#/components/schemas/error"
 
   /mints:
     get:
@@ -1607,10 +1607,10 @@ paths:
           required: false
           schema:
             type: string
-            enum: [ en, es, fr ]
+            enum: [en, es, fr]
             default: en
       responses:
-        '200':
+        "200":
           description: The list of mints
           content:
             application/json:
@@ -1626,7 +1626,7 @@ paths:
                   mints:
                     type: array
                     items:
-                      $ref: '#/components/schemas/mint'
+                      $ref: "#/components/schemas/mint"
               example:
                 count: 4035
                 catalogues:
@@ -1658,18 +1658,18 @@ paths:
                       name: Japan
                     wikidata_id: Q34664
 
-        '401':
+        "401":
           description: Invalid or missing API key
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-        '429':
+                $ref: "#/components/schemas/error"
+        "429":
           description: You sent too many simultaneous requests or you reached the limit of your monthly quota.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
+                $ref: "#/components/schemas/error"
 
   /mints/{mint_id}:
     get:
@@ -1691,15 +1691,15 @@ paths:
           required: false
           schema:
             type: string
-            enum: [ en, es, fr ]
+            enum: [en, es, fr]
             default: en
       responses:
-        '200':
+        "200":
           description: Details about the mint
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/mint'
+                $ref: "#/components/schemas/mint"
               example:
                 id: 1
                 place: Munich (München), Germany
@@ -1710,30 +1710,30 @@ paths:
                 end_year: 9999,
                 nomisma_id: munich
                 wikidata_id: Q812404
-        '400':
+        "400":
           description: Invalid value for a parameter or missing value for a mandatory parameter
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-        '401':
+                $ref: "#/components/schemas/error"
+        "401":
           description: Invalid or missing API key
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-        '404':
+                $ref: "#/components/schemas/error"
+        "404":
           description: The coin with given ID was not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-        '429':
+                $ref: "#/components/schemas/error"
+        "429":
           description: You sent too many simultaneous requests or you reached the limit of your monthly quota.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
+                $ref: "#/components/schemas/error"
 
   /catalogues:
     get:
@@ -1742,9 +1742,9 @@ paths:
       operationId: getCatalogues
       tags:
         - "Catalogue"
-      parameters: [ ]
+      parameters: []
       responses:
-        '200':
+        "200":
           description: The list of catalogues
           content:
             application/json:
@@ -1794,38 +1794,38 @@ paths:
                     title: A Checklist of Islamic Coins
                     author: Stephen Album
                     publisher: Self-published
-                    isbn13: '9780615562445'
+                    isbn13: "9780615562445"
                   - id: 241
                     code: AB
-                    title: 'Catálogo de la moneda medieval castellano-leonesa : siglos XI al XV'
+                    title: "Catálogo de la moneda medieval castellano-leonesa : siglos XI al XV"
                     author: Fernando Álvarez Burgos
                     publisher: Vico-Segarra Editores
-                    isbn13: '9788485711185'
+                    isbn13: "9788485711185"
                   - id: 26
                     code: AC
                     title: The Atwood-Coffee Catalogue of United States and Canadian Transportation Tokens
-                    author: 'John M Coffee, Harold V Ford'
+                    author: "John M Coffee, Harold V Ford"
                     publisher: American Vecturist Associationn
 
-        '401':
+        "401":
           description: Invalid or missing API key
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-        '429':
+                $ref: "#/components/schemas/error"
+        "429":
           description: You sent too many simultaneous requests or you reached the limit of your monthly quota.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
+                $ref: "#/components/schemas/error"
 
   /search_by_image:
     post:
       summary: Search the catalogue by image
       description: |
         Find the coin, banknote, and exonumia types that match the input image(s).
-        
+
         Search by image is a paid feature. See the [pricing page](https://en.numista.com/api/pricing.php) for more information.
       operationId: searchByImage
       tags:
@@ -1837,7 +1837,7 @@ paths:
           required: false
           schema:
             type: string
-            enum: [ en, es, fr ]
+            enum: [en, es, fr]
             default: en
         - name: activate_experimental_features
           in: query
@@ -1859,7 +1859,7 @@ paths:
                 category:
                   description: Catalogue category
                   type: string
-                  enum: [ coin, banknote, exonumia ]
+                  enum: [coin, banknote, exonumia]
                 images:
                   description: List of one or two input images in JPEG or PNG format with base64 encoding.
                   type: array
@@ -1874,7 +1874,7 @@ paths:
                       mime_type:
                         type: string
                         description: MIME type
-                        enum: [ image/jpeg, image/png ]
+                        enum: [image/jpeg, image/png]
                       image_data:
                         type: string
                         description: Base64 encoding of the image
@@ -1894,7 +1894,7 @@ paths:
                     image_data: /9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAIBAQIBAQICAgICAgICAwUDAwMDAw...
 
       responses:
-        '200':
+        "200":
           description: Search results
           content:
             application/json:
@@ -1925,9 +1925,9 @@ paths:
                         category:
                           description: Category
                           type: string
-                          enum: [ coin, banknote, exonumia ]
+                          enum: [coin, banknote, exonumia]
                         issuer:
-                          $ref: '#/components/schemas/issuer'
+                          $ref: "#/components/schemas/issuer"
                         min_year:
                           description: First year the type was produced (in the Gregorian calendar). This property was spelled "minYear" in the API v1.
                           type: integer
@@ -1951,10 +1951,10 @@ paths:
                   experimental_tentative_grade:
                     description: Approximate grade of the coin, or null if the grade could not be determined. This is an experimental feature (beta version). It is returned only if the parameter 'activate_experimental_features' was included in the query.
                     type: string
-                    enum: [ g, vg, f, vf, xf, au, unc ]
+                    enum: [g, vg, f, vf, xf, au, unc]
                     nullable: true
                 example:
-                  count: '2'
+                  count: "2"
                   types:
                     - id: 420
                       title: 5 Cents - Victoria
@@ -1979,31 +1979,31 @@ paths:
                       reverse_thumbnail: https://en.numista.com/catalogue/photos/canada/1022-180.jpg
                       similarity_distance: 0.38576567
                   experimental_tentative_year: 1900
-                  experimental_tentative_grade: 'vf'
-        '400':
+                  experimental_tentative_grade: "vf"
+        "400":
           description: Invalid value for a parameter or missing value for a mandatory parameter
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-        '401':
+                $ref: "#/components/schemas/error"
+        "401":
           description: Invalid or missing API key
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-        '403':
+                $ref: "#/components/schemas/error"
+        "403":
           description: Your API key is not activated for using this API endpoint.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-        '429':
+                $ref: "#/components/schemas/error"
+        "429":
           description: You sent too many simultaneous requests or you reached the limit of your monthly quota.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
+                $ref: "#/components/schemas/error"
 
   /publications/{id}:
     get:
@@ -2020,12 +2020,12 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: The publication has been found. Details are present in body.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/publication'
+                $ref: "#/components/schemas/publication"
               examples:
                 book:
                   summary: Example of a volume (book)
@@ -2054,9 +2054,9 @@ paths:
                       - name: London, United Kingdom
                         geonames_id: "2643743"
                     part_of:
-                    - type: volume_group
-                      id: L111322
-                      title: Cast Chinese Coins
+                      - type: volume_group
+                        id: L111322
+                        title: Cast Chinese Coins
                     bibliographical_notice: David Hartill; 2017. Cast Chinese Coins (2nd Edition). Self-published, London, United Kingdom.
 
                 article:
@@ -2075,38 +2075,38 @@ paths:
                         name: W. Op den Welde
                         id: 13687
                     part_of:
-                    - type: volume
-                      id: L109295
-                      title: ONS Journal
-                      volume_number: Volume 222
+                      - type: volume
+                        id: L109295
+                        title: ONS Journal
+                        volume_number: Volume 222
                     bibliographical_notice: David Hartill, W. Op den Welde; 2015. “Three unknown spade coins”, ONS Journal, Volume 222, pages 36-39.
                     download_urls:
                       - https://www.orientalnumismaticsociety.org/archive/ONS_222.pdf
 
-        '400':
+        "400":
           description: Invalid value for a parameter or missing value for a mandatory parameter.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-        '401':
+                $ref: "#/components/schemas/error"
+        "401":
           description: Invalid or missing API key.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-        '404':
+                $ref: "#/components/schemas/error"
+        "404":
           description: The publication with given ID was not found.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-        '429':
+                $ref: "#/components/schemas/error"
+        "429":
           description: You sent too many simultaneous requests or you reached the limit of your monthly quota.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
+                $ref: "#/components/schemas/error"
 
   /oauth_token:
     get:
@@ -2117,29 +2117,29 @@ paths:
       description: |
         In order to access the data of a Numista user, you will need to authenticate using the OAuth 2.0 protocol.
         See the section "Authentication" above.
-        
-        
+
+
         Two types of authentications are available: authorization code and client credentials.
-        
-        
+
+
         For the "authoriation code" flow, call the endpoint `/oauth_token` with the following parameters:
         - `grant_type` is "authorization_code".
         - `code` is the code you received in the query string of the back redirection described above.
         - `client_id` is the client ID which was assigned to your application and provided together with your API key.
         - `client_secret` is your API key.
         - `redirect_uri` is the redirection URI you specified for the step described above.
-        
-        
+
+
         For the "client credentials" flow, call the endpoint `/oauth_token` with the following parameters:
         - `grant_type` is "client_credentials".
         - `scope` is a comma-separated list of permissions you are requesting (e.g. 'view_collection').
 
         You may use the resulting access token for all subsequent API calls which need user authentication. 
         The access token should be provided in the HTTP header of the subsequent API calls according the following model:
-        
+
         `Authorization: Bearer {access_token}`
-        
-        
+
+
         The access token has a limited validity period. The lifetime of the access token is indicated in the response of the API.
 
       parameters:
@@ -2149,7 +2149,7 @@ paths:
           required: false
           schema:
             type: string
-            enum: [ authorization_code, client_credentials ]
+            enum: [authorization_code, client_credentials]
             default: authorization_code
         - name: code
           in: query
@@ -2182,7 +2182,7 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: A token is provided to access the data of a Numista user
           content:
             application/json:
@@ -2211,30 +2211,30 @@ paths:
                 expires_in: 7776000
                 user_id: 2104
 
-        '400':
+        "400":
           description: Invalid value for a parameter or missing value for a mandatory parameter
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-        '401':
+                $ref: "#/components/schemas/error"
+        "401":
           description: Invalid or missing API key
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-        '429':
+                $ref: "#/components/schemas/error"
+        "429":
           description: You sent too many simultaneous requests or you reached the limit of your monthly quota.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-        '501':
+                $ref: "#/components/schemas/error"
+        "501":
           description: No user associated to your API key (for grant type "client_credentials")
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
+                $ref: "#/components/schemas/error"
 
   /users/{user_id}:
     get:
@@ -2255,10 +2255,10 @@ paths:
           required: false
           schema:
             type: string
-            enum: [ en, es, fr ]
+            enum: [en, es, fr]
             default: en
       responses:
-        '200':
+        "200":
           description: The user information are returned
           content:
             application/json:
@@ -2276,43 +2276,43 @@ paths:
                     type: string
               example:
                 username: demo
-                avatar: 'https://en.numista.com/forum/avatars/183219764755b257d9cf3b7.png'
-        '400':
+                avatar: "https://en.numista.com/forum/avatars/183219764755b257d9cf3b7.png"
+        "400":
           description: Invalid value for a parameter or missing value for a mandatory parameter
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-        '401':
+                $ref: "#/components/schemas/error"
+        "401":
           description: Invalid or missing API key
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-        '404':
+                $ref: "#/components/schemas/error"
+        "404":
           description: The user with given ID does not exist.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-        '429':
+                $ref: "#/components/schemas/error"
+        "429":
           description: You sent too many simultaneous requests or you reached the limit of your monthly quota.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
+                $ref: "#/components/schemas/error"
 
   /users/{user_id}/collections:
     get:
       summary: Get the list of collections of a user
       description: |
         A user can organize their items in multiple collections.
-        
+
         This functionality requires the OAuth 2.0 authentication with the scope "view_collection".
       operationId: getUserCollections
       security:
-        - ApiKeyAuth: [ ]
-          OAuth2: [ view_collection ]
+        - ApiKeyAuth: []
+          OAuth2: [view_collection]
       tags:
         - "User"
       parameters:
@@ -2323,7 +2323,7 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: The collections are returned
           content:
             application/json:
@@ -2340,7 +2340,7 @@ paths:
                     description: List of collections
                     type: array
                     items:
-                      $ref: '#/components/schemas/collection'
+                      $ref: "#/components/schemas/collection"
               example:
                 count: 3
                 collections:
@@ -2350,42 +2350,42 @@ paths:
                     name: Lucy's collection
                   - id: 1003
                     name: Bullion investment
-        '400':
+        "400":
           description: Invalid value for a parameter or missing value for a mandatory parameter
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-        '401':
+                $ref: "#/components/schemas/error"
+        "401":
           description: Invalid or missing API key
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-        '404':
+                $ref: "#/components/schemas/error"
+        "404":
           description: The user with given ID does not exist.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-        '429':
+                $ref: "#/components/schemas/error"
+        "429":
           description: You sent too many simultaneous requests or you reached the limit of your monthly quota.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
+                $ref: "#/components/schemas/error"
 
   /users/{user_id}/collected_items:
     get:
       summary: Get the items owned by a user
       description:
         Retrieve the details about all the items (coins, banknotes, pieces of exonumia) in collected by the user.
-        
+
         This functionality requires the OAuth 2.0 authentication with the scope "view_collection".
       operationId: getCollectedItems
       security:
-        - ApiKeyAuth: [ ]
-          OAuth2: [ view_collection ]
+        - ApiKeyAuth: []
+          OAuth2: [view_collection]
       tags:
         - "User"
       parameters:
@@ -2401,7 +2401,7 @@ paths:
           required: false
           schema:
             type: string
-            enum: [ coin, banknote, exonumia ]
+            enum: [coin, banknote, exonumia]
         - name: type
           in: query
           description: Type ID. If this parameter is provided, only items of the given type are returned.
@@ -2415,7 +2415,7 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: The list of items in the user collection could is returned.
           content:
             application/json:
@@ -2444,39 +2444,39 @@ paths:
                     description: List of items in the collection
                     type: array
                     items:
-                      $ref: '#/components/schemas/collected_item'
-        '400':
+                      $ref: "#/components/schemas/collected_item"
+        "400":
           description: Invalid value for a parameter or missing value for a mandatory parameter
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-        '401':
+                $ref: "#/components/schemas/error"
+        "401":
           description: Invalid or missing API key
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-        '404':
+                $ref: "#/components/schemas/error"
+        "404":
           description: The user with given ID does not exist.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-        '429':
+                $ref: "#/components/schemas/error"
+        "429":
           description: You sent too many simultaneous requests or you reached the limit of your monthly quota.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
+                $ref: "#/components/schemas/error"
 
     post:
       summary: Add an item in the user collection
       description: This functionality requires the OAuth 2.0 authentication with the scope "edit_collection".
       operationId: addCollectedItems
       security:
-        - ApiKeyAuth: [ ]
-          OAuth2: [ edit_collection ]
+        - ApiKeyAuth: []
+          OAuth2: [edit_collection]
       tags:
         - "User"
       parameters:
@@ -2509,7 +2509,7 @@ paths:
                 grade:
                   description: Grade of the item
                   type: string
-                  enum: [ g, vg, f, vf, xf, au, unc ]
+                  enum: [g, vg, f, vf, xf, au, unc]
                 for_swap:
                   description: Indicate whether the item is available for swap
                   type: boolean
@@ -2521,7 +2521,7 @@ paths:
                   description: Public comment
                   type: string
                 price:
-                  $ref: '#/components/schemas/price'
+                  $ref: "#/components/schemas/price"
                 collection:
                   description: ID of the collection.
                   type: integer
@@ -2606,48 +2606,48 @@ paths:
                 grading_strike: 223 #1
                 grading_surface: 228 #1
       responses:
-        '201':
+        "201":
           description: The item was added to the user collection. The item is described in the response body.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/collected_item'
-        '400':
+                $ref: "#/components/schemas/collected_item"
+        "400":
           description: Invalid value for a parameter or missing value for a mandatory parameter
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-        '401':
+                $ref: "#/components/schemas/error"
+        "401":
           description: Invalid or missing API key
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-        '404':
+                $ref: "#/components/schemas/error"
+        "404":
           description: The user with given ID does not exist.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-        '429':
+                $ref: "#/components/schemas/error"
+        "429":
           description: You sent too many simultaneous requests or you reached the limit of your monthly quota.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
+                $ref: "#/components/schemas/error"
 
   /users/{user_id}/collected_items/{item_id}:
     get:
       summary: Get an item in a user's collection
       description: |
         Retrieve the details about a specific item collected by the user.
-        
+
         This functionality requires the OAuth 2.0 authentication with the scope "view_collection".
       operationId: getCollectedItem
       security:
-        - ApiKeyAuth: [ ]
-          OAuth2: [ view_collection ]
+        - ApiKeyAuth: []
+          OAuth2: [view_collection]
       tags:
         - "User"
       parameters:
@@ -2664,47 +2664,47 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: The item in the user collection is returned.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/collected_item'
-        '400':
+                $ref: "#/components/schemas/collected_item"
+        "400":
           description: Invalid value for a parameter or missing value for a mandatory parameter
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-        '401':
+                $ref: "#/components/schemas/error"
+        "401":
           description: Invalid or missing API key
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-        '404':
+                $ref: "#/components/schemas/error"
+        "404":
           description: The user or item with given ID does not exist.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-        '429':
+                $ref: "#/components/schemas/error"
+        "429":
           description: You sent too many simultaneous requests or you reached the limit of your monthly quota.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
+                $ref: "#/components/schemas/error"
 
     patch:
       summary: Edit an item in a user's collection
       description: |
         All fields in the request body are optional. Only the fields which are present will be updated.
-        
+
         This functionality requires the OAuth 2.0 authentication with the scope "edit_collection".
       operationId: editCollectedItem
       security:
-        - ApiKeyAuth: [ ]
-          OAuth2: [ edit_collection ]
+        - ApiKeyAuth: []
+          OAuth2: [edit_collection]
       tags:
         - "User"
       parameters:
@@ -2742,7 +2742,7 @@ paths:
                 grade:
                   description: Grade of the item, or null for undetermined grade
                   type: string
-                  enum: [ g, vg, f, vf, xf, au, unc ]
+                  enum: [g, vg, f, vf, xf, au, unc]
                   nullable: true
                 for_swap:
                   description: Indicate whether the item is available for swap
@@ -2843,44 +2843,44 @@ paths:
                 slab_number: 12321/0110
                 grading_designations: [420] #★
       responses:
-        '200':
+        "200":
           description: The item had been edited. The updated item is described in the response body.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/collected_item'
-        '400':
+                $ref: "#/components/schemas/collected_item"
+        "400":
           description: Invalid value for a parameter or missing value for a mandatory parameter
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-        '401':
+                $ref: "#/components/schemas/error"
+        "401":
           description: Invalid or missing API key
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-        '404':
+                $ref: "#/components/schemas/error"
+        "404":
           description: The user or item with given ID does not exist.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-        '429':
+                $ref: "#/components/schemas/error"
+        "429":
           description: You sent too many simultaneous requests or you reached the limit of your monthly quota.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
+                $ref: "#/components/schemas/error"
 
     delete:
       summary: Delete an item from a user's collection
       description: This functionality requires the OAuth 2.0 authentication with the scope "edit_collection".
       operationId: deleteCollectedItem
       security:
-        - ApiKeyAuth: [ ]
-          OAuth2: [ edit_collection ]
+        - ApiKeyAuth: []
+          OAuth2: [edit_collection]
       tags:
         - "User"
       parameters:
@@ -2897,26 +2897,26 @@ paths:
           schema:
             type: integer
       responses:
-        '204':
+        "204":
           description: The item has been deleted.
-        '401':
+        "401":
           description: Invalid or missing API key
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-        '404':
+                $ref: "#/components/schemas/error"
+        "404":
           description: The user or item with given ID does not exist.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-        '429':
+                $ref: "#/components/schemas/error"
+        "429":
           description: You sent too many simultaneous requests or you reached the limit of your monthly quota.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
+                $ref: "#/components/schemas/error"
 
   /users/{user_id}/collected_coins:
     get:
@@ -2925,8 +2925,8 @@ paths:
       description: This endpoint was removed in the API version 3 and above. Please use the endpoint /users/{user_id}/collected_items instead.
       operationId: getCollectedCoins
       security:
-        - ApiKeyAuth: [ ]
-          OAuth2: [ view_collection ]
+        - ApiKeyAuth: []
+          OAuth2: [view_collection]
       tags:
         - "Deprecated"
       parameters:
@@ -2942,7 +2942,7 @@ paths:
           required: false
           schema:
             type: string
-            enum: [ en, es, fr ]
+            enum: [en, es, fr]
             default: en
         - name: coin
           in: query
@@ -2951,7 +2951,7 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: The list of coins in the user collection could is returned.
           content:
             application/json:
@@ -2980,31 +2980,31 @@ paths:
                     description: List of collected coins
                     type: array
                     items:
-                      $ref: '#/components/schemas/collected_item'
-        '400':
+                      $ref: "#/components/schemas/collected_item"
+        "400":
           description: Invalid value for a parameter or missing value for a mandatory parameter
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-        '401':
+                $ref: "#/components/schemas/error"
+        "401":
           description: Invalid or missing API key
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-        '404':
+                $ref: "#/components/schemas/error"
+        "404":
           description: The user with given ID does not exist.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-        '429':
+                $ref: "#/components/schemas/error"
+        "429":
           description: You sent too many simultaneous requests or you reached the limit of your monthly quota.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
+                $ref: "#/components/schemas/error"
 
 components:
   securitySchemes:
@@ -3052,9 +3052,9 @@ components:
         category:
           description: Category
           type: string
-          enum: [ coin, banknote, exonumia ]
+          enum: [coin, banknote, exonumia]
         issuer:
-          $ref: '#/components/schemas/issuer'
+          $ref: "#/components/schemas/issuer"
         issuing_entity:
           description: Issuing entity (bank, company, etc.)
           type: object
@@ -3114,7 +3114,7 @@ components:
               description: If the value is better described as a fraction, this is the denominator of the fraction
               type: integer
             currency:
-              $ref: '#/components/schemas/currency'
+              $ref: "#/components/schemas/currency"
         ruler:
           description: Ruling authorities (emperor, queen, period, etc.)
           type: array
@@ -3198,15 +3198,15 @@ components:
         orientation:
           description: Orientation of the coin ("coin", "medal", "three" (3 o'clock), "nine" (9 o'clock), or "variable")
           type: string
-          enum: [ coin, medal, variable, three, nine ]
+          enum: [coin, medal, variable, three, nine]
         obverse:
-          $ref: '#/components/schemas/coin_side'
+          $ref: "#/components/schemas/coin_side"
         reverse:
-          $ref: '#/components/schemas/coin_side'
+          $ref: "#/components/schemas/coin_side"
         edge:
-          $ref: '#/components/schemas/coin_side'
+          $ref: "#/components/schemas/coin_side"
         watermark:
-          $ref: '#/components/schemas/coin_side'
+          $ref: "#/components/schemas/coin_side"
         mints:
           description: Mints where the coin was minted
           type: array
@@ -3264,9 +3264,9 @@ components:
               category:
                 description: Category
                 type: string
-                enum: [ coin, banknote, exonumia ]
+                enum: [coin, banknote, exonumia]
               issuer:
-                $ref: '#/components/schemas/issuer'
+                $ref: "#/components/schemas/issuer"
               min_year:
                 description: First year the type was producted (in the Gregorian calendar).
                 type: integer
@@ -3282,7 +3282,7 @@ components:
           description: References of the type in other catalogues
           type: array
           items:
-            $ref: '#/components/schemas/reference'
+            $ref: "#/components/schemas/reference"
 
     coin:
       deprecated: true
@@ -3300,7 +3300,7 @@ components:
           description: Title of the coin
           type: string
         issuer:
-          $ref: '#/components/schemas/issuer'
+          $ref: "#/components/schemas/issuer"
         min_year:
           description: First year the coin was minted (in the Gregorian calendar). This property was spelled "minYear" in the API v1.
           type: integer
@@ -3328,7 +3328,7 @@ components:
               description: If the value is better described as a fraction, this is the denominator of the fraction
               type: integer
             currency:
-              $ref: '#/components/schemas/currency'
+              $ref: "#/components/schemas/currency"
         ruler:
           description: Ruling authorities (emperor, queen, period, etc.)
           type: array
@@ -3392,13 +3392,13 @@ components:
         orientation:
           description: Orientation of the coin ("coin", "medal" or "variable")
           type: string
-          enum: [ coin, medal, variable ]
+          enum: [coin, medal, variable]
         obverse:
-          $ref: '#/components/schemas/coin_side'
+          $ref: "#/components/schemas/coin_side"
         reverse:
-          $ref: '#/components/schemas/coin_side'
+          $ref: "#/components/schemas/coin_side"
         edge:
-          $ref: '#/components/schemas/coin_side'
+          $ref: "#/components/schemas/coin_side"
         mints:
           description: Mints where the coin was minted
           type: array
@@ -3439,7 +3439,7 @@ components:
                 description: Title of the coin
                 type: string
               issuer:
-                $ref: '#/components/schemas/issuer'
+                $ref: "#/components/schemas/issuer"
               min_year:
                 description: First year the coin was minted (in the Gregorian calendar). This property was spelled "minYear" in the API v1.
                 type: integer
@@ -3455,7 +3455,7 @@ components:
           description: References of the coin in other catalogues
           type: array
           items:
-            $ref: '#/components/schemas/reference'
+            $ref: "#/components/schemas/reference"
 
     type_update:
       required:
@@ -3466,11 +3466,11 @@ components:
           description: Title of the type
           type: array
           items:
-            $ref: '#/components/schemas/localized_label'
+            $ref: "#/components/schemas/localized_label"
         category:
           description: Category
           type: string
-          enum: [ coin, banknote, exonumia ]
+          enum: [coin, banknote, exonumia]
         issuer:
           description: Issuer
           type: object
@@ -3539,7 +3539,7 @@ components:
             additional_details:
               type: array
               items:
-                $ref: '#/components/schemas/localized_label'
+                $ref: "#/components/schemas/localized_label"
         composition:
           description: Composition (metallic content)
           type: object
@@ -3571,7 +3571,7 @@ components:
             additional_details:
               type: array
               items:
-                $ref: '#/components/schemas/localized_label'
+                $ref: "#/components/schemas/localized_label"
         technique:
           description: Manufacturing technique
           properties:
@@ -3588,7 +3588,7 @@ components:
             additional_details:
               type: array
               items:
-                $ref: '#/components/schemas/localized_label'
+                $ref: "#/components/schemas/localized_label"
         weight:
           description: Weight in grams
           type: number
@@ -3604,7 +3604,7 @@ components:
         orientation:
           description: Orientation of the coin ("coin", "medal" or "variable")
           type: string
-          enum: [ coin, medal, variable ]
+          enum: [coin, medal, variable]
           example: coin
         demonetization:
           description: Inform whether the coin or banknote is demonetized
@@ -3629,13 +3629,13 @@ components:
               description: Unique ID of the calendar on Numista
               type: string
         obverse:
-          $ref: '#/components/schemas/type_side_update'
+          $ref: "#/components/schemas/type_side_update"
         reverse:
-          $ref: '#/components/schemas/type_side_update'
+          $ref: "#/components/schemas/type_side_update"
         edge:
-          $ref: '#/components/schemas/type_side_update'
+          $ref: "#/components/schemas/type_side_update"
         watermark:
-          $ref: '#/components/schemas/type_side_update'
+          $ref: "#/components/schemas/type_side_update"
         mints:
           description: Mints where the coin was minted
           type: array
@@ -3665,17 +3665,17 @@ components:
           description: For types which are part of a series, the name of the series
           type: array
           items:
-            $ref: '#/components/schemas/localized_label'
+            $ref: "#/components/schemas/localized_label"
         commemorated_topic:
           description: For commemorated types, short description of the commemorated topic (event, person, etc.)
           type: array
           items:
-            $ref: '#/components/schemas/localized_label'
+            $ref: "#/components/schemas/localized_label"
         comments:
           description: General comments about the type (HTML format)
           type: array
           items:
-            $ref: '#/components/schemas/localized_label'
+            $ref: "#/components/schemas/localized_label"
         related_types:
           description: List of related types
           type: array
@@ -3730,7 +3730,7 @@ components:
           description: Title of the coin
           type: array
           items:
-            $ref: '#/components/schemas/localized_label'
+            $ref: "#/components/schemas/localized_label"
         issuer:
           description: Issuer
           type: object
@@ -3751,7 +3751,7 @@ components:
               description: Face value in text format
               type: array
               items:
-                $ref: '#/components/schemas/localized_label'
+                $ref: "#/components/schemas/localized_label"
             numeric_value:
               description: Face value as a floating number. This field is ignored if a numerator and a denominator are provided.
               type: number
@@ -3796,7 +3796,7 @@ components:
             additional_details:
               type: array
               items:
-                $ref: '#/components/schemas/localized_label'
+                $ref: "#/components/schemas/localized_label"
         composition:
           description: Composition of coin (metallic content)
           type: object
@@ -3828,7 +3828,7 @@ components:
             additional_details:
               type: array
               items:
-                $ref: '#/components/schemas/localized_label'
+                $ref: "#/components/schemas/localized_label"
         weight:
           description: Weight of the coin in grams
           type: number
@@ -3844,7 +3844,7 @@ components:
         orientation:
           description: Orientation of the coin ("coin", "medal" or "variable")
           type: string
-          enum: [ coin, medal, variable ]
+          enum: [coin, medal, variable]
           example: coin
         demonetization:
           description: Inform whether the coin is demonetized
@@ -3869,11 +3869,11 @@ components:
               description: Unique ID of the calendar on Numista
               type: string
         obverse:
-          $ref: '#/components/schemas/coin_side_update'
+          $ref: "#/components/schemas/coin_side_update"
         reverse:
-          $ref: '#/components/schemas/coin_side_update'
+          $ref: "#/components/schemas/coin_side_update"
         edge:
-          $ref: '#/components/schemas/coin_side_update'
+          $ref: "#/components/schemas/coin_side_update"
         mints:
           description: Mints where the coin was minted
           type: array
@@ -3892,17 +3892,17 @@ components:
           description: For coins which are part of a series, the name of the series
           type: array
           items:
-            $ref: '#/components/schemas/localized_label'
+            $ref: "#/components/schemas/localized_label"
         commemorated_topic:
           description: For commemorated coins, short description of the commemorated topic (event, person, etc.)
           type: array
           items:
-            $ref: '#/components/schemas/localized_label'
+            $ref: "#/components/schemas/localized_label"
         comments:
           description: General comments about the coin (HTML format)
           type: array
           items:
-            $ref: '#/components/schemas/localized_label'
+            $ref: "#/components/schemas/localized_label"
         related_coins:
           description: List of related coins
           type: array
@@ -4014,7 +4014,7 @@ components:
           description: References of the issue in other catalogues
           type: array
           items:
-            $ref: '#/components/schemas/reference'
+            $ref: "#/components/schemas/reference"
         comment:
           description: Comment about the issue
           type: string
@@ -4070,7 +4070,7 @@ components:
           description: Comment about the issue
           type: array
           items:
-            $ref: '#/components/schemas/localized_label'
+            $ref: "#/components/schemas/localized_label"
 
     issuer:
       required:
@@ -4117,7 +4117,7 @@ components:
           description: Place where the mint is located
           type: string
         country:
-          $ref: '#/components/schemas/issuer'
+          $ref: "#/components/schemas/issuer"
         start_year:
           description: First year of operation of the mint
           type: integer
@@ -4167,7 +4167,7 @@ components:
         type:
           type: string
           description: Type of publication (e.g. `volume` or `article`). Volume — the basic unit of the catalogue, representing a single book, one volume of a multi-volume set, or an issue of a periodical. Volume group — a collection of volumes representing multi-volume works, series, or periodicals. Article — a self-contained text with its own title and author(s), included within a volume. Article group — a collection of articles that together form a work published in multiple parts.
-          enum: [ volume, article, volume_group, article_group ]
+          enum: [volume, article, volume_group, article_group]
         title:
           type: string
           description: Title of the publication.
@@ -4203,7 +4203,7 @@ components:
         cover:
           type: string
           description: Type of cover (only for volumes - e.g. softcover, hardcover).
-          enum: [ softcover, hardcover, spiral, hidden_spiral ]
+          enum: [softcover, hardcover, spiral, hidden_spiral]
         isbn10:
           type: string
           description: ISBN-10 code (only for volumes).
@@ -4225,7 +4225,7 @@ components:
               role:
                 type: string
                 description: Contributor’s role.
-                enum: [ author, editor, translator ]
+                enum: [author, editor, translator]
               name:
                 type: string
                 description: Full name of the contributor.
@@ -4265,7 +4265,7 @@ components:
               type:
                 type: string
                 description: Type of parent.
-                enum: [ volume_group, volume, article_group ]
+                enum: [volume_group, volume, article_group]
               id:
                 type: string
                 description: Unique ID of the parent publication.
@@ -4358,7 +4358,7 @@ components:
           description: Description of the side of the type
           type: array
           items:
-            $ref: '#/components/schemas/localized_label'
+            $ref: "#/components/schemas/localized_label"
         lettering:
           description: Lettering visible on the side of the type
           type: string
@@ -4380,7 +4380,7 @@ components:
           description: Translation of the lettering visible on the side of the type
           type: array
           items:
-            $ref: '#/components/schemas/localized_label'
+            $ref: "#/components/schemas/localized_label"
         picture:
           description: URL to the picture of the side of the type. You may provide any URL publicly available. The picture will be downloded by Numista and stored internally. Only JPEG images are accpted.
           type: string
@@ -4390,7 +4390,7 @@ components:
         picture_copyright_type:
           description: Type of source of the picture. This field is mandatory if a picture is provided.
           type: string
-          enum: [ personnel, site_autorise, autre ]
+          enum: [personnel, site_autorise, autre]
           example: site_autorise
 
     coin_side_update:
@@ -4405,7 +4405,7 @@ components:
           description: Description of the side of the coin
           type: array
           items:
-            $ref: '#/components/schemas/localized_label'
+            $ref: "#/components/schemas/localized_label"
         lettering:
           description: Lettering visible on the side of the coin
           type: string
@@ -4416,7 +4416,7 @@ components:
           description: Translation of the lettering visible on the side of the coin
           type: array
           items:
-            $ref: '#/components/schemas/localized_label'
+            $ref: "#/components/schemas/localized_label"
         picture:
           description: URL to the picture of the side of the coin. You may provide any URL publicly available. The picture will be downloded by Numista and stored internally. Only JPEG images are accpted.
           type: string
@@ -4426,7 +4426,7 @@ components:
         picture_copyright_type:
           description: Type of source of the picture. This field is mandatory if a picture is provided.
           type: string
-          enum: [ personnel, site_autorise, autre ]
+          enum: [personnel, site_autorise, autre]
           example: site_autorise
 
     collection:
@@ -4472,16 +4472,16 @@ components:
               description: Category
               type: string
             issuer:
-              $ref: '#/components/schemas/issuer'
+              $ref: "#/components/schemas/issuer"
         issue:
-          $ref: '#/components/schemas/issue'
+          $ref: "#/components/schemas/issue"
         for_swap:
           description: Indicate whether the item is available for swap
           type: boolean
         grade:
           description: Grade of the item
           type: string
-          enum: [ g, vg, f, vf, xf, au, unc ]
+          enum: [g, vg, f, vf, xf, au, unc]
         private_comment:
           description: Private comment (not available if the user is not authenticated)
           type: string
@@ -4489,9 +4489,9 @@ components:
           description: Public comment
           type: string
         price:
-          $ref: '#/components/schemas/price'
+          $ref: "#/components/schemas/price"
         collection:
-          $ref: '#/components/schemas/collection'
+          $ref: "#/components/schemas/collection"
         pictures:
           description: List of pictures or PDF documents. PDF documents are available only if the user is not authenticated.
           type: array
@@ -4618,16 +4618,8 @@ components:
             id: 13
             value: "AU55"
           slab_number: 12345/3210
-          grading_designations: [
-              {
-                id: 419,
-                value: "+"
-              },
-              {
-                id: 420,
-                value: "★"
-              }
-            ]
+          grading_designations:
+            [{ id: 419, value: "+" }, { id: 420, value: "★" }]
 
     price:
       required:
@@ -4649,7 +4641,7 @@ components:
         language:
           description: Language code
           type: string
-          enum: [ en, es, fr ]
+          enum: [en, es, fr]
           example: en
         label:
           description: Label in the given language

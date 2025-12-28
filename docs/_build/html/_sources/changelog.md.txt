@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+
 - Initial release
 - Complete Numista API v3 coverage
 - HTTP caching with hishel (7-day TTL)
@@ -22,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Features
 
 #### Client
+
 - `NumistaApiClient` with sync/async support
 - RFC 9111-compliant HTTP caching
 - Persistent SQLite cache storage
@@ -30,6 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Cache indicators (💾/🌐)
 
 #### Services
+
 - Types: Search and retrieve coin/banknote/exonumia types
 - Catalogues: List reference catalogues
 - Issuers: List countries and entities
@@ -42,6 +45,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Users: Get user profiles
 
 #### CLI
+
 - Rich v14 theming
 - Consistent panel/table display
 - Cache indicators
@@ -50,12 +54,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Error handling with rich console
 
 #### Models
+
 - Full Pydantic validation
 - Type safety with strict hints
 - Rich rendering methods
 - Serialization support
 
 ### Documentation
+
 - Installation guide
 - Quickstart tutorial
 - Complete CLI reference

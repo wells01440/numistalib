@@ -5,6 +5,7 @@ This directory contains comprehensive documentation for numistalib.
 ## Documentation Structure
 
 ### User Guides
+
 - [installation.md](installation.md) - Installation and setup
 - [quickstart.md](quickstart.md) - 5-minute getting started guide
 - [cli_guide.md](cli_guide.md) - Complete CLI command reference
@@ -13,19 +14,22 @@ This directory contains comprehensive documentation for numistalib.
 - [advanced_usage.md](advanced_usage.md) - Advanced patterns and techniques
 
 ### Reference Documentation
+
 - [architecture.md](architecture.md) - System architecture and design
 - [contributing.md](contributing.md) - Contribution guidelines
 - [changelog.md](changelog.md) - Version history
 - [license.md](license.md) - MIT License
 
 ### API Reference
-- [api/](api/) - Sphinx autodoc API reference
+
+- [API Reference](api/index.rst) - Sphinx autodoc API reference
   - [client.rst](api/client.rst) - HTTP client
   - [services.rst](api/services.rst) - Service layer
   - [models.rst](api/models.rst) - Data models
   - [cli.rst](api/cli.rst) - CLI commands
 
 ### Technical Reference
+
 - [numista-swagger.yml](numista-swagger.yml) - Numista API specification
 
 ## Building Documentation
@@ -59,12 +63,14 @@ Open `docs/_build/html/index.html` in your browser.
 ### Build Other Formats
 
 PDF:
+
 ```bash
 cd docs
 make latexpdf
 ```
 
 EPUB:
+
 ```bash
 cd docs
 make epub
@@ -75,6 +81,7 @@ make epub
 This documentation is configured for ReadTheDocs deployment.
 
 ### Configuration Files
+
 - [.readthedocs.yml](../.readthedocs.yml) - RTD build configuration
 - [conf.py](conf.py) - Sphinx configuration
 - [requirements.txt](requirements.txt) - Documentation dependencies
@@ -86,6 +93,7 @@ The documentation will build automatically when pushed to GitHub (once RTD webho
 ## Documentation Standards
 
 ### Formatting
+
 - Use § numbering for sections
 - Markdown for user guides
 - reStructuredText for API reference
@@ -93,6 +101,7 @@ The documentation will build automatically when pushed to GitHub (once RTD webho
 - Include "Next Steps" links at guide ends
 
 ### Content
+
 - Progressive complexity (basic → advanced)
 - Concrete, copy-pasteable examples
 - Clear explanations
@@ -100,6 +109,7 @@ The documentation will build automatically when pushed to GitHub (once RTD webho
 - Cross-references between docs
 
 ### Maintenance
+
 - Update changelog for releases
 - Keep API reference in sync with code
 - Test all code examples
