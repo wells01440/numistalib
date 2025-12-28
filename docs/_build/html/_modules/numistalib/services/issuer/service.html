@@ -1,0 +1,340 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>numistalib.services.issuer.service &mdash; numistalib 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=01f34227"></script>
+      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            numistalib
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quickstart.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../cli_guide.html">CLI Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../python_api_guide.html">Python API Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../advanced_usage.html">Advanced Usage</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/client.html">Client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/services.html">Services</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/models.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/cli.html">CLI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Additional Information</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../architecture.html">Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contributing.html">Contributing to numistalib</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../license.html">License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">numistalib</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">numistalib.services.issuer.service</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for numistalib.services.issuer.service</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Issuer service implementation.&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">AsyncGenerator</span><span class="p">,</span> <span class="n">Mapping</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">cast</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">numistalib</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.client</span><span class="w"> </span><span class="kn">import</span> <span class="n">AsyncClientProtocol</span><span class="p">,</span> <span class="n">NumistaResponse</span><span class="p">,</span> <span class="n">SyncClientProtocol</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.models.issuer</span><span class="w"> </span><span class="kn">import</span> <span class="n">Issuer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.services.issuer.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">IssuerServiceBase</span>
+
+
+<div class="viewcode-block" id="IssuerService">
+<a class="viewcode-back" href="../../../../api/services.html#numistalib.services.issuer.service.IssuerService">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">IssuerService</span><span class="p">(</span><span class="n">IssuerServiceBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Unified issuer service supporting both sync and async clients.&quot;&quot;&quot;</span>
+
+    <span class="n">CLASS_ITEMS_KEY</span> <span class="o">=</span> <span class="s2">&quot;issuers&quot;</span>
+
+<div class="viewcode-block" id="IssuerService.__init__">
+<a class="viewcode-back" href="../../../../api/services.html#numistalib.services.issuer.service.IssuerService.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client</span><span class="p">:</span> <span class="n">SyncClientProtocol</span> <span class="o">|</span> <span class="n">AsyncClientProtocol</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize issuer service.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        client : SyncClientProtocol | AsyncClientProtocol</span>
+<span class="sd">            HTTP client instance (sync or async)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">client</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="IssuerService.to_models">
+<a class="viewcode-back" href="../../../../api/services.html#numistalib.services.issuer.service.IssuerService.to_models">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_models</span><span class="p">(</span>  <span class="c1"># noqa: PLR6301</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">items</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span>  <span class="c1"># noqa: ARG002</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Issuer</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert API response items to Issuer models.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        items : list[Mapping[str, Any]]</span>
+<span class="sd">            Raw API response items</span>
+<span class="sd">        **kwargs : Any</span>
+<span class="sd">            Unused (for interface consistency)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list[Issuer]</span>
+<span class="sd">            Parsed issuer models</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">issuers</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Issuer</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">items</span><span class="p">:</span>
+            <span class="n">parent</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;parent&quot;</span><span class="p">))</span>
+            <span class="n">issuers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">Issuer</span><span class="p">(</span>
+                    <span class="n">code</span><span class="o">=</span><span class="n">cast</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;code&quot;</span><span class="p">]),</span>
+                    <span class="n">name</span><span class="o">=</span><span class="n">cast</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]),</span>
+                    <span class="n">flag</span><span class="o">=</span><span class="n">cast</span><span class="p">(</span><span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;flag&quot;</span><span class="p">))</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+                    <span class="n">wikidata_id</span><span class="o">=</span><span class="n">cast</span><span class="p">(</span><span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;wikidata_id&quot;</span><span class="p">)),</span>
+                    <span class="n">level</span><span class="o">=</span><span class="n">cast</span><span class="p">(</span><span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;level&quot;</span><span class="p">))</span> <span class="ow">or</span> <span class="mi">1</span><span class="p">,</span>
+                    <span class="n">parent_code</span><span class="o">=</span><span class="n">cast</span><span class="p">(</span><span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">parent</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;code&quot;</span><span class="p">))</span> <span class="k">if</span> <span class="n">parent</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="n">parent_name</span><span class="o">=</span><span class="n">cast</span><span class="p">(</span><span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">parent</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">))</span> <span class="k">if</span> <span class="n">parent</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">issuers</span></div>
+
+
+<div class="viewcode-block" id="IssuerService.get_issuers">
+<a class="viewcode-back" href="../../../../api/services.html#numistalib.services.issuer.service.IssuerService.get_issuers">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_issuers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lang</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;en&quot;</span><span class="p">,</span> <span class="n">count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Issuer</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the list of issuers.</span>
+
+<span class="sd">        Supports both sync and async clients via duck-typing.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        lang : str</span>
+<span class="sd">            Language code (en, es, fr)</span>
+<span class="sd">        count : int | None</span>
+<span class="sd">            Optional max results per page (API default is applied when None)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list[Issuer]</span>
+<span class="sd">            List of issuers</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        httpx.HTTPStatusError</span>
+<span class="sd">            If API returns error</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;→ get_issuers(lang=</span><span class="si">%s</span><span class="s2">, count=</span><span class="si">%s</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">count</span><span class="p">)</span>
+
+        <span class="n">params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_params</span><span class="p">({</span><span class="s2">&quot;lang&quot;</span><span class="p">:</span> <span class="n">lang</span><span class="p">},</span> <span class="n">count</span><span class="o">=</span><span class="n">count</span><span class="p">)</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">NumistaResponse</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/issuers&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">))</span>
+        <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_track_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+
+        <span class="n">items</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extract_items_from_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+        <span class="n">issuers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_models</span><span class="p">(</span><span class="n">items</span><span class="p">)</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Retrieved </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">issuers</span><span class="p">)</span><span class="si">}</span><span class="s2"> issuers </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">cached_indicator</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">issuers</span></div>
+
+
+<div class="viewcode-block" id="IssuerService.get_issuers_async">
+<a class="viewcode-back" href="../../../../api/services.html#numistalib.services.issuer.service.IssuerService.get_issuers_async">[docs]</a>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_issuers_async</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">lang</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;en&quot;</span><span class="p">,</span> <span class="n">count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Issuer</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the list of issuers (async).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        lang : str</span>
+<span class="sd">            Language code (en, es, fr)</span>
+<span class="sd">        count : int | None</span>
+<span class="sd">            Optional max results per page (API default is applied when None)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list[Issuer]</span>
+<span class="sd">            List of issuers</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        httpx.HTTPStatusError</span>
+<span class="sd">            If API returns error</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;→ get_issuers_async(lang=</span><span class="si">%s</span><span class="s2">, count=</span><span class="si">%s</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">count</span><span class="p">)</span>
+
+        <span class="n">params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_params</span><span class="p">({</span><span class="s2">&quot;lang&quot;</span><span class="p">:</span> <span class="n">lang</span><span class="p">},</span> <span class="n">count</span><span class="o">=</span><span class="n">count</span><span class="p">)</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_aget</span><span class="p">(</span><span class="s2">&quot;/issuers&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+        <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_track_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+
+        <span class="n">items</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extract_items_from_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+        <span class="n">issuers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_models</span><span class="p">(</span><span class="n">items</span><span class="p">)</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Retrieved </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">issuers</span><span class="p">)</span><span class="si">}</span><span class="s2"> issuers </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">cached_indicator</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">issuers</span></div>
+
+
+<div class="viewcode-block" id="IssuerService.paginated_issuers">
+<a class="viewcode-back" href="../../../../api/services.html#numistalib.services.issuer.service.IssuerService.paginated_issuers">[docs]</a>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">paginated_issuers</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">lang</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;en&quot;</span><span class="p">,</span>
+        <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">50</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AsyncGenerator</span><span class="p">[</span><span class="n">Issuer</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Lazily iterate all issuers by following pagination links.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        lang : str</span>
+<span class="sd">            Language code (en, es, fr)</span>
+<span class="sd">        limit : int</span>
+<span class="sd">            Results per page (max 100)</span>
+
+<span class="sd">        Yields</span>
+<span class="sd">        ------</span>
+<span class="sd">        Issuer</span>
+<span class="sd">            Individual issuer records</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;→ paginated_issuers(lang=</span><span class="si">%s</span><span class="s2">, limit=</span><span class="si">%s</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">limit</span><span class="p">)</span>
+
+        <span class="n">url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;/issuers?lang=</span><span class="si">{</span><span class="n">lang</span><span class="si">}</span><span class="s2">&amp;count=</span><span class="si">{</span><span class="n">limit</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">page_count</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">while</span> <span class="n">url</span><span class="p">:</span>
+            <span class="n">page_count</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Fetching issuers page </span><span class="si">%s</span><span class="s2">: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">page_count</span><span class="p">,</span> <span class="n">url</span><span class="p">)</span>
+
+            <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_aget</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+            <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_track_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+
+            <span class="n">data</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
+            <span class="n">items</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="nb">list</span><span class="p">[</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">CLASS_ITEMS_KEY</span><span class="p">,</span> <span class="p">[]))</span>
+            <span class="n">issuers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_models</span><span class="p">(</span><span class="n">items</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">issuer</span> <span class="ow">in</span> <span class="n">issuers</span><span class="p">:</span>
+                <span class="k">yield</span> <span class="n">issuer</span>
+
+            <span class="n">url</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;next_url&quot;</span><span class="p">))</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Finished paginating through </span><span class="si">%s</span><span class="s2"> pages of issuers&quot;</span><span class="p">,</span> <span class="n">page_count</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="IssuerService.get_issuers_paginated">
+<a class="viewcode-back" href="../../../../api/services.html#numistalib.services.issuer.service.IssuerService.get_issuers_paginated">[docs]</a>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_issuers_paginated</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">lang</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;en&quot;</span><span class="p">,</span>
+        <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">50</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AsyncGenerator</span><span class="p">[</span><span class="n">Issuer</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Paginate through all issuers (alias for paginated_issuers).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        lang : str</span>
+<span class="sd">            Language code (en, es, fr)</span>
+<span class="sd">        limit : int</span>
+<span class="sd">            Results per page (max 100)</span>
+
+<span class="sd">        Yields</span>
+<span class="sd">        ------</span>
+<span class="sd">        Issuer</span>
+<span class="sd">            Individual issuer records</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">async</span> <span class="k">for</span> <span class="n">issuer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">paginated_issuers</span><span class="p">(</span><span class="n">lang</span><span class="o">=</span><span class="n">lang</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">):</span>
+            <span class="k">yield</span> <span class="n">issuer</span></div>
+</div>
+
+
+
+<span class="c1"># Backward compatibility exports</span>
+<span class="n">IssuerServiceAsync</span> <span class="o">=</span> <span class="n">IssuerService</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Andy Wells.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

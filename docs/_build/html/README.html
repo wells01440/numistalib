@@ -1,0 +1,389 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>§ 1 Numista API Endpoint Trees &mdash; numistalib 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=01f34227"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            numistalib
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cli_guide.html">CLI Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="python_api_guide.html">Python API Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced_usage.html">Advanced Usage</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api/client.html">Client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/services.html">Services</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/models.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/cli.html">CLI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Additional Information</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing to numistalib</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">numistalib</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">§ 1 Numista API Endpoint Trees</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/README.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="numista-api-endpoint-trees">
+<h1>§ 1 Numista API Endpoint Trees<a class="headerlink" href="#numista-api-endpoint-trees" title="Link to this heading"></a></h1>
+<p>Each section below mirrors the OpenAPI file (<code class="docutils literal notranslate"><span class="pre">docs/numista-swagger.yml</span></code>) and lists every path, method, and request
+parameter set per API version.
+All calls require the <code class="docutils literal notranslate"><span class="pre">Numista-API-Key</span></code> header; endpoints under “User” additionally need the
+OAuth scopes noted in the swagger comments.</p>
+<section id="version-3-https-api-numista-com-v3">
+<h2>§ 1.1 Version 3 (<code class="docutils literal notranslate"><span class="pre">https://api.numista.com/v3</span></code>)<a class="headerlink" href="#version-3-https-api-numista-com-v3" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">/types</span></code></p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">GET</span></code> Search the catalogue (at least one of <code class="docutils literal notranslate"><span class="pre">q</span></code>, <code class="docutils literal notranslate"><span class="pre">issuer</span></code>, <code class="docutils literal notranslate"><span class="pre">catalogue</span></code>, <code class="docutils literal notranslate"><span class="pre">date</span></code>, or <code class="docutils literal notranslate"><span class="pre">year</span></code> is required).</p>
+<ul>
+<li><p>Query: <code class="docutils literal notranslate"><span class="pre">lang</span></code> (enum en/es/fr, default <code class="docutils literal notranslate"><span class="pre">en</span></code>), <code class="docutils literal notranslate"><span class="pre">category</span></code> (coin|banknote|exonumia), <code class="docutils literal notranslate"><span class="pre">q</span></code> (string),
+<code class="docutils literal notranslate"><span class="pre">issuer</span></code> (string code), <code class="docutils literal notranslate"><span class="pre">catalogue</span></code> (int), <code class="docutils literal notranslate"><span class="pre">number</span></code> (string, requires <code class="docutils literal notranslate"><span class="pre">catalogue</span></code>), <code class="docutils literal notranslate"><span class="pre">ruler</span></code> (int),
+<code class="docutils literal notranslate"><span class="pre">material</span></code> (int), <code class="docutils literal notranslate"><span class="pre">year</span></code> (string/range), <code class="docutils literal notranslate"><span class="pre">date</span></code> (string/range), <code class="docutils literal notranslate"><span class="pre">size</span></code> (string/range in mm),
+<code class="docutils literal notranslate"><span class="pre">weight</span></code> (string/range in g), <code class="docutils literal notranslate"><span class="pre">page</span></code> (int, default <code class="docutils literal notranslate"><span class="pre">1</span></code>), <code class="docutils literal notranslate"><span class="pre">count</span></code> (int, default <code class="docutils literal notranslate"><span class="pre">50</span></code>, max <code class="docutils literal notranslate"><span class="pre">50</span></code>).</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">POST</span></code> Add a type to the catalogue (requires catalogue-edit permission).</p>
+<ul>
+<li><p>Query: <code class="docutils literal notranslate"><span class="pre">lang</span></code> (enum en/es/fr, default <code class="docutils literal notranslate"><span class="pre">en</span></code>).</p></li>
+<li><p>Body: <code class="docutils literal notranslate"><span class="pre">type_update</span></code> JSON including localized <code class="docutils literal notranslate"><span class="pre">title</span></code>, <code class="docutils literal notranslate"><span class="pre">category</span></code>, <code class="docutils literal notranslate"><span class="pre">issuer</span></code>, <code class="docutils literal notranslate"><span class="pre">value</span></code>, <code class="docutils literal notranslate"><span class="pre">ruling_authority</span></code>, <code class="docutils literal notranslate"><span class="pre">shape</span></code>,
+<code class="docutils literal notranslate"><span class="pre">composition</span></code>, physical data (<code class="docutils literal notranslate"><span class="pre">weight</span></code>, <code class="docutils literal notranslate"><span class="pre">size</span></code>, <code class="docutils literal notranslate"><span class="pre">thickness</span></code>, <code class="docutils literal notranslate"><span class="pre">orientation</span></code>), demonetization/calendar metadata,
+<code class="docutils literal notranslate"><span class="pre">obverse</span></code>/<code class="docutils literal notranslate"><span class="pre">reverse</span></code>/<code class="docutils literal notranslate"><span class="pre">edge</span></code> descriptions, <code class="docutils literal notranslate"><span class="pre">mints</span></code>, rich <code class="docutils literal notranslate"><span class="pre">comments</span></code>, <code class="docutils literal notranslate"><span class="pre">related_coins</span></code>, <code class="docutils literal notranslate"><span class="pre">tags</span></code>, and <code class="docutils literal notranslate"><span class="pre">references</span></code>.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/types/{type_id}</span></code></p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">GET</span></code> Get details about a type.</p>
+<ul>
+<li><p>Path: <code class="docutils literal notranslate"><span class="pre">type_id</span></code> (int).</p></li>
+<li><p>Query: <code class="docutils literal notranslate"><span class="pre">lang</span></code> (enum en/es/fr, default <code class="docutils literal notranslate"><span class="pre">en</span></code>).</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/types/{type_id}/issues</span></code></p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">GET</span></code> List every issue of a type.</p>
+<ul>
+<li><p>Path: <code class="docutils literal notranslate"><span class="pre">type_id</span></code> (int).</p></li>
+<li><p>Query: <code class="docutils literal notranslate"><span class="pre">lang</span></code> (enum en/es/fr, default <code class="docutils literal notranslate"><span class="pre">en</span></code>).</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">POST</span></code> Add an issue (requires catalogue-edit permission).</p>
+<ul>
+<li><p>Path: <code class="docutils literal notranslate"><span class="pre">type_id</span></code> (int).</p></li>
+<li><p>Query: <code class="docutils literal notranslate"><span class="pre">lang</span></code> (enum en/es/fr, default <code class="docutils literal notranslate"><span class="pre">en</span></code>).</p></li>
+<li><p>Body: <code class="docutils literal notranslate"><span class="pre">issue_update</span></code> JSON covering <code class="docutils literal notranslate"><span class="pre">is_dated</span></code>, year span, <code class="docutils literal notranslate"><span class="pre">mint_letter</span></code>, <code class="docutils literal notranslate"><span class="pre">mintage</span></code>,
+localized <code class="docutils literal notranslate"><span class="pre">comment</span></code>, and related catalogue references.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/types/{type_id}/issues/{issue_id}/prices</span></code></p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">GET</span></code> Return price estimates stratified by grade.</p>
+<ul>
+<li><p>Path: <code class="docutils literal notranslate"><span class="pre">type_id</span></code> (int), <code class="docutils literal notranslate"><span class="pre">issue_id</span></code> (int).</p></li>
+<li><p>Query: <code class="docutils literal notranslate"><span class="pre">currency</span></code> (ISO 4217 code, default <code class="docutils literal notranslate"><span class="pre">EUR</span></code>), <code class="docutils literal notranslate"><span class="pre">lang</span></code> (enum en/es/fr, default <code class="docutils literal notranslate"><span class="pre">en</span></code>).</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/issuers</span></code></p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">GET</span></code> Enumerate issuers.</p>
+<ul>
+<li><p>Query: <code class="docutils literal notranslate"><span class="pre">lang</span></code> (enum en/es/fr, default <code class="docutils literal notranslate"><span class="pre">en</span></code>).</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/mints</span></code></p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">GET</span></code> Enumerate mints.</p>
+<ul>
+<li><p>Query: <code class="docutils literal notranslate"><span class="pre">lang</span></code> (enum en/es/fr, default <code class="docutils literal notranslate"><span class="pre">en</span></code>).</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/mints/{mint_id}</span></code></p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">GET</span></code> Fetch mint details.</p>
+<ul>
+<li><p>Path: <code class="docutils literal notranslate"><span class="pre">mint_id</span></code> (int).</p></li>
+<li><p>Query: <code class="docutils literal notranslate"><span class="pre">lang</span></code> (enum en/es/fr, default <code class="docutils literal notranslate"><span class="pre">en</span></code>).</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/catalogues</span></code></p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">GET</span></code> List available reference catalogues (no parameters).</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/search_by_image</span></code></p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">POST</span></code> Find candidate types via up to two reference photos.</p>
+<ul>
+<li><p>Query: <code class="docutils literal notranslate"><span class="pre">lang</span></code> (enum en/es/fr, default <code class="docutils literal notranslate"><span class="pre">en</span></code>),
+<code class="docutils literal notranslate"><span class="pre">activate_experimental_features</span></code> (bool, default <code class="docutils literal notranslate"><span class="pre">false</span></code>, unlocks year/grade beta output).</p></li>
+<li><p>Body: JSON with optional <code class="docutils literal notranslate"><span class="pre">category</span></code> (coin|banknote|exonumia), required <code class="docutils literal notranslate"><span class="pre">images</span></code> array (1–2 items each containing
+<code class="docutils literal notranslate"><span class="pre">mime_type</span></code> of <code class="docutils literal notranslate"><span class="pre">image/jpeg</span></code> or <code class="docutils literal notranslate"><span class="pre">image/png</span></code> plus base64 <code class="docutils literal notranslate"><span class="pre">image_data</span></code>), and optional <code class="docutils literal notranslate"><span class="pre">max_results</span></code> (int 1–100,
+default <code class="docutils literal notranslate"><span class="pre">100</span></code>).</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/publications/{id}</span></code></p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">GET</span></code> Return information about a specific publication.</p>
+<ul>
+<li><p>Path: <code class="docutils literal notranslate"><span class="pre">id</span></code> (string such as <code class="docutils literal notranslate"><span class="pre">L123456</span></code>).</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/oauth_token</span></code></p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">GET</span></code> Exchange for an OAuth token (authorization-code or client-credentials flows).</p>
+<ul>
+<li><p>Query: <code class="docutils literal notranslate"><span class="pre">grant_type</span></code> (<code class="docutils literal notranslate"><span class="pre">authorization_code</span></code> default or <code class="docutils literal notranslate"><span class="pre">client_credentials</span></code>), <code class="docutils literal notranslate"><span class="pre">code</span></code>, <code class="docutils literal notranslate"><span class="pre">client_id</span></code>, <code class="docutils literal notranslate"><span class="pre">client_secret</span></code>,
+<code class="docutils literal notranslate"><span class="pre">redirect_uri</span></code>, <code class="docutils literal notranslate"><span class="pre">scope</span></code> (comma-delimited list when using client credentials). Mandatory fields depend on
+<code class="docutils literal notranslate"><span class="pre">grant_type</span></code> exactly as described in the API docs.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/users/{user_id}</span></code></p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">GET</span></code> Fetch public profile data.</p>
+<ul>
+<li><p>Path: <code class="docutils literal notranslate"><span class="pre">user_id</span></code> (int).</p></li>
+<li><p>Query: <code class="docutils literal notranslate"><span class="pre">lang</span></code> (enum en/es/fr, default <code class="docutils literal notranslate"><span class="pre">en</span></code>).</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/users/{user_id}/collections</span></code></p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">GET</span></code> List the user’s collections (path <code class="docutils literal notranslate"><span class="pre">user_id</span></code> only).</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/users/{user_id}/collected_items</span></code></p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">GET</span></code> List collected items (requires OAuth scope <code class="docutils literal notranslate"><span class="pre">view_collection</span></code>).</p>
+<ul>
+<li><p>Path: <code class="docutils literal notranslate"><span class="pre">user_id</span></code> (int).</p></li>
+<li><p>Query: <code class="docutils literal notranslate"><span class="pre">category</span></code> (coin|banknote|exonumia), <code class="docutils literal notranslate"><span class="pre">type</span></code> (int), <code class="docutils literal notranslate"><span class="pre">collection</span></code> (int).</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">POST</span></code> Add an item (requires <code class="docutils literal notranslate"><span class="pre">edit_collection</span></code> scope).</p>
+<ul>
+<li><p>Path: <code class="docutils literal notranslate"><span class="pre">user_id</span></code> (int).</p></li>
+<li><p>Body: JSON with <code class="docutils literal notranslate"><span class="pre">type</span></code> (int, required), optional <code class="docutils literal notranslate"><span class="pre">issue</span></code> (int), <code class="docutils literal notranslate"><span class="pre">quantity</span></code> (int, default <code class="docutils literal notranslate"><span class="pre">1</span></code>), <code class="docutils literal notranslate"><span class="pre">grade</span></code>
+(enum g/vg/f/vf/xf/au/unc), <code class="docutils literal notranslate"><span class="pre">for_swap</span></code> (bool), <code class="docutils literal notranslate"><span class="pre">private_comment</span></code>, <code class="docutils literal notranslate"><span class="pre">public_comment</span></code>, <code class="docutils literal notranslate"><span class="pre">price</span></code> (value+currency),
+<code class="docutils literal notranslate"><span class="pre">collection</span></code> (int), <code class="docutils literal notranslate"><span class="pre">storage_location</span></code>, <code class="docutils literal notranslate"><span class="pre">acquisition_place</span></code>, <code class="docutils literal notranslate"><span class="pre">acquisition_date</span></code> (YYYY-MM-DD), <code class="docutils literal notranslate"><span class="pre">serial_number</span></code>,
+<code class="docutils literal notranslate"><span class="pre">internal_id</span></code>, <code class="docutils literal notranslate"><span class="pre">weight</span></code>, <code class="docutils literal notranslate"><span class="pre">size</span></code>, <code class="docutils literal notranslate"><span class="pre">axis</span></code>, and nested <code class="docutils literal notranslate"><span class="pre">grading_details</span></code> (company, slab IDs, CAC sticker, strike,
+surface, designations).</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/users/{user_id}/collected_items/{item_id}</span></code></p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">GET</span></code> Retrieve a single collection item.</p>
+<ul>
+<li><p>Path: <code class="docutils literal notranslate"><span class="pre">user_id</span></code> (int), <code class="docutils literal notranslate"><span class="pre">item_id</span></code> (int).</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PATCH</span></code> Update an item (requires <code class="docutils literal notranslate"><span class="pre">edit_collection</span></code> scope).</p>
+<ul>
+<li><p>Path: <code class="docutils literal notranslate"><span class="pre">user_id</span></code> (int), <code class="docutils literal notranslate"><span class="pre">item_id</span></code> (int).</p></li>
+<li><p>Body: Same structure as the <code class="docutils literal notranslate"><span class="pre">POST</span></code> payload, with every field optional and nullable where noted (e.g., <code class="docutils literal notranslate"><span class="pre">grade</span></code>,
+<code class="docutils literal notranslate"><span class="pre">issue</span></code>, <code class="docutils literal notranslate"><span class="pre">price</span></code>).</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">DELETE</span></code> Remove an item (requires <code class="docutils literal notranslate"><span class="pre">edit_collection</span></code> scope).</p>
+<ul>
+<li><p>Path: <code class="docutils literal notranslate"><span class="pre">user_id</span></code> (int), <code class="docutils literal notranslate"><span class="pre">item_id</span></code> (int).</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="version-2-https-api-numista-com-v2">
+<h2>§ 1.2 Version 2 (<code class="docutils literal notranslate"><span class="pre">https://api.numista.com/v2</span></code>)<a class="headerlink" href="#version-2-https-api-numista-com-v2" title="Link to this heading"></a></h2>
+<p>Version 2 exposes every endpoint listed for version 3 with the same request parameters. In addition, the following
+legacy paths remain accessible through <code class="docutils literal notranslate"><span class="pre">/v2</span></code> (all were removed from <code class="docutils literal notranslate"><span class="pre">/v3</span></code>):</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">/coins</span></code></p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">GET</span></code> Search for coins.</p>
+<ul>
+<li><p>Query: <code class="docutils literal notranslate"><span class="pre">lang</span></code> (enum en/es/fr, default <code class="docutils literal notranslate"><span class="pre">en</span></code>), <code class="docutils literal notranslate"><span class="pre">q</span></code> (string, required), <code class="docutils literal notranslate"><span class="pre">issuer</span></code> (string code),
+<code class="docutils literal notranslate"><span class="pre">page</span></code> (int, default <code class="docutils literal notranslate"><span class="pre">1</span></code>), <code class="docutils literal notranslate"><span class="pre">count</span></code> (int, default <code class="docutils literal notranslate"><span class="pre">50</span></code>).</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">POST</span></code> Add a coin type using the deprecated <code class="docutils literal notranslate"><span class="pre">coin_update</span></code> schema (requires catalogue-edit permission).</p>
+<ul>
+<li><p>Query: <code class="docutils literal notranslate"><span class="pre">lang</span></code> (enum en/es/fr, default <code class="docutils literal notranslate"><span class="pre">en</span></code>).</p></li>
+<li><p>Body: <code class="docutils literal notranslate"><span class="pre">coin_update</span></code> JSON (localized <code class="docutils literal notranslate"><span class="pre">title</span></code>, <code class="docutils literal notranslate"><span class="pre">issuer</span></code>, <code class="docutils literal notranslate"><span class="pre">type</span></code>, <code class="docutils literal notranslate"><span class="pre">value</span></code>, <code class="docutils literal notranslate"><span class="pre">ruling_authority</span></code>, <code class="docutils literal notranslate"><span class="pre">shape</span></code>,
+<code class="docutils literal notranslate"><span class="pre">composition</span></code>, measurements, <code class="docutils literal notranslate"><span class="pre">orientation</span></code>, demonetization, calendar, <code class="docutils literal notranslate"><span class="pre">obverse</span></code>/<code class="docutils literal notranslate"><span class="pre">reverse</span></code>/<code class="docutils literal notranslate"><span class="pre">edge</span></code>, <code class="docutils literal notranslate"><span class="pre">mints</span></code>,
+<code class="docutils literal notranslate"><span class="pre">comments</span></code>, <code class="docutils literal notranslate"><span class="pre">related_coins</span></code>, <code class="docutils literal notranslate"><span class="pre">tags</span></code>, <code class="docutils literal notranslate"><span class="pre">references</span></code>).</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/coins/{coin_id}</span></code></p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">GET</span></code> Retrieve coin metadata (deprecated in favor of <code class="docutils literal notranslate"><span class="pre">/types/{type_id}</span></code>).</p>
+<ul>
+<li><p>Path: <code class="docutils literal notranslate"><span class="pre">coin_id</span></code> (int).</p></li>
+<li><p>Query: <code class="docutils literal notranslate"><span class="pre">lang</span></code> (enum en/es/fr, default <code class="docutils literal notranslate"><span class="pre">en</span></code>).</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/coins/{coin_id}/issues</span></code></p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">GET</span></code> List issues of a legacy coin entry.</p>
+<ul>
+<li><p>Path: <code class="docutils literal notranslate"><span class="pre">coin_id</span></code> (int).</p></li>
+<li><p>Query: <code class="docutils literal notranslate"><span class="pre">lang</span></code> (enum en/es/fr, default <code class="docutils literal notranslate"><span class="pre">en</span></code>).</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">POST</span></code> Insert a legacy issue (same <code class="docutils literal notranslate"><span class="pre">issue_update</span></code> body as <code class="docutils literal notranslate"><span class="pre">/types/{type_id}/issues</span></code>).</p>
+<ul>
+<li><p>Path: <code class="docutils literal notranslate"><span class="pre">coin_id</span></code> (int).</p></li>
+<li><p>Query: <code class="docutils literal notranslate"><span class="pre">lang</span></code> (enum en/es/fr, default <code class="docutils literal notranslate"><span class="pre">en</span></code>).</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/coins/{coin_id}/issues/{issue_id}/prices</span></code></p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">GET</span></code> Return price estimates for a legacy issue.</p>
+<ul>
+<li><p>Path: <code class="docutils literal notranslate"><span class="pre">coin_id</span></code> (int), <code class="docutils literal notranslate"><span class="pre">issue_id</span></code> (int).</p></li>
+<li><p>Query: <code class="docutils literal notranslate"><span class="pre">currency</span></code> (ISO 4217 code, default <code class="docutils literal notranslate"><span class="pre">EUR</span></code>), <code class="docutils literal notranslate"><span class="pre">lang</span></code> (enum en/es/fr, default <code class="docutils literal notranslate"><span class="pre">en</span></code>).</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/users/{user_id}/collected_coins</span></code></p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">GET</span></code> Legacy summary of collected coins (requires OAuth scope <code class="docutils literal notranslate"><span class="pre">view_collection</span></code>).</p>
+<ul>
+<li><p>Path: <code class="docutils literal notranslate"><span class="pre">user_id</span></code> (int).</p></li>
+<li><p>Query: <code class="docutils literal notranslate"><span class="pre">lang</span></code> (enum en/es/fr, default <code class="docutils literal notranslate"><span class="pre">en</span></code>), <code class="docutils literal notranslate"><span class="pre">coin</span></code> (int coin-type filter).</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="version-1-https-api-numista-com-v1">
+<h2>§ 1.3 Version 1 (<code class="docutils literal notranslate"><span class="pre">https://api.numista.com/v1</span></code>)<a class="headerlink" href="#version-1-https-api-numista-com-v1" title="Link to this heading"></a></h2>
+<p>Version 1 shares the same endpoint tree as version 2 (including the <code class="docutils literal notranslate"><span class="pre">/coins</span></code> and <code class="docutils literal notranslate"><span class="pre">/users/{user_id}/collected_coins</span></code>
+legacy paths above). Parameter names are identical, but some response fields remain in their original camelCase form
+(<code class="docutils literal notranslate"><span class="pre">minYear</span></code>, <code class="docutils literal notranslate"><span class="pre">maxYear</span></code>, <code class="docutils literal notranslate"><span class="pre">value</span></code>, etc.) as noted inside <code class="docutils literal notranslate"><span class="pre">docs/numista-swagger.yml</span></code>.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Andy Wells.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

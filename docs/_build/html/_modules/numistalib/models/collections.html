@@ -1,0 +1,433 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>numistalib.models.collections &mdash; numistalib 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=01f34227"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            numistalib
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstart.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cli_guide.html">CLI Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../python_api_guide.html">Python API Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../advanced_usage.html">Advanced Usage</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/client.html">Client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/services.html">Services</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/models.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/cli.html">CLI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Additional Information</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../architecture.html">Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing to numistalib</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../license.html">License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">numistalib</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">numistalib.models.collections</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for numistalib.models.collections</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Numista collections models.</span>
+
+<span class="sd">Pydantic models for Numista user collections.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">date</span> <span class="k">as</span> <span class="n">date_type</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Literal</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">Field</span><span class="p">,</span> <span class="n">HttpUrl</span><span class="p">,</span> <span class="n">computed_field</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.models.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">NumistaBaseModel</span>
+
+
+<div class="viewcode-block" id="UserCollection">
+<a class="viewcode-back" href="../../../api/models.html#numistalib.models.collections.UserCollection">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">UserCollection</span><span class="p">(</span><span class="n">NumistaBaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;User-defined collection container.</span>
+
+<span class="sd">    Represents a named collection that groups collected items for a user.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">gt</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;numista_id&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Numista collection ID&quot;</span><span class="p">)</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Collection name&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="UserCollection.to_dict">
+<a class="viewcode-back" href="../../../api/models.html#numistalib.models.collections.UserCollection.to_dict">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">object</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert collection to dictionary representation.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_dump</span><span class="p">()</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="TypeDetail">
+<a class="viewcode-back" href="../../../api/models.html#numistalib.models.collections.TypeDetail">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">TypeDetail</span><span class="p">(</span><span class="n">NumistaBaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Type detail for collected items.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    id : int</span>
+<span class="sd">        ID of the type</span>
+<span class="sd">    title : str</span>
+<span class="sd">        Title of the type</span>
+<span class="sd">    category : Literal[&quot;coin&quot;, &quot;banknote&quot;, &quot;exonumia&quot;]</span>
+<span class="sd">        Category</span>
+<span class="sd">    issuer : dict | None</span>
+<span class="sd">        Issuer information (code, name)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;ID of the type&quot;</span><span class="p">)</span>
+    <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Title of the type&quot;</span><span class="p">)</span>
+    <span class="n">category</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;coin&quot;</span><span class="p">,</span> <span class="s2">&quot;banknote&quot;</span><span class="p">,</span> <span class="s2">&quot;exonumia&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Category&quot;</span><span class="p">)</span>
+    <span class="n">issuer</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Issuer information&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="Picture">
+<a class="viewcode-back" href="../../../api/models.html#numistalib.models.collections.Picture">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Picture</span><span class="p">(</span><span class="n">NumistaBaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Picture or PDF document.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    url : HttpUrl</span>
+<span class="sd">        URL to the picture or document in original size</span>
+<span class="sd">    thumbnail_url : HttpUrl</span>
+<span class="sd">        URL to the thumbnail</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">url</span><span class="p">:</span> <span class="n">HttpUrl</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;URL to the picture or document&quot;</span><span class="p">)</span>
+    <span class="n">thumbnail_url</span><span class="p">:</span> <span class="n">HttpUrl</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;URL to the thumbnail&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="GradingCompany">
+<a class="viewcode-back" href="../../../api/models.html#numistalib.models.collections.GradingCompany">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">GradingCompany</span><span class="p">(</span><span class="n">NumistaBaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Grading company information.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    id : int</span>
+<span class="sd">        ID of the grading service in Numista</span>
+<span class="sd">    name : str</span>
+<span class="sd">        Name of the grading service</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;ID of the grading service&quot;</span><span class="p">)</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Name of the grading service&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="SlabGrade">
+<a class="viewcode-back" href="../../../api/models.html#numistalib.models.collections.SlabGrade">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SlabGrade</span><span class="p">(</span><span class="n">NumistaBaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Slab grade information.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    id : int</span>
+<span class="sd">        ID of the grading mark in Numista</span>
+<span class="sd">    value : str</span>
+<span class="sd">        Value of the grading mark</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;ID of the grading mark&quot;</span><span class="p">)</span>
+    <span class="n">value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Value of the grading mark&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="GradingDesignation">
+<a class="viewcode-back" href="../../../api/models.html#numistalib.models.collections.GradingDesignation">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">GradingDesignation</span><span class="p">(</span><span class="n">NumistaBaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Grading designation.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    id : int</span>
+<span class="sd">        ID of the grading designation in Numista</span>
+<span class="sd">    value : str</span>
+<span class="sd">        Value of the grading designation</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;ID of the grading designation&quot;</span><span class="p">)</span>
+    <span class="n">value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Value of the grading designation&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="GradingStrike">
+<a class="viewcode-back" href="../../../api/models.html#numistalib.models.collections.GradingStrike">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">GradingStrike</span><span class="p">(</span><span class="n">NumistaBaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Grading strike information.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    id : int</span>
+<span class="sd">        ID of the grading strike in Numista</span>
+<span class="sd">    value : str</span>
+<span class="sd">        Value of the grading strike</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;ID of the grading strike&quot;</span><span class="p">)</span>
+    <span class="n">value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Value of the grading strike&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="GradingSurface">
+<a class="viewcode-back" href="../../../api/models.html#numistalib.models.collections.GradingSurface">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">GradingSurface</span><span class="p">(</span><span class="n">NumistaBaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Grading surface information.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    id : int</span>
+<span class="sd">        ID of the grading surface in Numista</span>
+<span class="sd">    value : str</span>
+<span class="sd">        Value of the grading surface</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;ID of the grading surface&quot;</span><span class="p">)</span>
+    <span class="n">value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Value of the grading surface&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="GradingDetails">
+<a class="viewcode-back" href="../../../api/models.html#numistalib.models.collections.GradingDetails">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">GradingDetails</span><span class="p">(</span><span class="n">NumistaBaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Professional grading details.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    grading_company : GradingCompany | None</span>
+<span class="sd">        Grading service information</span>
+<span class="sd">    slab_grade : SlabGrade | None</span>
+<span class="sd">        Slab grade information</span>
+<span class="sd">    slab_number : str | None</span>
+<span class="sd">        Slab number</span>
+<span class="sd">    cac_sticker : Literal[&quot;Green&quot;, &quot;Gold&quot;] | None</span>
+<span class="sd">        CAC sticker type</span>
+<span class="sd">    grading_designations : list[GradingDesignation] | None</span>
+<span class="sd">        List of grading designations</span>
+<span class="sd">    grading_strike : GradingStrike | None</span>
+<span class="sd">        Grading strike information</span>
+<span class="sd">    grading_surface : GradingSurface | None</span>
+<span class="sd">        Grading surface information</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">grading_company</span><span class="p">:</span> <span class="n">GradingCompany</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Grading service&quot;</span><span class="p">)</span>
+    <span class="n">slab_grade</span><span class="p">:</span> <span class="n">SlabGrade</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Slab grade&quot;</span><span class="p">)</span>
+    <span class="n">slab_number</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Slab number&quot;</span><span class="p">)</span>
+    <span class="n">cac_sticker</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;Green&quot;</span><span class="p">,</span> <span class="s2">&quot;Gold&quot;</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;CAC sticker&quot;</span><span class="p">)</span>
+    <span class="n">grading_designations</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">GradingDesignation</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Grading designations&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">grading_strike</span><span class="p">:</span> <span class="n">GradingStrike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Grading strike&quot;</span><span class="p">)</span>
+    <span class="n">grading_surface</span><span class="p">:</span> <span class="n">GradingSurface</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Grading surface&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="CollectedItem">
+<a class="viewcode-back" href="../../../api/models.html#numistalib.models.collections.CollectedItem">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CollectedItem</span><span class="p">(</span><span class="n">NumistaBaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Item in a user&#39;s collection.</span>
+
+<span class="sd">    Maps to Numista collected_item entity with full swagger specification.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    id : int</span>
+<span class="sd">        Unique ID of the item</span>
+<span class="sd">    quantity : int</span>
+<span class="sd">        Quantity of items</span>
+<span class="sd">    type : TypeDetail</span>
+<span class="sd">        Type details (id, title, category, issuer)</span>
+<span class="sd">    for_swap : bool</span>
+<span class="sd">        Available for swap</span>
+<span class="sd">    issue : dict | None</span>
+<span class="sd">        Issue information (full issue object)</span>
+<span class="sd">    grade : Literal | None</span>
+<span class="sd">        Grade (g, vg, f, vf, xf, au, unc)</span>
+<span class="sd">    private_comment : str | None</span>
+<span class="sd">        Private comment (auth required)</span>
+<span class="sd">    public_comment : str | None</span>
+<span class="sd">        Public comment</span>
+<span class="sd">    price : dict | None</span>
+<span class="sd">        Price object reference</span>
+<span class="sd">    collection : UserCollection | None</span>
+<span class="sd">        Parent collection reference</span>
+<span class="sd">    pictures : list[Picture] | None</span>
+<span class="sd">        Pictures or PDF documents</span>
+<span class="sd">    storage_location : str | None</span>
+<span class="sd">        Storage location</span>
+<span class="sd">    acquisition_place : str | None</span>
+<span class="sd">        Acquisition place</span>
+<span class="sd">    acquisition_date : date_type | None</span>
+<span class="sd">        Date acquired (YYYY-MM-DD)</span>
+<span class="sd">    serial_number : str | None</span>
+<span class="sd">        Serial number</span>
+<span class="sd">    internal_id : str | None</span>
+<span class="sd">        Internal ID</span>
+<span class="sd">    weight : float | None</span>
+<span class="sd">        Weight in grams</span>
+<span class="sd">    size : float | None</span>
+<span class="sd">        Size in millimeters</span>
+<span class="sd">    axis : int | None</span>
+<span class="sd">        Die axis (1-12, h notation)</span>
+<span class="sd">    grading_details : GradingDetails | None</span>
+<span class="sd">        Professional grading information</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Required fields</span>
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unique ID of the item&quot;</span><span class="p">)</span>
+    <span class="n">quantity</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Quantity of items&quot;</span><span class="p">)</span>
+    <span class="nb">type</span><span class="p">:</span> <span class="n">TypeDetail</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Type details&quot;</span><span class="p">)</span>
+    <span class="n">for_swap</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Available for swap&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Optional core fields</span>
+    <span class="n">issue</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">object</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Issue information&quot;</span><span class="p">)</span>
+    <span class="n">grade</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;g&quot;</span><span class="p">,</span> <span class="s2">&quot;vg&quot;</span><span class="p">,</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="s2">&quot;vf&quot;</span><span class="p">,</span> <span class="s2">&quot;xf&quot;</span><span class="p">,</span> <span class="s2">&quot;au&quot;</span><span class="p">,</span> <span class="s2">&quot;unc&quot;</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Grade&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">private_comment</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Private comment&quot;</span><span class="p">)</span>
+    <span class="n">public_comment</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Public comment&quot;</span><span class="p">)</span>
+    <span class="n">price</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">object</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Price information&quot;</span><span class="p">)</span>
+    <span class="n">collection</span><span class="p">:</span> <span class="n">UserCollection</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Parent collection&quot;</span><span class="p">)</span>
+    <span class="n">pictures</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Picture</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Pictures or PDFs&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Location and acquisition</span>
+    <span class="n">storage_location</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Storage location&quot;</span><span class="p">)</span>
+    <span class="n">acquisition_place</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Acquisition place&quot;</span><span class="p">)</span>
+    <span class="n">acquisition_date</span><span class="p">:</span> <span class="n">date_type</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Date acquired&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Identifiers and measurements</span>
+    <span class="n">serial_number</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Serial number&quot;</span><span class="p">)</span>
+    <span class="n">internal_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Internal ID&quot;</span><span class="p">)</span>
+    <span class="n">weight</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Weight in grams&quot;</span><span class="p">)</span>
+    <span class="n">size</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Size in millimeters&quot;</span><span class="p">)</span>
+    <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">le</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Die axis (1-12)&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Professional grading</span>
+    <span class="n">grading_details</span><span class="p">:</span> <span class="n">GradingDetails</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Professional grading information&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="nd">@computed_field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Type ID for backwards compatibility&quot;</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">type_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extract type ID from type object.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">id</span>
+
+    <span class="nd">@computed_field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Issue ID for backwards compatibility&quot;</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">issue_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extract issue ID from issue object.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">issue</span> <span class="ow">and</span> <span class="s2">&quot;id&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">issue</span><span class="p">:</span>
+            <span class="n">issue_id_val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">issue</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">issue_id_val</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">issue_id_val</span>
+            <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">issue_id_val</span><span class="p">))</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="nd">@computed_field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Item summary for display&quot;</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">item_summary</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Summary of collected item.&quot;&quot;&quot;</span>
+        <span class="n">parts</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">quantity</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;x</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">quantity</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">grade</span><span class="p">:</span>
+            <span class="n">parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">grade</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Andy Wells.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

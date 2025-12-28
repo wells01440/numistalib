@@ -1,0 +1,563 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CLI &mdash; numistalib 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=01f34227"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Architecture" href="../architecture.html" />
+    <link rel="prev" title="Models" href="models.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            numistalib
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cli_guide.html">CLI Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../python_api_guide.html">Python API Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../advanced_usage.html">Advanced Usage</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="client.html">Client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="services.html">Services</a></li>
+<li class="toctree-l1"><a class="reference internal" href="models.html">Models</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">CLI</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-numistalib.cli.main">Main Entry Point</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#numistalib.cli.main.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-numistalib.cli.types">Types Commands</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#numistalib.cli.types.register_types_commands"><code class="docutils literal notranslate"><span class="pre">register_types_commands()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-numistalib.cli.catalogues">Catalogues Commands</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#numistalib.cli.catalogues.register_catalogues_commands"><code class="docutils literal notranslate"><span class="pre">register_catalogues_commands()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-numistalib.cli.issuers">Issuers Commands</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#numistalib.cli.issuers.register_issuers_commands"><code class="docutils literal notranslate"><span class="pre">register_issuers_commands()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-numistalib.cli.issues">Issues Commands</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#numistalib.cli.issues.register_issues_commands"><code class="docutils literal notranslate"><span class="pre">register_issues_commands()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-numistalib.cli.mints">Mints Commands</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#numistalib.cli.mints.register_mints_commands"><code class="docutils literal notranslate"><span class="pre">register_mints_commands()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-numistalib.cli.collections">Collections Commands</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#numistalib.cli.collections.register_collections_commands"><code class="docutils literal notranslate"><span class="pre">register_collections_commands()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-numistalib.cli.image_search">Image Search Commands</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#numistalib.cli.image_search.register_image_search_commands"><code class="docutils literal notranslate"><span class="pre">register_image_search_commands()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-numistalib.cli.literature">Literature Commands</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#numistalib.cli.literature.register_literature_commands"><code class="docutils literal notranslate"><span class="pre">register_literature_commands()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-numistalib.cli.prices">Prices Commands</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#numistalib.cli.prices.register_prices_commands"><code class="docutils literal notranslate"><span class="pre">register_prices_commands()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-numistalib.cli.users">Users Commands</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#numistalib.cli.users.register_users_commands"><code class="docutils literal notranslate"><span class="pre">register_users_commands()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-numistalib.cli.config">Config Commands</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#numistalib.cli.config.register_config_commands"><code class="docutils literal notranslate"><span class="pre">register_config_commands()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-numistalib.cli.theme">Theme</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#numistalib.cli.theme.CLISettings"><code class="docutils literal notranslate"><span class="pre">CLISettings</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#numistalib.cli.theme.CLISettings.CLI_THEME"><code class="docutils literal notranslate"><span class="pre">CLISettings.CLI_THEME</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#numistalib.cli.theme.CLISettings.FIELD_TRUNCATE_LENGTH"><code class="docutils literal notranslate"><span class="pre">CLISettings.FIELD_TRUNCATE_LENGTH</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#numistalib.cli.theme.CLISettings.FIELD_TRUNCATE_SUFFIX"><code class="docutils literal notranslate"><span class="pre">CLISettings.FIELD_TRUNCATE_SUFFIX</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#numistalib.cli.theme.CLISettings.LICENSE_TEXT"><code class="docutils literal notranslate"><span class="pre">CLISettings.LICENSE_TEXT</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#numistalib.cli.theme.CLISettings.PADDING_DIMENSIONS"><code class="docutils literal notranslate"><span class="pre">CLISettings.PADDING_DIMENSIONS</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#numistalib.cli.theme.CLISettings.PANEL_BOX_STYLE"><code class="docutils literal notranslate"><span class="pre">CLISettings.PANEL_BOX_STYLE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#numistalib.cli.theme.CLISettings.PANEL_HIGHLIGHT"><code class="docutils literal notranslate"><span class="pre">CLISettings.PANEL_HIGHLIGHT</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#numistalib.cli.theme.CLISettings.PANEL_TITLE_ALIGN"><code class="docutils literal notranslate"><span class="pre">CLISettings.PANEL_TITLE_ALIGN</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#numistalib.cli.theme.CLISettings.PANEL_WIDTH"><code class="docutils literal notranslate"><span class="pre">CLISettings.PANEL_WIDTH</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#numistalib.cli.theme.CLISettings.TABLE_BOX_STYLE"><code class="docutils literal notranslate"><span class="pre">CLISettings.TABLE_BOX_STYLE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#numistalib.cli.theme.CLISettings.TABLE_EXPAND"><code class="docutils literal notranslate"><span class="pre">CLISettings.TABLE_EXPAND</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#numistalib.cli.theme.CLISettings.TABLE_HIGHLIGHT"><code class="docutils literal notranslate"><span class="pre">CLISettings.TABLE_HIGHLIGHT</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#numistalib.cli.theme.CLISettings.TABLE_SHOW_HEADER"><code class="docutils literal notranslate"><span class="pre">CLISettings.TABLE_SHOW_HEADER</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#numistalib.cli.theme.CLISettings.TABLE_SHOW_TITLE"><code class="docutils literal notranslate"><span class="pre">CLISettings.TABLE_SHOW_TITLE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#numistalib.cli.theme.CLISettings.VERSION"><code class="docutils literal notranslate"><span class="pre">CLISettings.VERSION</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#numistalib.cli.theme.CLISettings.add_columns_to_table"><code class="docutils literal notranslate"><span class="pre">CLISettings.add_columns_to_table()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#numistalib.cli.theme.CLISettings.add_model_row"><code class="docutils literal notranslate"><span class="pre">CLISettings.add_model_row()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#numistalib.cli.theme.CLISettings.console"><code class="docutils literal notranslate"><span class="pre">CLISettings.console()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#numistalib.cli.theme.CLISettings.create_table"><code class="docutils literal notranslate"><span class="pre">CLISettings.create_table()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#numistalib.cli.theme.CLISettings.format_detail_field"><code class="docutils literal notranslate"><span class="pre">CLISettings.format_detail_field()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#numistalib.cli.theme.CLISettings.format_detail_fields"><code class="docutils literal notranslate"><span class="pre">CLISettings.format_detail_fields()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#numistalib.cli.theme.CLISettings.infer_columns_from_model"><code class="docutils literal notranslate"><span class="pre">CLISettings.infer_columns_from_model()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#numistalib.cli.theme.CLISettings.panel"><code class="docutils literal notranslate"><span class="pre">CLISettings.panel()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#numistalib.cli.theme.CLISettings.theme"><code class="docutils literal notranslate"><span class="pre">CLISettings.theme()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#numistalib.cli.theme.CLISettings.version_info"><code class="docutils literal notranslate"><span class="pre">CLISettings.version_info()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Additional Information</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../architecture.html">Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing to numistalib</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">numistalib</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">CLI</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/cli.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="cli">
+<h1>CLI<a class="headerlink" href="#cli" title="Link to this heading"></a></h1>
+<p>Command-line interface modules.</p>
+<section id="module-numistalib.cli.main">
+<span id="main-entry-point"></span><span id="module-numistalib.cli"></span><h2>Main Entry Point<a class="headerlink" href="#module-numistalib.cli.main" title="Link to this heading"></a></h2>
+<p>Command-line interface main entry point for numistalib.</p>
+<p>Registers all CLI command groups.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="numistalib.cli.main.main">
+<span class="sig-prename descclassname"><span class="pre">numistalib.cli.main.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/numistalib/cli/main.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#numistalib.cli.main.main" title="Link to this definition"></a></dt>
+<dd><p>Register all command groups and run CLI.</p>
+</dd></dl>
+
+</section>
+<section id="module-numistalib.cli.types">
+<span id="types-commands"></span><h2>Types Commands<a class="headerlink" href="#module-numistalib.cli.types" title="Link to this heading"></a></h2>
+<p>Types CLI commands.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="numistalib.cli.types.register_types_commands">
+<span class="sig-prename descclassname"><span class="pre">numistalib.cli.types.</span></span><span class="sig-name descname"><span class="pre">register_types_commands</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Group</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/numistalib/cli/types.html#register_types_commands"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#numistalib.cli.types.register_types_commands" title="Link to this definition"></a></dt>
+<dd><p>Register types commands with parent group.</p>
+</dd></dl>
+
+</section>
+<section id="module-numistalib.cli.catalogues">
+<span id="catalogues-commands"></span><h2>Catalogues Commands<a class="headerlink" href="#module-numistalib.cli.catalogues" title="Link to this heading"></a></h2>
+<p>Catalogues CLI commands.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="numistalib.cli.catalogues.register_catalogues_commands">
+<span class="sig-prename descclassname"><span class="pre">numistalib.cli.catalogues.</span></span><span class="sig-name descname"><span class="pre">register_catalogues_commands</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Group</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/numistalib/cli/catalogues.html#register_catalogues_commands"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#numistalib.cli.catalogues.register_catalogues_commands" title="Link to this definition"></a></dt>
+<dd><p>Register catalogues commands with parent group.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>parent</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">click.Group</span></code>) – Parent click group to attach commands to</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-numistalib.cli.issuers">
+<span id="issuers-commands"></span><h2>Issuers Commands<a class="headerlink" href="#module-numistalib.cli.issuers" title="Link to this heading"></a></h2>
+<p>Issuers CLI commands.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="numistalib.cli.issuers.register_issuers_commands">
+<span class="sig-prename descclassname"><span class="pre">numistalib.cli.issuers.</span></span><span class="sig-name descname"><span class="pre">register_issuers_commands</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Group</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/numistalib/cli/issuers.html#register_issuers_commands"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#numistalib.cli.issuers.register_issuers_commands" title="Link to this definition"></a></dt>
+<dd><p>Register issuers commands with parent group.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>parent</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">click.Group</span></code>) – Parent click group to attach commands to</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-numistalib.cli.issues">
+<span id="issues-commands"></span><h2>Issues Commands<a class="headerlink" href="#module-numistalib.cli.issues" title="Link to this heading"></a></h2>
+<p>Issues CLI commands.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="numistalib.cli.issues.register_issues_commands">
+<span class="sig-prename descclassname"><span class="pre">numistalib.cli.issues.</span></span><span class="sig-name descname"><span class="pre">register_issues_commands</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Group</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/numistalib/cli/issues.html#register_issues_commands"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#numistalib.cli.issues.register_issues_commands" title="Link to this definition"></a></dt>
+<dd><p>Register issues commands with parent group.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>parent</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">click.Group</span></code>) – Parent click group to attach commands to</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-numistalib.cli.mints">
+<span id="mints-commands"></span><h2>Mints Commands<a class="headerlink" href="#module-numistalib.cli.mints" title="Link to this heading"></a></h2>
+<p>Mints CLI commands.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="numistalib.cli.mints.register_mints_commands">
+<span class="sig-prename descclassname"><span class="pre">numistalib.cli.mints.</span></span><span class="sig-name descname"><span class="pre">register_mints_commands</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Group</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/numistalib/cli/mints.html#register_mints_commands"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#numistalib.cli.mints.register_mints_commands" title="Link to this definition"></a></dt>
+<dd><p>Register mints commands with parent group.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>parent</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">click.Group</span></code>) – Parent click group to attach commands to</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-numistalib.cli.collections">
+<span id="collections-commands"></span><h2>Collections Commands<a class="headerlink" href="#module-numistalib.cli.collections" title="Link to this heading"></a></h2>
+<p>Collections CLI commands.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="numistalib.cli.collections.register_collections_commands">
+<span class="sig-prename descclassname"><span class="pre">numistalib.cli.collections.</span></span><span class="sig-name descname"><span class="pre">register_collections_commands</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Group</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/numistalib/cli/collections.html#register_collections_commands"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#numistalib.cli.collections.register_collections_commands" title="Link to this definition"></a></dt>
+<dd><p>Register collections commands with parent group.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>parent</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">click.Group</span></code>) – Parent click group to attach commands to</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-numistalib.cli.image_search">
+<span id="image-search-commands"></span><h2>Image Search Commands<a class="headerlink" href="#module-numistalib.cli.image_search" title="Link to this heading"></a></h2>
+<p>Image search CLI commands.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="numistalib.cli.image_search.register_image_search_commands">
+<span class="sig-prename descclassname"><span class="pre">numistalib.cli.image_search.</span></span><span class="sig-name descname"><span class="pre">register_image_search_commands</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Group</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/numistalib/cli/image_search.html#register_image_search_commands"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#numistalib.cli.image_search.register_image_search_commands" title="Link to this definition"></a></dt>
+<dd><p>Register image search commands with parent group.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>parent</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">click.Group</span></code>) – Parent click group to attach commands to</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-numistalib.cli.literature">
+<span id="literature-commands"></span><h2>Literature Commands<a class="headerlink" href="#module-numistalib.cli.literature" title="Link to this heading"></a></h2>
+<p>Literature CLI commands.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="numistalib.cli.literature.register_literature_commands">
+<span class="sig-prename descclassname"><span class="pre">numistalib.cli.literature.</span></span><span class="sig-name descname"><span class="pre">register_literature_commands</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Group</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/numistalib/cli/literature.html#register_literature_commands"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#numistalib.cli.literature.register_literature_commands" title="Link to this definition"></a></dt>
+<dd><p>Register literature commands with parent group.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>parent</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">click.Group</span></code>) – Parent click group to attach commands to</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-numistalib.cli.prices">
+<span id="prices-commands"></span><h2>Prices Commands<a class="headerlink" href="#module-numistalib.cli.prices" title="Link to this heading"></a></h2>
+<p>Prices CLI commands.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="numistalib.cli.prices.register_prices_commands">
+<span class="sig-prename descclassname"><span class="pre">numistalib.cli.prices.</span></span><span class="sig-name descname"><span class="pre">register_prices_commands</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Group</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/numistalib/cli/prices.html#register_prices_commands"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#numistalib.cli.prices.register_prices_commands" title="Link to this definition"></a></dt>
+<dd><p>Register prices commands with parent group.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>parent</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">click.Group</span></code>) – Parent click group to attach commands to</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-numistalib.cli.users">
+<span id="users-commands"></span><h2>Users Commands<a class="headerlink" href="#module-numistalib.cli.users" title="Link to this heading"></a></h2>
+<p>Users CLI commands.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="numistalib.cli.users.register_users_commands">
+<span class="sig-prename descclassname"><span class="pre">numistalib.cli.users.</span></span><span class="sig-name descname"><span class="pre">register_users_commands</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Group</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/numistalib/cli/users.html#register_users_commands"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#numistalib.cli.users.register_users_commands" title="Link to this definition"></a></dt>
+<dd><p>Register users commands with parent group.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>parent</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">click.Group</span></code>) – Parent click group to attach commands to</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-numistalib.cli.config">
+<span id="config-commands"></span><h2>Config Commands<a class="headerlink" href="#module-numistalib.cli.config" title="Link to this heading"></a></h2>
+<p>Configuration management CLI commands.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="numistalib.cli.config.register_config_commands">
+<span class="sig-prename descclassname"><span class="pre">numistalib.cli.config.</span></span><span class="sig-name descname"><span class="pre">register_config_commands</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Group</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/numistalib/cli/config.html#register_config_commands"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#numistalib.cli.config.register_config_commands" title="Link to this definition"></a></dt>
+<dd><p>Register config commands with parent group.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>parent</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">click.Group</span></code>) – Parent click group to attach commands to</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-numistalib.cli.theme">
+<span id="theme"></span><h2>Theme<a class="headerlink" href="#module-numistalib.cli.theme" title="Link to this heading"></a></h2>
+<p>Rich v14 theming and formatting utilities for numistalib CLI.</p>
+<p>Provides consistent theming, console access, table helpers, and panel formatting
+in line with AGENTS.md § 7.1 requirements.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="numistalib.cli.theme.CLISettings">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numistalib.cli.theme.</span></span><span class="sig-name descname"><span class="pre">CLISettings</span></span><a class="reference internal" href="../_modules/numistalib/cli/theme.html#CLISettings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#numistalib.cli.theme.CLISettings" title="Link to this definition"></a></dt>
+<dd><p>Centralized CLI styling and formatting utilities.</p>
+<p>Provides:
+- Rich v14 theme configuration
+- Console access (cached singleton)
+- Table/panel helpers following § 7.1 patterns
+- Field truncation constants for general UI</p>
+<p>Note: Domain-specific truncation (e.g., biography length, issuer name length)
+lives in individual model classes per § 5.4 distributed settings strategy.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="numistalib.cli.theme.CLISettings.CLI_THEME">
+<span class="sig-name descname"><span class="pre">CLI_THEME</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.14)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'cache_hit':</span> <span class="pre">'dim</span> <span class="pre">green',</span> <span class="pre">'cache_miss':</span> <span class="pre">'dim</span> <span class="pre">yellow',</span> <span class="pre">'current_currency':</span> <span class="pre">'bold</span> <span class="pre">green',</span> <span class="pre">'danger':</span> <span class="pre">'bold</span> <span class="pre">bright_red',</span> <span class="pre">'debug':</span> <span class="pre">'dim</span> <span class="pre">magenta',</span> <span class="pre">'demonetized':</span> <span class="pre">'bold</span> <span class="pre">red',</span> <span class="pre">'error':</span> <span class="pre">'bright_red',</span> <span class="pre">'footer':</span> <span class="pre">'dim</span> <span class="pre">white',</span> <span class="pre">'header':</span> <span class="pre">'bold</span> <span class="pre">bright_blue',</span> <span class="pre">'info':</span> <span class="pre">'bright_cyan',</span> <span class="pre">'key':</span> <span class="pre">'bold</span> <span class="pre">white',</span> <span class="pre">'label':</span> <span class="pre">'bold</span> <span class="pre">bright_blue',</span> <span class="pre">'link':</span> <span class="pre">'underline</span> <span class="pre">bright_cyan',</span> <span class="pre">'link_hover':</span> <span class="pre">'bold</span> <span class="pre">underline</span> <span class="pre">bright_cyan',</span> <span class="pre">'panel_danger':</span> <span class="pre">'bright_red',</span> <span class="pre">'panel_default':</span> <span class="pre">'bright_blue',</span> <span class="pre">'panel_info':</span> <span class="pre">'bright_cyan',</span> <span class="pre">'panel_success':</span> <span class="pre">'bright_green',</span> <span class="pre">'panel_warning':</span> <span class="pre">'bright_yellow',</span> <span class="pre">'row_data':</span> <span class="pre">'white',</span> <span class="pre">'row_emphasized':</span> <span class="pre">'bold</span> <span class="pre">bright_cyan',</span> <span class="pre">'row_even':</span> <span class="pre">'white',</span> <span class="pre">'row_metadata':</span> <span class="pre">'dim</span> <span class="pre">white',</span> <span class="pre">'row_odd':</span> <span class="pre">'bright_white',</span> <span class="pre">'subheader':</span> <span class="pre">'bold</span> <span class="pre">cyan',</span> <span class="pre">'success':</span> <span class="pre">'bold</span> <span class="pre">bright_green',</span> <span class="pre">'table_header':</span> <span class="pre">'bold</span> <span class="pre">bright_blue</span> <span class="pre">on</span> <span class="pre">grey15',</span> <span class="pre">'tag':</span> <span class="pre">'reverse</span> <span class="pre">black</span> <span class="pre">on</span> <span class="pre">bright_white',</span> <span class="pre">'tag_banknote':</span> <span class="pre">'reverse</span> <span class="pre">black</span> <span class="pre">on</span> <span class="pre">bright_green',</span> <span class="pre">'tag_coin':</span> <span class="pre">'reverse</span> <span class="pre">black</span> <span class="pre">on</span> <span class="pre">bright_yellow',</span> <span class="pre">'tag_exonumia':</span> <span class="pre">'reverse</span> <span class="pre">black</span> <span class="pre">on</span> <span class="pre">bright_magenta',</span> <span class="pre">'value':</span> <span class="pre">'white',</span> <span class="pre">'value_dim':</span> <span class="pre">'dim</span> <span class="pre">white',</span> <span class="pre">'value_highlight':</span> <span class="pre">'bold</span> <span class="pre">bright_cyan',</span> <span class="pre">'value_missing':</span> <span class="pre">'dim</span> <span class="pre">italic',</span> <span class="pre">'warning':</span> <span class="pre">'bold</span> <span class="pre">bright_yellow'}</span></em><a class="headerlink" href="#numistalib.cli.theme.CLISettings.CLI_THEME" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="numistalib.cli.theme.CLISettings.FIELD_TRUNCATE_LENGTH">
+<span class="sig-name descname"><span class="pre">FIELD_TRUNCATE_LENGTH</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">100</span></em><a class="headerlink" href="#numistalib.cli.theme.CLISettings.FIELD_TRUNCATE_LENGTH" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="numistalib.cli.theme.CLISettings.FIELD_TRUNCATE_SUFFIX">
+<span class="sig-name descname"><span class="pre">FIELD_TRUNCATE_SUFFIX</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'…'</span></em><a class="headerlink" href="#numistalib.cli.theme.CLISettings.FIELD_TRUNCATE_SUFFIX" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="numistalib.cli.theme.CLISettings.LICENSE_TEXT">
+<span class="sig-name descname"><span class="pre">LICENSE_TEXT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'MIT</span> <span class="pre">License</span> <span class="pre">-</span> <span class="pre">See</span> <span class="pre">LICENSE</span> <span class="pre">file</span> <span class="pre">for</span> <span class="pre">details'</span></em><a class="headerlink" href="#numistalib.cli.theme.CLISettings.LICENSE_TEXT" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="numistalib.cli.theme.CLISettings.PADDING_DIMENSIONS">
+<span class="sig-name descname"><span class="pre">PADDING_DIMENSIONS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(1,</span> <span class="pre">1)</span></em><a class="headerlink" href="#numistalib.cli.theme.CLISettings.PADDING_DIMENSIONS" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="numistalib.cli.theme.CLISettings.PANEL_BOX_STYLE">
+<span class="sig-name descname"><span class="pre">PANEL_BOX_STYLE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Box</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Box(...)</span></em><a class="headerlink" href="#numistalib.cli.theme.CLISettings.PANEL_BOX_STYLE" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="numistalib.cli.theme.CLISettings.PANEL_HIGHLIGHT">
+<span class="sig-name descname"><span class="pre">PANEL_HIGHLIGHT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#numistalib.cli.theme.CLISettings.PANEL_HIGHLIGHT" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="numistalib.cli.theme.CLISettings.PANEL_TITLE_ALIGN">
+<span class="sig-name descname"><span class="pre">PANEL_TITLE_ALIGN</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.14)"><span class="pre">Literal</span></a><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'left'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'center'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'right'</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'left'</span></em><a class="headerlink" href="#numistalib.cli.theme.CLISettings.PANEL_TITLE_ALIGN" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="numistalib.cli.theme.CLISettings.PANEL_WIDTH">
+<span class="sig-name descname"><span class="pre">PANEL_WIDTH</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">120</span></em><a class="headerlink" href="#numistalib.cli.theme.CLISettings.PANEL_WIDTH" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="numistalib.cli.theme.CLISettings.TABLE_BOX_STYLE">
+<span class="sig-name descname"><span class="pre">TABLE_BOX_STYLE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Box</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Box(...)</span></em><a class="headerlink" href="#numistalib.cli.theme.CLISettings.TABLE_BOX_STYLE" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="numistalib.cli.theme.CLISettings.TABLE_EXPAND">
+<span class="sig-name descname"><span class="pre">TABLE_EXPAND</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#numistalib.cli.theme.CLISettings.TABLE_EXPAND" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="numistalib.cli.theme.CLISettings.TABLE_HIGHLIGHT">
+<span class="sig-name descname"><span class="pre">TABLE_HIGHLIGHT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#numistalib.cli.theme.CLISettings.TABLE_HIGHLIGHT" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="numistalib.cli.theme.CLISettings.TABLE_SHOW_HEADER">
+<span class="sig-name descname"><span class="pre">TABLE_SHOW_HEADER</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#numistalib.cli.theme.CLISettings.TABLE_SHOW_HEADER" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="numistalib.cli.theme.CLISettings.TABLE_SHOW_TITLE">
+<span class="sig-name descname"><span class="pre">TABLE_SHOW_TITLE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#numistalib.cli.theme.CLISettings.TABLE_SHOW_TITLE" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="numistalib.cli.theme.CLISettings.VERSION">
+<span class="sig-name descname"><span class="pre">VERSION</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'0.1.0'</span></em><a class="headerlink" href="#numistalib.cli.theme.CLISettings.VERSION" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numistalib.cli.theme.CLISettings.add_columns_to_table">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">add_columns_to_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Table</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.14)"><span class="pre">Iterable</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/numistalib/cli/theme.html#CLISettings.add_columns_to_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#numistalib.cli.theme.CLISettings.add_columns_to_table" title="Link to this definition"></a></dt>
+<dd><p>Add columns with appropriate styling based on semantic meaning.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numistalib.cli.theme.CLISettings.add_model_row">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">add_model_row</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Table</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_instance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pydantic.dev/latest/api/base_model/#pydantic.BaseModel" title="(in Pydantic Validation v0.0.0)"><span class="pre">BaseModel</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache_indicator</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/numistalib/cli/theme.html#CLISettings.add_model_row"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#numistalib.cli.theme.CLISettings.add_model_row" title="Link to this definition"></a></dt>
+<dd><p>Add a row from a Pydantic model instance, respecting column order.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numistalib.cli.theme.CLISettings.console">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">console</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Console</span></span></span><a class="reference internal" href="../_modules/numistalib/cli/theme.html#CLISettings.console"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#numistalib.cli.theme.CLISettings.console" title="Link to this definition"></a></dt>
+<dd><p>Return a Console instance with CLI theme applied (cached singleton).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numistalib.cli.theme.CLISettings.create_table">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_cache_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Table</span></span></span><a class="reference internal" href="../_modules/numistalib/cli/theme.html#CLISettings.create_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#numistalib.cli.theme.CLISettings.create_table" title="Link to this definition"></a></dt>
+<dd><p>Create a consistently styled table.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numistalib.cli.theme.CLISettings.format_detail_field">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">format_detail_field</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../_modules/numistalib/cli/theme.html#CLISettings.format_detail_field"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#numistalib.cli.theme.CLISettings.format_detail_field" title="Link to this definition"></a></dt>
+<dd><p>Format a single detail field (wrapper around base formatting).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>label</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Field label/key</p></li>
+<li><p><strong>value</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Any</span></code>) – Field value</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Formatted field string</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numistalib.cli.theme.CLISettings.format_detail_fields">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">format_detail_fields</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../_modules/numistalib/cli/theme.html#CLISettings.format_detail_fields"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#numistalib.cli.theme.CLISettings.format_detail_fields" title="Link to this definition"></a></dt>
+<dd><p>Format multiple detail fields (wrapper for consistent CLI usage).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>field_list</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">list[tuple[str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Any]]</span></code>) – List of (label, value) tuples</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Newline-joined formatted fields</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numistalib.cli.theme.CLISettings.infer_columns_from_model">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">infer_columns_from_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_cls</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.14)"><span class="pre">type</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.pydantic.dev/latest/api/base_model/#pydantic.BaseModel" title="(in Pydantic Validation v0.0.0)"><span class="pre">BaseModel</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_cache</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/numistalib/cli/theme.html#CLISettings.infer_columns_from_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#numistalib.cli.theme.CLISettings.infer_columns_from_model" title="Link to this definition"></a></dt>
+<dd><p>Infer concise column names from a Pydantic model.</p>
+<p>Uses short, humanized field names instead of verbose descriptions.
+This prevents overly long headers when model field descriptions
+contain detailed documentation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numistalib.cli.theme.CLISettings.panel">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">panel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">content</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><span class="pre">Any</span></a></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">box</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Box</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">padding</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expand</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title_align</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.14)"><span class="pre">Literal</span></a><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'left'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'center'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'right'</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Panel</span></span></span><a class="reference internal" href="../_modules/numistalib/cli/theme.html#CLISettings.panel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#numistalib.cli.theme.CLISettings.panel" title="Link to this definition"></a></dt>
+<dd><p>Create a consistently styled Panel.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numistalib.cli.theme.CLISettings.theme">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">theme</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Theme</span></span></span><a class="reference internal" href="../_modules/numistalib/cli/theme.html#CLISettings.theme"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#numistalib.cli.theme.CLISettings.theme" title="Link to this definition"></a></dt>
+<dd><p>Return the configured CLI theme (cached).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numistalib.cli.theme.CLISettings.version_info">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">version_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../_modules/numistalib/cli/theme.html#CLISettings.version_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#numistalib.cli.theme.CLISettings.version_info" title="Link to this definition"></a></dt>
+<dd><p>Return formatted version string.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="models.html" class="btn btn-neutral float-left" title="Models" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../architecture.html" class="btn btn-neutral float-right" title="Architecture" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Andy Wells.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,530 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>numistalib.services.base.service &mdash; numistalib 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=01f34227"></script>
+      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            numistalib
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quickstart.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../cli_guide.html">CLI Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../python_api_guide.html">Python API Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../advanced_usage.html">Advanced Usage</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/client.html">Client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/services.html">Services</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/models.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/cli.html">CLI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Additional Information</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../architecture.html">Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contributing.html">Contributing to numistalib</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../license.html">License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">numistalib</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">numistalib.services.base.service</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for numistalib.services.base.service</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Abstract base classes for Numista services.&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Coroutine</span><span class="p">,</span> <span class="n">Mapping</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">NoReturn</span><span class="p">,</span> <span class="n">cast</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">rich.panel</span><span class="w"> </span><span class="kn">import</span> <span class="n">Panel</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">numistalib</span><span class="w"> </span><span class="kn">import</span> <span class="n">__version__</span><span class="p">,</span> <span class="n">logger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.client</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">CACHE_MISS_ICON</span><span class="p">,</span>
+    <span class="n">AsyncClientProtocol</span><span class="p">,</span>
+    <span class="n">NumistaResponse</span><span class="p">,</span>
+    <span class="n">SyncClientProtocol</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="BaseService">
+<a class="viewcode-back" href="../../../../api/services.html#numistalib.services.base.service.BaseService">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">BaseService</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Abstract base service class for all Numista services.</span>
+
+<span class="sd">    Enforces strict patterns for:</span>
+<span class="sd">    - Client injection via duck-typing</span>
+<span class="sd">    - Converting raw data to typed models</span>
+<span class="sd">    - Centralized HTTP error handling</span>
+<span class="sd">    - Consistent caching and logging</span>
+
+<span class="sd">    All concrete services must implement model conversion logic.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="BaseService.__init__">
+<a class="viewcode-back" href="../../../../api/services.html#numistalib.services.base.service.BaseService.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client</span><span class="p">:</span> <span class="n">SyncClientProtocol</span> <span class="o">|</span> <span class="n">AsyncClientProtocol</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize base service with HTTP client.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        client : SyncClientProtocol | AsyncClientProtocol</span>
+<span class="sd">            HTTP client conforming to the sync or async protocol</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="p">:</span> <span class="n">SyncClientProtocol</span> <span class="o">|</span> <span class="n">AsyncClientProtocol</span> <span class="o">=</span> <span class="n">client</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_last_response</span><span class="p">:</span> <span class="n">NumistaResponse</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Initialized </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> service&quot;</span><span class="p">)</span></div>
+
+
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_aget</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NumistaResponse</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Unified async GET that supports both sync and async clients.</span>
+
+<span class="sd">        Returns NumistaResponse, awaiting if the client is async.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">result</span><span class="p">:</span> <span class="n">NumistaResponse</span> <span class="o">|</span> <span class="n">Coroutine</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">NumistaResponse</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">NumistaResponse</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_last_response</span> <span class="o">=</span> <span class="n">result</span>
+            <span class="k">return</span> <span class="n">result</span>
+        <span class="n">resp</span> <span class="o">=</span> <span class="k">await</span> <span class="n">result</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_last_response</span> <span class="o">=</span> <span class="n">resp</span>
+        <span class="k">return</span> <span class="n">resp</span>
+
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_apost</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NumistaResponse</span><span class="p">:</span>
+        <span class="n">result</span><span class="p">:</span> <span class="n">NumistaResponse</span> <span class="o">|</span> <span class="n">Coroutine</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">NumistaResponse</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">NumistaResponse</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_last_response</span> <span class="o">=</span> <span class="n">result</span>
+            <span class="k">return</span> <span class="n">result</span>
+        <span class="n">resp</span> <span class="o">=</span> <span class="k">await</span> <span class="n">result</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_last_response</span> <span class="o">=</span> <span class="n">resp</span>
+        <span class="k">return</span> <span class="n">resp</span>
+
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_apatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NumistaResponse</span><span class="p">:</span>
+        <span class="n">result</span><span class="p">:</span> <span class="n">NumistaResponse</span> <span class="o">|</span> <span class="n">Coroutine</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">NumistaResponse</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">NumistaResponse</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_last_response</span> <span class="o">=</span> <span class="n">result</span>
+            <span class="k">return</span> <span class="n">result</span>
+        <span class="n">resp</span> <span class="o">=</span> <span class="k">await</span> <span class="n">result</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_last_response</span> <span class="o">=</span> <span class="n">resp</span>
+        <span class="k">return</span> <span class="n">resp</span>
+
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_aput</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NumistaResponse</span><span class="p">:</span>
+        <span class="n">result</span><span class="p">:</span> <span class="n">NumistaResponse</span> <span class="o">|</span> <span class="n">Coroutine</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">NumistaResponse</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">NumistaResponse</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_last_response</span> <span class="o">=</span> <span class="n">result</span>
+            <span class="k">return</span> <span class="n">result</span>
+        <span class="n">resp</span> <span class="o">=</span> <span class="k">await</span> <span class="n">result</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_last_response</span> <span class="o">=</span> <span class="n">resp</span>
+        <span class="k">return</span> <span class="n">resp</span>
+
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_adelete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NumistaResponse</span><span class="p">:</span>
+        <span class="n">result</span><span class="p">:</span> <span class="n">NumistaResponse</span> <span class="o">|</span> <span class="n">Coroutine</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">NumistaResponse</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">NumistaResponse</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_last_response</span> <span class="o">=</span> <span class="n">result</span>
+            <span class="k">return</span> <span class="n">result</span>
+        <span class="n">resp</span> <span class="o">=</span> <span class="k">await</span> <span class="n">result</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_last_response</span> <span class="o">=</span> <span class="n">resp</span>
+        <span class="k">return</span> <span class="n">resp</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">title_text</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the title text for logging and display.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        str</span>
+<span class="sd">            Service title text</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;Service&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">copyright_text</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the copyright text for logging and display.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        str</span>
+<span class="sd">            Service copyright text</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Numistalib </span><span class="si">{</span><span class="n">__version__</span><span class="si">}</span><span class="s2"> | Data provided by Numista.com&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">last_cache_indicator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the cache indicator for the last response.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        str</span>
+<span class="sd">            Cache hit (💾) or cache miss (🌐) indicator</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last_response</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">CACHE_MISS_ICON</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last_response</span><span class="o">.</span><span class="n">cached_indicator</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_track_response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">response</span><span class="p">:</span> <span class="n">NumistaResponse</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Track the last API response for cache indicator access.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        response : NumistaResponse</span>
+<span class="sd">            The response to track</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_last_response</span> <span class="o">=</span> <span class="n">response</span>
+
+<div class="viewcode-block" id="BaseService.to_models">
+<a class="viewcode-back" href="../../../../api/services.html#numistalib.services.base.service.BaseService.to_models">[docs]</a>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_models</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">items</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert raw API items to typed domain models.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        items : list[Mapping[str, Any]]</span>
+<span class="sd">            Raw items from API response</span>
+<span class="sd">        **kwargs : Any</span>
+<span class="sd">            Service-specific conversion context (e.g., parent IDs)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list[Any]</span>
+<span class="sd">            List of typed domain models</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_format_panel</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">item</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+        <span class="n">fields</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># noqa: ARG002</span>
+        <span class="n">style_overrides</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Panel</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Format a model instance as a Rich Panel with service context.</span>
+
+<span class="sd">        Composes the item&#39;s as_panel() method with service name and cache indicator</span>
+<span class="sd">        in the panel title. This provides consistent panel rendering across all CLI</span>
+<span class="sd">        commands while respecting model-specific formatting.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        item : Any</span>
+<span class="sd">            Model instance with as_panel() method</span>
+<span class="sd">        fields : list[tuple[str, Any]], optional</span>
+<span class="sd">            Optional field list override (if not using item&#39;s _build_detail_fields)</span>
+<span class="sd">        style_overrides : dict[str, Any], optional</span>
+<span class="sd">            Optional style overrides passed to item.as_panel()</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Panel</span>
+<span class="sd">            Rich Panel with service name, cache indicator, and formatted content</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; service = IssuerService(client)</span>
+<span class="sd">        &gt;&gt;&gt; issuer = service.get_issuer(1)</span>
+<span class="sd">        &gt;&gt;&gt; panel = service._format_panel(issuer)</span>
+<span class="sd">        &gt;&gt;&gt; console.print(panel)  # Shows &quot;💾 Issuer&quot; or &quot;🌐 Issuer&quot; in title</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get panel from model (delegates to model&#39;s presentation logic)</span>
+        <span class="n">panel</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">as_panel</span><span class="p">(</span><span class="n">style_overrides</span><span class="o">=</span><span class="n">style_overrides</span><span class="p">)</span>
+
+        <span class="c1"># Enhance title with cache indicator and service context</span>
+        <span class="n">base_title</span> <span class="o">=</span> <span class="n">panel</span><span class="o">.</span><span class="n">title</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">title_text</span>
+        <span class="n">enhanced_title</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">last_cache_indicator</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">base_title</span><span class="si">}</span><span class="s2">&quot;</span>
+
+        <span class="c1"># Rebuild panel with enhanced title (preserving other attributes)</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.cli.theme</span><span class="w"> </span><span class="kn">import</span> <span class="n">CLISettings</span>
+
+        <span class="k">return</span> <span class="n">CLISettings</span><span class="o">.</span><span class="n">panel</span><span class="p">(</span>
+            <span class="n">panel</span><span class="o">.</span><span class="n">renderable</span><span class="p">,</span>
+            <span class="n">title</span><span class="o">=</span><span class="n">enhanced_title</span><span class="p">,</span>
+            <span class="n">box</span><span class="o">=</span><span class="n">panel</span><span class="o">.</span><span class="n">box</span><span class="p">,</span>
+            <span class="n">padding</span><span class="o">=</span><span class="n">panel</span><span class="o">.</span><span class="n">padding</span><span class="p">,</span>
+            <span class="o">**</span><span class="p">(</span><span class="n">style_overrides</span> <span class="ow">or</span> <span class="p">{}),</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="BaseService.handle_cli_error">
+<a class="viewcode-back" href="../../../../api/services.html#numistalib.services.base.service.BaseService.handle_cli_error">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">handle_cli_error</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">err</span><span class="p">:</span> <span class="ne">Exception</span><span class="p">,</span>
+        <span class="n">context</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">command</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NoReturn</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle CLI errors with consistent logging and user-friendly display.</span>
+
+<span class="sd">        Logs full traceback to module logger for debugging, displays friendly</span>
+<span class="sd">        error message to user via Rich error console, then exits with code 1.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        err : Exception</span>
+<span class="sd">            The exception that occurred</span>
+<span class="sd">        context : str</span>
+<span class="sd">            Human-readable context (e.g., &quot;listing catalogues&quot;, &quot;fetching issuer details&quot;)</span>
+<span class="sd">        command : str</span>
+<span class="sd">            Command name for log correlation (e.g., &quot;cat-list&quot;, &quot;isr-get&quot;)</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; try:</span>
+<span class="sd">        ...     results = service.list_catalogues()</span>
+<span class="sd">        ... except (RuntimeError, OSError, ValueError) as e:</span>
+<span class="sd">        ...     service._handle_cli_error(e, &quot;listing catalogues&quot;, &quot;cat-list&quot;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Log full traceback for debugging</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Error in </span><span class="si">{</span><span class="n">context</span><span class="si">}</span><span class="s2"> (command: </span><span class="si">{</span><span class="n">command</span><span class="si">}</span><span class="s2">): </span><span class="si">{</span><span class="n">err</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="n">exc_info</span><span class="o">=</span><span class="n">err</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Display friendly message to user</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.cli.theme</span><span class="w"> </span><span class="kn">import</span> <span class="n">CLISettings</span>
+        <span class="n">console</span> <span class="o">=</span> <span class="n">CLISettings</span><span class="o">.</span><span class="n">console</span><span class="p">()</span>
+        <span class="n">console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[danger]Error in </span><span class="si">{</span><span class="n">context</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">err</span><span class="si">}</span><span class="s2">[/danger]&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Exit with error code</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_build_params</span><span class="p">(</span>
+        <span class="n">base</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">optional</span><span class="p">:</span> <span class="n">Any</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Safely build parameter dict, excluding None values.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        base : dict[str, Any] | None</span>
+<span class="sd">            Base parameters (e.g., {&#39;lang&#39;: &#39;en&#39;})</span>
+<span class="sd">        **optional</span>
+<span class="sd">            Optional parameters to add if not None</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dict[str, Any] | None</span>
+<span class="sd">            Merged parameters or None if empty</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">base</span><span class="p">)</span> <span class="k">if</span> <span class="n">base</span> <span class="k">else</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">optional</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">params</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">return</span> <span class="n">params</span> <span class="k">if</span> <span class="n">params</span> <span class="k">else</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="SimpleListService">
+<a class="viewcode-back" href="../../../../api/services.html#numistalib.services.base.service.SimpleListService">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SimpleListService</span><span class="p">(</span><span class="n">BaseService</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base for endpoints returning a simple list of items in a single key.</span>
+
+<span class="sd">    Used for endpoints like:</span>
+<span class="sd">    - /catalogues → {&quot;catalogues&quot;: [...]}</span>
+<span class="sd">    - /mints → {&quot;mints&quot;: [...]}</span>
+
+<span class="sd">    Subclasses must:</span>
+<span class="sd">    1. Define CLASS_ITEMS_KEY (e.g., &quot;catalogues&quot;)</span>
+<span class="sd">    2. Implement to_models() to convert raw items</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">CLASS_ITEMS_KEY</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;items&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_extract_items_from_response</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">response</span><span class="p">:</span> <span class="n">NumistaResponse</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extract items list from standard response format.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        response : NumistaResponse</span>
+<span class="sd">            API response</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list[Mapping[str, Any]]</span>
+<span class="sd">            Raw items from response</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
+        <span class="n">items</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="nb">list</span><span class="p">[</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">CLASS_ITEMS_KEY</span><span class="p">,</span> <span class="p">[]))</span>
+        <span class="k">return</span> <span class="n">items</span></div>
+
+
+
+<div class="viewcode-block" id="NestedResourceService">
+<a class="viewcode-back" href="../../../../api/services.html#numistalib.services.base.service.NestedResourceService">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">NestedResourceService</span><span class="p">(</span><span class="n">BaseService</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base for endpoints with path parameters creating nested resources.</span>
+
+<span class="sd">    Used for endpoints like:</span>
+<span class="sd">    - /types/{type_id}/issues → {&quot;issues&quot;: [...]}</span>
+<span class="sd">    - /types/{type_id}/issues/{issue_id}/prices → {&quot;prices&quot;: [...]}</span>
+
+<span class="sd">    Subclasses must:</span>
+<span class="sd">    1. Define CLASS_ITEMS_KEY</span>
+<span class="sd">    2. Implement to_models() with required context parameters</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">CLASS_ITEMS_KEY</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;items&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_extract_items_from_response</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">response</span><span class="p">:</span> <span class="n">NumistaResponse</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extract items from nested resource response.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        response : NumistaResponse</span>
+<span class="sd">            API response</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list[Mapping[str, Any]]</span>
+<span class="sd">            Raw items from response</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
+        <span class="n">items</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="nb">list</span><span class="p">[</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">CLASS_ITEMS_KEY</span><span class="p">,</span> <span class="p">[]))</span>
+        <span class="k">return</span> <span class="n">items</span></div>
+
+
+
+<div class="viewcode-block" id="EntityService">
+<a class="viewcode-back" href="../../../../api/services.html#numistalib.services.base.service.EntityService">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">EntityService</span><span class="p">(</span><span class="n">BaseService</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base for single-entity endpoints.</span>
+
+<span class="sd">    Used for endpoints like:</span>
+<span class="sd">    - /users/{user_id} → {&quot;user&quot;: {...}}</span>
+<span class="sd">    - /types/{type_id} → {...}</span>
+
+<span class="sd">    Subclasses implement to_models() for single-item conversion.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="EntityService.to_models">
+<a class="viewcode-back" href="../../../../api/services.html#numistalib.services.base.service.EntityService.to_models">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_models</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">items</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert single entity (wrapped in list for interface consistency).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        items : list[Mapping[str, Any]]</span>
+<span class="sd">            Single-item list containing entity data</span>
+<span class="sd">        **kwargs : Any</span>
+<span class="sd">            Conversion context</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list[Any]</span>
+<span class="sd">            Single-item list with converted entity</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">items</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_convert_entity</span><span class="p">(</span><span class="n">items</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)]</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_convert_entity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert single entity to model.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        item : Mapping[str, Any]</span>
+<span class="sd">            Raw entity data</span>
+<span class="sd">        **kwargs : Any</span>
+<span class="sd">            Conversion context</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Any</span>
+<span class="sd">            Typed domain model</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_models</span><span class="p">([</span><span class="n">item</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Andy Wells.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

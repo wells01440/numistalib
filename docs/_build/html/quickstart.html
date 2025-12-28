@@ -1,0 +1,326 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quickstart Guide &mdash; numistalib 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=01f34227"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="CLI Guide" href="cli_guide.html" />
+    <link rel="prev" title="Installation" href="installation.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            numistalib
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Quickstart Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#your-first-commands">Your First Commands</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#search-for-coins">Search for Coins</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#filter-by-country">Filter by Country</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#get-detailed-information">Get Detailed Information</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#list-reference-catalogues">List Reference Catalogues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#list-issuers">List Issuers</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#python-api-usage">Python API Usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#basic-search">Basic Search</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#get-full-details">Get Full Details</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#search-with-multiple-filters">Search with Multiple Filters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#using-catalogues">Using Catalogues</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#understanding-cache-indicators">Understanding Cache Indicators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cli_guide.html">CLI Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="python_api_guide.html">Python API Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced_usage.html">Advanced Usage</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api/client.html">Client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/services.html">Services</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/models.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/cli.html">CLI</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Additional Information</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing to numistalib</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">numistalib</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Quickstart Guide</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/quickstart.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="quickstart-guide">
+<h1>Quickstart Guide<a class="headerlink" href="#quickstart-guide" title="Link to this heading"></a></h1>
+<p>This guide will get you up and running with numistalib in 5 minutes.</p>
+<section id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading"></a></h2>
+<p>Before starting, ensure you have:</p>
+<ol class="arabic simple" start="0">
+<li><p>Python 3.13+ installed</p></li>
+<li><p>Completed the <a class="reference internal" href="installation.html"><span class="std std-doc">installation</span></a> steps</p></li>
+<li><p>A valid Numista API key in your <code class="docutils literal notranslate"><span class="pre">.env</span></code> file</p></li>
+</ol>
+</section>
+<section id="your-first-commands">
+<h2>Your First Commands<a class="headerlink" href="#your-first-commands" title="Link to this heading"></a></h2>
+<section id="search-for-coins">
+<h3>Search for Coins<a class="headerlink" href="#search-for-coins" title="Link to this heading"></a></h3>
+<p>Search for coins using keywords:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>numistalib<span class="w"> </span>types<span class="w"> </span>search<span class="w"> </span>-q<span class="w"> </span><span class="s2">&quot;dollar&quot;</span>
+</pre></div>
+</div>
+<p>This returns a table with:</p>
+<ul class="simple">
+<li><p>Type ID</p></li>
+<li><p>Title</p></li>
+<li><p>Issuer</p></li>
+<li><p>Year range</p></li>
+<li><p>Category</p></li>
+<li><p>Cache indicator (💾 = cached, 🌐 = fresh)</p></li>
+</ul>
+</section>
+<section id="filter-by-country">
+<h3>Filter by Country<a class="headerlink" href="#filter-by-country" title="Link to this heading"></a></h3>
+<p>Search for coins from a specific issuer:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>numistalib<span class="w"> </span>types<span class="w"> </span>search<span class="w"> </span>--issuer<span class="w"> </span>united-states<span class="w"> </span>--year<span class="w"> </span><span class="m">2020</span>
+</pre></div>
+</div>
+</section>
+<section id="get-detailed-information">
+<h3>Get Detailed Information<a class="headerlink" href="#get-detailed-information" title="Link to this heading"></a></h3>
+<p>Get full details about a specific coin type:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>numistalib<span class="w"> </span>types<span class="w"> </span>get<span class="w"> </span><span class="m">95420</span>
+</pre></div>
+</div>
+<p>This displays:</p>
+<ul class="simple">
+<li><p>Physical specifications (weight, size, composition)</p></li>
+<li><p>Descriptions of obverse, reverse, and edge</p></li>
+<li><p>Mints</p></li>
+<li><p>Related types</p></li>
+<li><p>References</p></li>
+</ul>
+</section>
+<section id="list-reference-catalogues">
+<h3>List Reference Catalogues<a class="headerlink" href="#list-reference-catalogues" title="Link to this heading"></a></h3>
+<p>See all available coin catalogues:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>numistalib<span class="w"> </span>catalogues
+</pre></div>
+</div>
+</section>
+<section id="list-issuers">
+<h3>List Issuers<a class="headerlink" href="#list-issuers" title="Link to this heading"></a></h3>
+<p>View all issuing countries/entities:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>numistalib<span class="w"> </span>issuers
+</pre></div>
+</div>
+<p>With language support:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>numistalib<span class="w"> </span>issuers<span class="w"> </span>--lang<span class="w"> </span>es
+</pre></div>
+</div>
+</section>
+</section>
+<section id="python-api-usage">
+<h2>Python API Usage<a class="headerlink" href="#python-api-usage" title="Link to this heading"></a></h2>
+<section id="basic-search">
+<h3>Basic Search<a class="headerlink" href="#basic-search" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.client</span><span class="w"> </span><span class="kn">import</span> <span class="n">NumistaApiClient</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">Settings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.services.types.service</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypeService</span>
+
+<span class="n">settings</span> <span class="o">=</span> <span class="n">Settings</span><span class="p">()</span>
+
+<span class="k">with</span> <span class="n">NumistaApiClient</span><span class="p">(</span><span class="n">settings</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+    <span class="n">service</span> <span class="o">=</span> <span class="n">TypeService</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
+    
+    <span class="c1"># Search for types</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">search_types</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="s2">&quot;dollar&quot;</span><span class="p">,</span> <span class="n">page</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+    
+    <span class="k">for</span> <span class="n">coin_type</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">coin_type</span><span class="o">.</span><span class="n">numista_id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">coin_type</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Issuer: </span><span class="si">{</span><span class="n">coin_type</span><span class="o">.</span><span class="n">issuer</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Years: </span><span class="si">{</span><span class="n">coin_type</span><span class="o">.</span><span class="n">min_year</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">coin_type</span><span class="o">.</span><span class="n">max_year</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="get-full-details">
+<h3>Get Full Details<a class="headerlink" href="#get-full-details" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.client</span><span class="w"> </span><span class="kn">import</span> <span class="n">NumistaApiClient</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">Settings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.services.types.service</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypeService</span>
+
+<span class="n">settings</span> <span class="o">=</span> <span class="n">Settings</span><span class="p">()</span>
+
+<span class="k">with</span> <span class="n">NumistaApiClient</span><span class="p">(</span><span class="n">settings</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+    <span class="n">service</span> <span class="o">=</span> <span class="n">TypeService</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
+    
+    <span class="c1"># Get full type details</span>
+    <span class="n">full_type</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">get_type</span><span class="p">(</span><span class="mi">95420</span><span class="p">)</span>
+    
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Title: </span><span class="si">{</span><span class="n">full_type</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Weight: </span><span class="si">{</span><span class="n">full_type</span><span class="o">.</span><span class="n">weight</span><span class="si">}</span><span class="s2">g&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Composition: </span><span class="si">{</span><span class="n">full_type</span><span class="o">.</span><span class="n">composition</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Obverse: </span><span class="si">{</span><span class="n">full_type</span><span class="o">.</span><span class="n">obverse</span><span class="o">.</span><span class="n">description</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="search-with-multiple-filters">
+<h3>Search with Multiple Filters<a class="headerlink" href="#search-with-multiple-filters" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.client</span><span class="w"> </span><span class="kn">import</span> <span class="n">NumistaApiClient</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">Settings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.services.types.service</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypeService</span>
+
+<span class="n">settings</span> <span class="o">=</span> <span class="n">Settings</span><span class="p">()</span>
+
+<span class="k">with</span> <span class="n">NumistaApiClient</span><span class="p">(</span><span class="n">settings</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+    <span class="n">service</span> <span class="o">=</span> <span class="n">TypeService</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
+    
+    <span class="c1"># Advanced search</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">search_types</span><span class="p">(</span>
+        <span class="n">query</span><span class="o">=</span><span class="s2">&quot;commemorative&quot;</span><span class="p">,</span>
+        <span class="n">issuer</span><span class="o">=</span><span class="s2">&quot;france&quot;</span><span class="p">,</span>
+        <span class="n">year</span><span class="o">=</span><span class="s2">&quot;2000-2010&quot;</span><span class="p">,</span>
+        <span class="n">category</span><span class="o">=</span><span class="s2">&quot;coin&quot;</span><span class="p">,</span>
+        <span class="n">page</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">count</span><span class="o">=</span><span class="mi">20</span>
+    <span class="p">)</span>
+    
+    <span class="k">for</span> <span class="n">coin_type</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">coin_type</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">coin_type</span><span class="o">.</span><span class="n">min_year</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="using-catalogues">
+<h3>Using Catalogues<a class="headerlink" href="#using-catalogues" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.client</span><span class="w"> </span><span class="kn">import</span> <span class="n">NumistaApiClient</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">Settings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numistalib.services.catalogues.service</span><span class="w"> </span><span class="kn">import</span> <span class="n">CataloguesService</span>
+
+<span class="n">settings</span> <span class="o">=</span> <span class="n">Settings</span><span class="p">()</span>
+
+<span class="k">with</span> <span class="n">NumistaApiClient</span><span class="p">(</span><span class="n">settings</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+    <span class="n">service</span> <span class="o">=</span> <span class="n">CataloguesService</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
+    
+    <span class="c1"># Get all catalogues</span>
+    <span class="n">catalogues</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">get_catalogues</span><span class="p">()</span>
+    
+    <span class="k">for</span> <span class="n">cat</span> <span class="ow">in</span> <span class="n">catalogues</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">cat</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="n">cat</span><span class="o">.</span><span class="n">author</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="understanding-cache-indicators">
+<h2>Understanding Cache Indicators<a class="headerlink" href="#understanding-cache-indicators" title="Link to this heading"></a></h2>
+<p>numistalib uses persistent HTTP caching. When you see:</p>
+<ul class="simple">
+<li><p>💾 <strong>Cached</strong>: Response served from local cache (fast, no API quota used)</p></li>
+<li><p>🌐 <strong>Fresh</strong>: Response fetched from Numista API (counts against quota)</p></li>
+</ul>
+<p>The default cache TTL is 7 days. Cached responses are served instantly and don’t consume your API quota.</p>
+</section>
+<section id="next-steps">
+<h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
+<p>Now that you’ve tried the basics:</p>
+<ul class="simple">
+<li><p>Explore all <a class="reference internal" href="cli_guide.html"><span class="std std-doc">CLI commands</span></a></p></li>
+<li><p>Learn the <a class="reference internal" href="python_api_guide.html"><span class="std std-doc">Python API</span></a> in depth</p></li>
+<li><p>Configure <a class="reference internal" href="configuration.html"><span class="std std-doc">advanced settings</span></a></p></li>
+<li><p>Read about <a class="reference internal" href="architecture.html"><span class="std std-doc">architecture</span></a></p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="installation.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="cli_guide.html" class="btn btn-neutral float-right" title="CLI Guide" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Andy Wells.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
