@@ -9,6 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+### Changed
+
+### Fixed
+
+### Removed
+
+## [0.1.1] - 2025-12-28
+
+### Added
+
 - Initial release
 - Complete Numista API v3 coverage
 - HTTP caching with hishel (7-day TTL)
