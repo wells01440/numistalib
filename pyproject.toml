@@ -69,7 +69,6 @@ build-backend = "hatchling.build"
 line-length = 120
 target-version = "py313"
 src = ["src"]
-exclude = ["tests"]
 preview = true
 indent-width = 4
 
