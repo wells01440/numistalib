@@ -606,8 +606,8 @@ class NumistaClientAsync(NumistaClient):
                 await self._client.aclose()  # type: ignore[attr-defined]
         finally:
             self._client = None
-        storage = self.storage
-        if hasattr(storage, "close"):
+        storage = getattr(self, "_storage", None)
+        if storage is not None and hasattr(storage, "close"):
             await storage.close()  # type: ignore[attr-defined]
 
 
