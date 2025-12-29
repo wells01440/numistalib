@@ -11,16 +11,9 @@ from typing import Any
 from rich.panel import Panel
 from rich.text import Text
 
-from numistalib.client import NumistaResponse
 from numistalib.services.base.service import BaseService
 
-
-class DummyClient:
-    def get(self, url: str, **kwargs: Any) -> NumistaResponse:  # pragma: no cover (not used in these tests)
-        raise NotImplementedError()
-
-    def post(self, url: str, **kwargs: Any) -> NumistaResponse:  # pragma: no cover
-        raise NotImplementedError()
+from .conftest import DummyClient
 
 
 class DummyService(BaseService):
