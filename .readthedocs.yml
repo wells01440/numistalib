@@ -10,7 +10,7 @@ build:
   jobs:
     post_install:
       - pip install uv
-      - uv sync --group docs
+      - uv pip install -e . --group docs
 
 sphinx:
   configuration: docs/conf.py
