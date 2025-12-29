@@ -28,7 +28,19 @@ from pydantic import (
 from pydantic_core import Url
 from rich.table import Table
 from rich.text import Text
-from textual_image.renderable import Image as TImage
+
+try:
+    # textual_image may query terminal capabilities at import time and fail in non-TTY environments
+    # Guard the import to avoid raising during test collection; fall back to a no-op stub when unavailable.
+    from textual_image.renderable import Image as TImage
+except (ImportError, OSError, RuntimeError):
+    class TImage:  # type: ignore[override]
+        def __init__(self, *args: object, **kwargs: object) -> None:
+            self._placeholder = "[image unavailable]"
+
+        def __rich_console__(self, console: object, options: object):
+            from rich.text import Text
+            yield Text(self._placeholder)
 
 from numistalib.models import Currency, Issuer, Mint, NumistaBaseModel, Reference
 from numistalib.models.issues import IssueTerms
