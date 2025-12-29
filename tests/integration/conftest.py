@@ -23,6 +23,7 @@ from numistalib.cli.mints import register_mints_commands
 from numistalib.cli.prices import register_prices_commands
 from numistalib.cli.types import register_types_commands
 from numistalib.cli.users import register_users_commands
+from numistalib.client import close_all_clients
 from numistalib.config import Settings
 
 # Load .env file if it exists
@@ -111,3 +112,10 @@ def known_catalogue_id() -> int:
 def known_issuer_code() -> str:
     """Well-known issuer code for testing."""
     return "canada"
+
+
+@pytest.fixture(scope="session", autouse=True)
+def _close_clients_after_session() -> None:
+    """Ensure cache clients and sqlite storages are closed to silence ResourceWarnings."""
+    yield
+    close_all_clients()

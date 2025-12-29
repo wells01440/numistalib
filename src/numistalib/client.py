@@ -45,6 +45,7 @@ DEFAULT_BACKOFF_BASE = 0.5  # seconds
 DEFAULT_BACKOFF_MAX = 5.0   # seconds
 
 logger = logging.getLogger(LOGGER_NAME)
+_CLIENT_REGISTRY: list["NumistaClient"] = []
 
 
 class SyncClientProtocol(Protocol):
@@ -149,6 +150,15 @@ class NumistaClient(ABC):
         }
 
         logger.debug(f"{self.__class__.__name__} initialized")
+        _CLIENT_REGISTRY.append(self)
+
+    def close(self) -> None:
+        """Close underlying HTTP client if open. Subclasses may override."""
+        try:
+            if self._client and hasattr(self._client, "close"):
+                self._client.close()  # type: ignore[attr-defined]
+        finally:
+            self._client = None
 
     @property
     def database_full_path(self) -> str:
@@ -273,13 +283,31 @@ class NumistaClientSync(NumistaClient):
         """
         if self._client is None:
             policy = FilterPolicy(request_filters=[CacheAllGETRequests()])
+            storage = self.storage
             self._client = SyncCacheClient(
-                storage=self.storage,
+                storage=storage,
                 headers=self.headers,
                 timeout=self.timeout,
                 policy=policy,
             )
+            # Keep a reference to storage so we can close it explicitly
+            self._storage = storage  # type: ignore[attr-defined]
         return self._client  # type: ignore
+
+    def close(self) -> None:
+        try:
+            if self._client and hasattr(self._client, "close"):
+                self._client.close()  # type: ignore[attr-defined]
+        finally:
+            self._client = None
+        # Close hishel storage connection if present
+        storage = getattr(self, "_storage", None)
+        try:
+            if storage is not None and hasattr(storage, "close"):
+                storage.close()
+        finally:
+            if hasattr(self, "_storage"):
+                self._storage = None  # type: ignore[assignment]
 
     def get(self, url: str, **kwargs: Any) -> NumistaResponse:
         """Make a synchronous GET request.
@@ -571,6 +599,17 @@ class NumistaClientAsync(NumistaClient):
                 await asyncio.sleep(self._jitter_delay(attempt))
         raise AssertionError("Unreachable: loop must return or raise")
 
+    async def aclose(self) -> None:
+        """Close underlying HTTP client and storage if open."""
+        try:
+            if self._client and hasattr(self._client, "aclose"):
+                await self._client.aclose()  # type: ignore[attr-defined]
+        finally:
+            self._client = None
+        storage = getattr(self, "_storage", None)
+        if storage is not None and hasattr(storage, "close"):
+            await storage.close()  # type: ignore[attr-defined]
+
 
 class NumistaApiClient:
     """Unified client factory for both sync and async HTTP operations.
@@ -598,3 +637,37 @@ class NumistaApiClient:
     def raw_client(self) -> NumistaClientSync | NumistaClientAsync:
         """Get the underlying raw client."""
         return self._client
+
+    def __enter__(self) -> "NumistaApiClient":
+        return self
+
+    def __exit__(self, *args: object) -> None:
+        if isinstance(self._client, NumistaClientSync):
+            self._client.close()
+        else:
+            # Best-effort async close in sync context
+            loop = asyncio.new_event_loop()
+            try:
+                loop.run_until_complete(self._client.aclose())  # type: ignore[attr-defined]
+            except RuntimeError:
+                # Suppress "Event loop is closed" during cleanup
+                pass
+            finally:
+                loop.close()
+
+
+def close_all_clients() -> None:
+    """Close all registered clients and clear registry (tests teardown)."""
+    for client in list(_CLIENT_REGISTRY):
+        if isinstance(client, NumistaClientSync):
+            client.close()
+        else:
+            loop = asyncio.new_event_loop()
+            try:
+                loop.run_until_complete(client.aclose())  # type: ignore[attr-defined]
+            except RuntimeError:
+                # Suppress "Event loop is closed" during cleanup
+                pass
+            finally:
+                loop.close()
+    _CLIENT_REGISTRY.clear()

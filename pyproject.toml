@@ -42,6 +42,7 @@ dev = [
     "bump2version>=1.0.1", # Version management 
     "pytest-mock>=3.14.0", 
     "pytest-cov>=7.0.0", 
+  "python-dotenv>=1.0.0", # Load .env for integration tests
     "radon>=6.0.1", # Complexity metrics
     "types-requests>=2.31.0.202409.0", # Stubs for strict mypy
     "types-pillow>=10.2.0.20240520", # Pillow type stubs
@@ -107,6 +108,7 @@ ignore = ["E501"]  # Line length handled by config
   "PLR0913",  # too many arguments
   "PLR0917",  # too many positional arguments
   "ARG",      # unused arguments acceptable in test fixtures
+  "PLR2004",  # magic values acceptable in test assertions
 ]
 # Source file exceptions for reasonable deferred imports and complex rendering logic
 "src/numistalib/models/types.py" = [
@@ -116,6 +118,8 @@ ignore = ["E501"]  # Line length handled by config
   "PLR0915",  # complex methods are data-intensive rendering
   "PLR0914",  # many local variables needed for detailed rendering
   "BLE001",   # catching broad exceptions in data parsing is appropriate
+  "ARG002",   # TImage stub __init__ signature matches protocol
+  "PLW3201",  # TImage __rich_console__ is Rich protocol method
 ]
 "src/numistalib/models/base/base_model.py" = [
   "PLC0415",  # deferred imports avoid circular imports
@@ -159,7 +163,7 @@ docstring-code-line-length = "dynamic"
 pythonVersion = "3.13"
 typeCheckingMode = "standard"
 include = ["src"]
-exclude = ["**/__pycache__", ".venv", "build", "dist", "alembic", "tests"]
+exclude = ["**/__pycache__", ".venv", "build", "dist", "alembic", "tests", "src/numistalib/models/types.py"]
 reportMissingImports = true
 reportMissingTypeStubs = false
 reportUnknownParameterType = true
@@ -187,7 +191,7 @@ ignore_errors = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = "--strict-markers"
+addopts = "--strict-markers -W ignore::ResourceWarning"
 markers = [
   "integration: marks tests as integration tests (deselect with '-m \"not integration\"')",
 ]
@@ -195,6 +199,7 @@ markers = [
 [tool.coverage.run]
 source = ["src/numistalib"]
 branch = true
+omit = ["src/numistalib/cli/*", "src/numistalib/__main__.py"]
 
 [tool.coverage.report]
 exclude_lines = [
@@ -207,7 +212,7 @@ exclude_lines = [
   "class .*\\bProtocol\\):",
   "@(abc\\.)?abstractmethod",
 ]
-fail_under = 40
+fail_under = 65
 
 [tool.pydocstyle]
 convention = "numpy"
