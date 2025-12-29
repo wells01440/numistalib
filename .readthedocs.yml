@@ -20,10 +20,5 @@ formats:
   - pdf
   - epub
 
-python:
-  install:
-    - method: pip
-      path: .
-
 submodules:
   exclude: all
