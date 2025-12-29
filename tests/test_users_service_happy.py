@@ -8,20 +8,10 @@ from typing import Any
 from numistalib.client import NumistaResponse
 from numistalib.services.users.service import UserService
 
-
-class DummyResponse:
-    def __init__(self, data: dict[str, Any]) -> None:
-        self._data = data
-        self.cached_indicator = "💾"
-
-    def raise_for_status(self) -> None:
-        return None
-
-    def json(self) -> dict[str, Any]:
-        return self._data
+from .conftest import DummyClient, DummyResponse
 
 
-class DummyClient:
+class UserServiceDummyClient(DummyClient):
     def get(self, url: str, **kwargs: Any) -> NumistaResponse:  # type: ignore[override]
         if url.startswith("/users/") and "/collections" not in url and "/collected_items" not in url:
             return DummyResponse({
@@ -34,7 +24,7 @@ class DummyClient:
 
 
 def test_get_user_happy_path() -> None:
-    service = UserService(DummyClient())
+    service = UserService(UserServiceDummyClient())
     user = service.get_user(42)
     assert user.numista_id == 42
     assert user.username == "tester"

@@ -1,11 +1,45 @@
 """Pytest configuration and fixtures for numistalib tests."""
 
+from typing import Any
 from unittest.mock import Mock
 
 import pytest
 
-from numistalib.client import NumistaApiClient
+from numistalib.client import NumistaApiClient, NumistaResponse
 from numistalib.config import Settings
+
+
+class DummyResponse:
+    """Mock response object for testing services without network calls."""
+
+    def __init__(self, data: dict[str, Any]) -> None:
+        self._data = data
+        self.cached_indicator = "💾"
+
+    def raise_for_status(self) -> None:
+        return None
+
+    def json(self) -> dict[str, Any]:
+        return self._data
+
+
+class DummyClient:
+    """Mock client for testing services without network calls."""
+
+    def get(self, url: str, **kwargs: Any) -> NumistaResponse:  # type: ignore[override]
+        raise NotImplementedError("Subclass must implement get() for specific test cases")
+
+    def post(self, url: str, **kwargs: Any) -> NumistaResponse:  # type: ignore[override]
+        raise NotImplementedError("Subclass must implement post() for specific test cases")
+
+    def patch(self, url: str, **kwargs: Any) -> NumistaResponse:  # type: ignore[override]
+        raise NotImplementedError("Subclass must implement patch() for specific test cases")
+
+    def put(self, url: str, **kwargs: Any) -> NumistaResponse:  # type: ignore[override]
+        raise NotImplementedError("Subclass must implement put() for specific test cases")
+
+    def delete(self, url: str, **kwargs: Any) -> NumistaResponse:  # type: ignore[override]
+        raise NotImplementedError("Subclass must implement delete() for specific test cases")
 
 
 @pytest.fixture

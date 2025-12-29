@@ -8,20 +8,10 @@ from typing import Any
 from numistalib.client import NumistaResponse
 from numistalib.services.types.service import SearchParams, TypeBasicService
 
-
-class DummyResponse:
-    def __init__(self, data: dict[str, Any]) -> None:
-        self._data = data
-        self.cached_indicator = "💾"
-
-    def raise_for_status(self) -> None:
-        return None
-
-    def json(self) -> dict[str, Any]:
-        return self._data
+from .conftest import DummyClient, DummyResponse
 
 
-class DummyClient:
+class TypeServiceDummyClient(DummyClient):
     def get(self, url: str, **kwargs: Any) -> NumistaResponse:  # type: ignore[override]
         assert url == "/types"
         return DummyResponse({
@@ -39,7 +29,7 @@ class DummyClient:
 
 
 def test_search_types_happy_path() -> None:
-    service = TypeBasicService(DummyClient())
+    service = TypeBasicService(TypeServiceDummyClient())
     params = SearchParams(query="dollar", page=1, count=10)
     items = service.search_types(params)
     assert len(items) == 1
