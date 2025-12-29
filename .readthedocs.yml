@@ -24,5 +24,6 @@ python:
   install:
     - method: pip
       path: .
-      extra_requirements:
-        - dev
+
+submodules:
+  exclude: all
