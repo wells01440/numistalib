@@ -1,0 +1,26 @@
+name: Build ReadTheDocs
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  id-token: write
+
+jobs:
+  rtd-build:
+    runs-on: ubuntu-latest
+    environment: rtd
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Trigger ReadTheDocs build
+        uses: readthedocs/actions/builds@main
+        with:
+          project-slug: numistalib
+
