@@ -23,4 +23,3 @@ jobs:
         uses: readthedocs/actions/builds@main
         with:
           project-slug: numistalib
-
