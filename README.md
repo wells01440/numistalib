@@ -8,7 +8,7 @@ Includes an optional command-line interface with rich terminal output and sixel 
 
 ## Overview
 
-numistalib is a **caching API client** for [Numista](https://en.numista.com), the collaborative online catalogue of world coins, banknotes, and exonumia. The library:
+[numistalib](https://pypi.org/project/numistalib/) is a **caching API client** for [Numista](https://en.numista.com), the collaborative online catalogue of world coins, banknotes, and exonumia. The library:
 
 - **Caches all GET requests** using [hishel](https://hishel.com) with configurable TTL (default 7 days)
 - **Rate limits** requests automatically (45 requests/minute by default) via [pyrate-limiter](https://github.com/vutran1710/PyrateLimiter)
