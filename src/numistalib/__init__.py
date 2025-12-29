@@ -3,7 +3,7 @@
 A Python wrapper for the Numista API with caching, rate limiting, and retry logic.
 """
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 
 import logging
 from pathlib import Path
