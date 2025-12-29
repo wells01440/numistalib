@@ -33,7 +33,7 @@ try:
     # textual_image may query terminal capabilities at import time and fail in non-TTY environments
     # Guard the import to avoid raising during test collection; fall back to a no-op stub when unavailable.
     from textual_image.renderable import Image as TImage
-except Exception:
+except (ImportError, OSError, RuntimeError):
     class TImage:  # type: ignore[override]
         def __init__(self, *args: object, **kwargs: object) -> None:
             self._placeholder = "[image unavailable]"
